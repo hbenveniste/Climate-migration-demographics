@@ -88,7 +88,7 @@ gen pop_share = pop / pop_sum
 
 foreach var of varlist tmax_day_pop tmax2_day_pop tmax3_day_pop sm_day_pop sm2_day_pop sm3_day_pop prcp_day_pop prcp2_day_pop prcp3_day_pop tmax_day_rcs_k4_1_pop tmax_day_rcs_k4_2_pop sm_day_rcs_k4_1_pop sm_day_rcs_k4_2_pop {
 	gen `var'_popwt = `var' * pop_share
-	replace `var'_popwt = `var' if pop_share == .
+	replace `var'_popwt = `var' if pop_share == . & pop_sum == 0
 }
 
 collapse (sum) tmax_day_pop_popwt tmax2_day_pop_popwt tmax3_day_pop_popwt sm_day_pop_popwt sm2_day_pop_popwt sm3_day_pop_popwt prcp_day_pop_popwt prcp2_day_pop_popwt prcp3_day_pop_popwt tmax_day_rcs_k4_1_pop_popwt tmax_day_rcs_k4_2_pop_popwt sm_day_rcs_k4_1_pop_popwt sm_day_rcs_k4_2_pop_popwt, by(bpl yrimm)

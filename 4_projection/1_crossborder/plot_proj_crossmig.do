@@ -46,7 +46,7 @@ quietly sum pctlog_migrate_diffcch_ssp245
 local xmax245 = ceil(r(max) / 5) * 5
 local xmin245 = floor(r(min) / 5) * 5
 local xmeanh245 = r(mean)
-local xstep245 = (0 - `xmin245') / 3
+local xstep245 = (0 - `xmin245') / 2
 
 quietly sum pctlog_migrate_diffccnoh_ssp245, meanonly
 local xmeannoh245 = r(mean)
@@ -55,7 +55,7 @@ quietly sum pctlog_migrate_diffcch_ssp370
 local xmax370 = ceil(r(max) / 5) * 5
 local xmin370 = floor(r(min) / 5) * 5
 local xmeanh370 = r(mean)
-local xstep370 = (0 - `xmin370') / 4
+local xstep370 = (0 - `xmin370') / 3
 
 quietly sum pctlog_migrate_diffccnoh_ssp370, meanonly
 local xmeannoh370 = r(mean)
@@ -84,9 +84,9 @@ forv j=4(-1)1 {
 			local xlab "xtitle(`empty') xlabel(, nolabel notick) fysize(18.5)"
 		}
 		
-		graph twoway histo pctlog_migrate_diffccnoh_ssp245 if (agemigcat == `i' & edattain == `j'), frequency color("201 148 199") width(0.5) ///
+		graph twoway histo pctlog_migrate_diffccnoh_ssp245 if (agemigcat == `i' & edattain == `j'), frequency color(gray) width(0.5) ///
 					|| histo pctlog_migrate_diffcch_ssp245 if (agemigcat == `i' & edattain == `j'), frequency color("152 0 67") width(0.5) ///
-					|| scatteri 0 `xmeannoh245' 500 `xmeannoh245', recast(line) lpattern(dash) lcolor("201 148 199") lwidth(medthick) ///
+					|| scatteri 0 `xmeannoh245' 500 `xmeannoh245', recast(line) lpattern(dash) lcolor(gray) lwidth(medthick) ///
 					|| scatteri 0 `xmeanh245' 500 `xmeanh245', recast(line) lpattern(dash) lcolor("152 0 67") lwidth(medthick) ///
 					`xlab' `ylab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
@@ -94,9 +94,9 @@ forv j=4(-1)1 {
 					legend(off) ///
 					name(Projhisto245_age`i'edu`j', replace)
 							
-		graph twoway histo pctlog_migrate_diffccnoh_ssp370 if (agemigcat == `i' & edattain == `j'), frequency color("201 148 199") width(1) ///
+		graph twoway histo pctlog_migrate_diffccnoh_ssp370 if (agemigcat == `i' & edattain == `j'), frequency color(gray) width(1) ///
 					|| histo pctlog_migrate_diffcch_ssp370 if (agemigcat == `i' & edattain == `j'), frequency color("103 0 31") width(1) ///
-					|| scatteri 0 `xmeannoh370' 400 `xmeannoh370', recast(line) lpattern(dash) lcolor("201 148 199") lwidth(medthick) ///
+					|| scatteri 0 `xmeannoh370' 400 `xmeannoh370', recast(line) lpattern(dash) lcolor(gray) lwidth(medthick) ///
 					|| scatteri 0 `xmeanh370' 400 `xmeanh370', recast(line) lpattern(dash) lcolor("103 0 31") lwidth(medthick) ///
 					`xlab' `ylab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///

@@ -1,6 +1,6 @@
 /*
 
-Plot maps of projected weather values under a climate change scenario of SSP2-4.5: Fig.E11
+Plot maps of projected weather values under a climate change scenario of SSP2-4.5: Fig.E12
 
 */
 

@@ -83,6 +83,7 @@ drop if _merge == 1 & geolevel1 != .
 drop _merge
 
 * Reshape in wide format to bring days into columns
+keep bpl geolevel1 yrimm day tmax_pop sm_pop pop
 reshape wide tmax_pop sm_pop, i(bpl geolevel1 yrimm) j(day)
 
 * Calculate (yearly) population weights from adm1 to country level
@@ -99,7 +100,7 @@ ds geolevel1 yrimm bpl pop pop_sum pop_share, not
 local othervar `r(varlist)'
 foreach var of local othervar {
 	gen `var'_popwt = `var' * pop_share
-	replace `var'_popwt = `var' if pop_share == .
+	replace `var'_popwt = `var' if pop_share == . & pop_sum == 0
 }
 
 * Create variables for daily observations at country level

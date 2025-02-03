@@ -60,7 +60,7 @@ foreach c in $Countries {
 		* Use the mean of census person weights for each group
 		gen nbmig = 1
 		collapse (mean) perwt (count) nbmig, by(yrimm bplcountry country agemigcat edattain sex)
-		drop if yrimm == . | bplcountry == . | agemigcat == .
+		drop if yrimm == . | bplcountry == . | agemigcat == . | edattain == .
 		
 		* Create variable for number of migrants in each group based on survey
 		gen nbtotmig = nbmig * perwt
