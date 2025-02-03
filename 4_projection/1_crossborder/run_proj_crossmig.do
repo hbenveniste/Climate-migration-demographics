@@ -85,7 +85,7 @@ foreach var of varlist tmax_day_pop sm_day_pop sm2_day_pop sm3_day_pop {
 }
 
 * Same model, without demographic heterogeneity
-estimates use "$input_dir/5_estimation/Estimation_crossmig/mcross_tspd13.ster"
+estimates use "$input_dir/5_estimation/mcross_tspd13.ster"
 foreach var of varlist tmax_day_pop sm_day_pop sm2_day_pop sm3_day_pop {
 	gen coefnoh_`var' = _b[`var']
 }

@@ -46,7 +46,7 @@ quietly sum pctlog_migrate_diffcch_ssp245
 local xmax245 = ceil(r(max) / 5) * 5
 local xmin245 = floor(r(min) / 5) * 5
 local xmeanh245 = r(mean)
-local xstep245 = (0 - `xmin245') / 2
+local xstep245 = (0 - `xmin245') / 3
 
 quietly sum pctlog_migrate_diffccnoh_ssp245, meanonly
 local xmeannoh245 = r(mean)
@@ -55,7 +55,7 @@ quietly sum pctlog_migrate_diffcch_ssp370
 local xmax370 = ceil(r(max) / 5) * 5
 local xmin370 = floor(r(min) / 5) * 5
 local xmeanh370 = r(mean)
-local xstep370 = (0 - `xmin370') / 3
+local xstep370 = (0 - `xmin370') / 4
 
 quietly sum pctlog_migrate_diffccnoh_ssp370, meanonly
 local xmeannoh370 = r(mean)
