@@ -32,7 +32,7 @@ global names `r(varlist)'
 do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 
 
-save "_residualized_cross.dta", replace
+save "$input_dir/2_intermediate/_residualized_cross.dta", replace
 
 
 

@@ -85,5 +85,5 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 		ysize(6) xsize(5) ///
 		name(rsqwithinmswdailydest, replace)
 
-graph export "../../mig-demo-ag/Cleaned/Results/Crossvalidation_withinmig/FigE11b_cv_withindest.png", ///
+graph export "$res_dir/3_Crossvalidation_withinmig/FigE11b_cv_withindest.png", ///
 			width(4000) as(png) name("rsqwithinmswdailydest") replace

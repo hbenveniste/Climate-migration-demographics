@@ -152,5 +152,5 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 		ysize(6) xsize(7) ///
 		name(rsqwithinmswdailyform, replace)
 
-graph export "../../mig-demo-ag/Cleaned/Results/Crossvalidation_withinmig/FigE13b_cv_withinform.png", ///
+graph export "$res_dir/3_Crossvalidation_withinmig/FigE13b_cv_withinform.png", ///
 			width(4000) as(png) name("rsqwithinmswdailyform") replace

@@ -71,7 +71,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.tmax2_day_pop c.tmax3_day_pop
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T"
 	reshape long rsq, i(model) j(seeds)
@@ -83,7 +83,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.sm_day_pop c.sm2_day_pop c.sm3_day_pop
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "S"
 	reshape long rsq, i(model) j(seeds)
@@ -95,7 +95,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.mainclimgroup c.sm_day_pop#i.mainclimgroup c.tmax2_day_pop#i.mainclimgroup c.sm2_day_pop#i.mainclimgroup c.tmax3_day_pop#i.mainclimgroup c.sm3_day_pop#i.mainclimgroup
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*climzone"
 	reshape long rsq, i(model) j(seeds)
@@ -107,7 +107,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*age"
 	reshape long rsq, i(model) j(seeds)
@@ -119,7 +119,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*edu"
 	reshape long rsq, i(model) j(seeds)
@@ -131,7 +131,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.sex c.sm_day_pop#i.sex c.tmax2_day_pop#i.sex c.sm2_day_pop#i.sex c.tmax3_day_pop#i.sex c.sm3_day_pop#i.sex
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*sex"
 	reshape long rsq, i(model) j(seeds)
@@ -143,7 +143,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*(age+edu)"
 	reshape long rsq, i(model) j(seeds)
@@ -158,7 +158,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.sm2_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.sm2_day_pop#i.edattain c.sm3_day_pop#i.edattain
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T1,S3*(age+edu)"
 	reshape long rsq, i(model) j(seeds)
@@ -173,7 +173,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain c.tmax_day_pop#i.mainclimgroup c.sm_day_pop#i.mainclimgroup c.tmax2_day_pop#i.mainclimgroup c.sm2_day_pop#i.mainclimgroup c.tmax3_day_pop#i.mainclimgroup c.sm3_day_pop#i.mainclimgroup c.tmax_day_pop#i.mainclimgroup#i.edattain c.sm_day_pop#i.mainclimgroup#i.edattain c.tmax2_day_pop#i.mainclimgroup#i.edattain c.sm2_day_pop#i.mainclimgroup#i.edattain c.tmax3_day_pop#i.mainclimgroup#i.edattain c.sm3_day_pop#i.mainclimgroup#i.edattain c.tmax_day_pop#i.mainclimgroup#i.agemigcat c.sm_day_pop#i.mainclimgroup#i.agemigcat c.tmax2_day_pop#i.mainclimgroup#i.agemigcat c.sm2_day_pop#i.mainclimgroup#i.agemigcat c.tmax3_day_pop#i.mainclimgroup#i.agemigcat c.sm3_day_pop#i.mainclimgroup#i.agemigcat
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*climzone*(age+edu)"
 	reshape long rsq, i(model) j(seeds)
@@ -185,7 +185,7 @@ save "$input_dir/4_Crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain c.tmax_day_pop#i.sex c.sm_day_pop#i.sex c.tmax2_day_pop#i.sex c.sm2_day_pop#i.sex c.tmax3_day_pop#i.sex c.sm3_day_pop#i.sex
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*(age+edu+sex)"
 	reshape long rsq, i(model) j(seeds)
@@ -197,7 +197,7 @@ save "$input_dir/4_Crossvalidation/rsqimm.dta", replace
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 global indepvar c.tmax_day_pop_rand c.sm_day_pop_rand c.tmax2_day_pop_rand c.sm2_day_pop_rand c.tmax3_day_pop_rand c.sm3_day_pop_rand c.tmax_day_pop_rand#i.agemigcat c.sm_day_pop_rand#i.agemigcat c.tmax2_day_pop_rand#i.agemigcat c.sm2_day_pop_rand#i.agemigcat c.tmax3_day_pop_rand#i.agemigcat c.sm3_day_pop_rand#i.agemigcat c.tmax_day_pop_rand#i.edattain c.sm_day_pop_rand#i.edattain c.tmax2_day_pop_rand#i.edattain c.sm2_day_pop_rand#i.edattain c.tmax3_day_pop_rand#i.edattain c.sm3_day_pop_rand#i.edattain
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "_residualized_cross.dta" 
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S placebo*(age+edu)"
 	reshape long rsq, i(model) j(seeds)

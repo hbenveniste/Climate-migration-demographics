@@ -489,7 +489,7 @@ graph export "$res_dir/2_Crossvalidation_crossmig/FigEX_cv_zeros.png", ///
 ****************************************************************
 **# Estimate models ***
 ****************************************************************
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta", clear
 
 local depvar ln_outmigshare
 
@@ -640,7 +640,7 @@ foreach var of varlist yhat0 lowerci0 upperci0 {
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "../../mig-demo-ag/Cleaned/Results/Estimation_crossmig/FigEX_crosssoilm_zeros.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigEX_crosssoilm_zeros.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
