@@ -86,7 +86,7 @@ graph box rsqplot, over(modelnb, gap(120) label(angle(50) labsize(medium))) noou
 graph combine rsqreplicross rsqrepliwithin, graphregion(color(white)) ycommon col(2) ysize(6) xsize(6) name(rsqrepli, replace)
 
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigE3_cv_repli.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS4_cv_repli.png", ///
 			width(4000) as(png) name("rsqrepli") replace
 
 

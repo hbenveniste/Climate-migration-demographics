@@ -81,7 +81,7 @@ graph combine tmax_scalmedds tmax2_scalmedds tmax3_scalmedds, graphregion(color(
 graph combine sm_scalmedds sm2_scalmedds sm3_scalmedds, graphregion(color(white)) row(3) name(scalmeds, replace)
 graph combine scalmedt scalmeds, graphregion(color(white)) col(2) ysize(6) xsize(8) name(scalmedall, replace)
 
-graph export "$res_dir/6_Projection_crossmig/FigE12_downscaling_245.png", width(4000) as(png) name("scalmedall") replace
+graph export "$res_dir/6_Projection_crossmig/FigS13_downscaling_245.png", width(4000) as(png) name("scalmedall") replace
 
 
 

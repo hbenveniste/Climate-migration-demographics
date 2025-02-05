@@ -92,8 +92,8 @@ twoway rbar rsqplot_lqt rsqplot_lqtx modelnb, barw(.5) fcolor(gs5) lcolor(black)
 	graphregion(fcolor(white)) subtitle(, fcolor(none) lstyle(none)) xsize(7) ///
 	name(rsqimmmswdailyranddemo, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/Fig2a_cv_cross.png", ///
-			width(4000) as(png) name("rsqimmmswdailyranddemo") replace
+graph export "$res_dir/2_Crossvalidation_crossmig/Fig2a_cv_cross.pdf", ///
+			width(7) as(pdf) name("rsqimmmswdailyranddemo") replace
 
 
 ****************************************************************
@@ -117,8 +117,8 @@ graph box rsqyear, over(modelaltnb, gap(120) label(angle(50) labsize(medium))) n
 		title("Cross-year folds") xsize(3) ///
 		name(rsqimmmswdailyyeardemo, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigE7a_cvalt_cross.png", ///
-			width(4000) as(png) name("rsqimmmswdailyyeardemo") replace
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS8a_cvalt_cross.pdf", ///
+			width(7) as(pdf) name("rsqimmmswdailyyeardemo") replace
 
 
 

@@ -57,7 +57,7 @@ heatplot corrmatrix, color(hcl diverging, reverse) ///
 		graphregion(color(white)) ysize(5) xsize(6) ///
 		name(geographcoll,replace)
 
-graph export "$res_dir/1_Description/FigE1_corrdemo_withinmig.png", width(4000) as(png) name("geographcoll") replace
+graph export "$res_dir/1_Description/FigS2_corrdemo_withinmig.png", width(4000) as(png) name("geographcoll") replace
 
 restore
 

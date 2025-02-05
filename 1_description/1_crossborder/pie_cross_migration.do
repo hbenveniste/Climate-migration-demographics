@@ -74,7 +74,7 @@ graph combine edudistr agedistr sexdistr, row(1) ysize(4) xsize(10) ///
 			title("Cross-border migration", size(huge)) graphregion(color(white))  ///
 			name(demoimmdistr, replace)
 
-graph export "$res_dir/1_Description/Fig1c_crossdemodistr.png", width(4000) as(png) name("demoimmdistr") replace
+graph export "$res_dir/1_Description/Fig1c_crossdemodistr.pdf", width(3.5) as(pdf) name("demoimmdistr") replace
 
 
 

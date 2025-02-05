@@ -161,7 +161,7 @@ forvalues c=1/1 {
 	do "$code_dir/3_estimation/2_withincountry/curvesdemo_plot_function_withinmigration.do"
 
 	* Export plot 
-	graph export "$res_dir/5_Estimation_withinmig/FigE10d_withintemplag_`c'.png", width(4000) as(png) name("graphcurveall") replace
+	graph export "$res_dir/5_Estimation_withinmig/FigS11d_withintemplag_`c'.png", width(4000) as(png) name("graphcurveall") replace
 	
 	restore
 
@@ -250,7 +250,7 @@ forvalues c=3/3 {
 	do "$code_dir/3_estimation/2_withincountry/curvesdemo_plot_function_withinmigration.do"
 
 	* Export plot 
-	graph export "$res_dir/5_Estimation_withinmig/FigE10f_withinsoilmlag_`c'.png", width(4000) as(png) name("graphcurveall") replace
+	graph export "$res_dir/5_Estimation_withinmig/FigS11f_withinsoilmlag_`c'.png", width(4000) as(png) name("graphcurveall") replace
 	
 	restore
 

@@ -294,7 +294,7 @@ if `climplot' {
 	graph combine `graphclimT' `graphclimSM', ///
 				graphregion(color(white)) col(5) ysize(6) xsize(12) ///
 				name(graphcurveclim, replace)
-	graph export "$res_dir/5_Estimation_withinmig/FigS6_withinclim.png", width(4000) as(png) name("graphcurveclim") replace
+	graph export "$res_dir/5_Estimation_withinmig/FigE5_withinclim.png", width(4000) as(png) name("graphcurveclim") replace
 }
 
 

@@ -1,6 +1,6 @@
 /*
 
-Prepare file for plotting country-level average cross-border outmigration rate in QGIS
+Prepare file for plotting country-level average cross-border outmigration and inmigration rates in QGIS
 
 */
 
@@ -63,4 +63,32 @@ keep ipumscode outmigshare OBJECTID CNTRY_NAME CNTRY_CODE id
 
 * Save for mapping in QGIS
 export delimited using "$res_dir/1_Description/outmigipumsavyrs.csv", replace
+
+
+****************************************************************
+**# Prepare to plot the average inmigration rate at the country level ***
+****************************************************************
+use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+
+* Calculate inmigration rate into each country across demographics and origins
+collapse (sum) nbtotmig (mean) countrypop, by(country countrycode yrimm)
+gen inmigshare = nbtotmig / (countrypop * 1000)
+
+* Average outmigration rate over the sample period
+collapse (mean) inmigshare, by(country countrycode)
+
+tempfile inmigipumsavyrs
+save `inmigipumsavyrs'
+
+use "$input_dir/1_raw/Shapefiles/ctrydb.dta"
+destring CNTRY_CODE, replace
+save "$input_dir/1_raw/Shapefiles/ctrydb.dta", replace
+
+use `inmigipumsavyrs'
+rename country CNTRY_CODE
+merge 1:m CNTRY_CODE using "$input_dir/1_raw/Shapefiles/ctrydb.dta"
+keep inmigshare OBJECTID CNTRY_NAME CNTRY_CODE id
+
+* Save for mapping in QGIS
+export delimited using "$res_dir/1_Description/inmigipumsavyrs.csv", replace
 

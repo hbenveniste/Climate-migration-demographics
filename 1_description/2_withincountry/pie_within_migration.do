@@ -74,7 +74,7 @@ graph combine edudistr agedistr sexdistr, row(1) ysize(4) xsize(10) ///
 			title("Within-country migration", size(huge)) graphregion(color(white))  ///
 			name(demodistr, replace)
 
-graph export "$res_dir/1_Description/Fig1c_withindemodistr.png", width(4000) as(png) name("demodistr") replace
+graph export "$res_dir/1_Description/Fig1c_withindemodistr.pdf", width(3.5) as(pdf) name("demodistr") replace
 
 
 

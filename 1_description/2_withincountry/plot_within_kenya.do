@@ -64,7 +64,7 @@ twoway connected sm_day_pop yrmig if geomig1==404004 & yrmig >=1990 & yrmig<=201
 
 graph combine kenmig kentmax kensmrz, graphregion(color(white)) row(3) ysize(8) xsize(7) name(ken, replace)
 
-graph export "$res_dir/1_Description/FigE6_Kenyaexample.png", width(4000) as(png) name("ken") replace
+graph export "$res_dir/1_Description/FigS7_Kenyaexample.png", width(4000) as(png) name("ken") replace
 
 
 

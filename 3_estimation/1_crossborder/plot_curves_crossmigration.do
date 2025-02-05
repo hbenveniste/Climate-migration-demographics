@@ -113,7 +113,7 @@ if $histo {
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/Fig2b_crosstemp.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/Fig2b_crosstemp.pdf", width(7) as(pdf) name("graphcurveall") replace
 
 restore
 
@@ -181,7 +181,7 @@ if $histo {
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/Fig2c_crosssoilm.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/Fig2c_crosssoilm.pdf", width(7) as(pdf) name("graphcurveall") replace
 
 restore
 

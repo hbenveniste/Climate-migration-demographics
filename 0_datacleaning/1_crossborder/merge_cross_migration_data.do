@@ -86,6 +86,18 @@ gen ln_outmigshare = ln(outmigshare)
 
 save `crossmigweather', replace
 
+* Add destination population for illustration purposes
+use `pop'
+rename (bpl bplpop) (country countrypop)
+save `pop', replace
+
+use `crossmigweather'
+merge m:1 country yrimm using `pop'
+drop if _merge != 3
+drop _merge
+
+save `crossmigweather', replace
+
 
 ****************************************************************
 **# Import and merge climate zones data ***

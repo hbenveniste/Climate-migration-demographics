@@ -127,7 +127,7 @@ foreach var of varlist yhat0 lowerci0 upperci0 {
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "../../mig-demo-ag/Cleaned/Results/Estimation_crossmig/FigE10c_crosstemplag.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS11c_crosstemplag.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -186,7 +186,7 @@ foreach var of varlist yhat0 lowerci0 upperci0 {
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigE10e_crosssoilmlag.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS11e_crosssoilmlag.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 

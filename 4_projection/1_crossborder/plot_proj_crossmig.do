@@ -121,8 +121,8 @@ graph combine `graphhisto370', title("", size(medsmall)) l2title(`edus', size(sm
 			
 			
 * Export 
-graph export "$res_dir/6_Projection_crossmig/Fig4_crossproj_245.png", width(4000) as(png) name("graphhisto245all") replace
-graph export "$res_dir/6_Projection_crossmig/FigE8_crossproj_370.png", width(4000) as(png) name("graphhisto370all") replace
+graph export "$res_dir/6_Projection_crossmig/Fig4_crossproj_245.pdf", width(7) as(pdf) name("graphhisto245all") replace
+graph export "$res_dir/6_Projection_crossmig/FigS9_crossproj_370.pdf", width(7) as(pdf) name("graphhisto370all") replace
 
 							
 							

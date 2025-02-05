@@ -54,8 +54,8 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(small))) nooutside
 		graphregion(fcolor(white)) subtitle(, fcolor(none) lstyle(none)) xsize(7) ///
 		name(rsqwithinmswdailyranddemo, replace)
 	
-graph export "$res_dir/3_Crossvalidation_withinmig/Fig3a_cv_within.png", ///
-			width(4000) as(png) name("rsqwithinmswdailyranddemo") replace
+graph export "$res_dir/3_Crossvalidation_withinmig/Fig3a_cv_within.pdf", ///
+			width(7) as(pdf) name("rsqwithinmswdailyranddemo") replace
 
 
 ****************************************************************
@@ -78,8 +78,8 @@ graph box rsqyear, over(modelaltnb, gap(120) label(angle(50) labsize(medium))) n
 		title("Cross-year folds") xsize(3) ///
 		name(rsqmswdailyyeardemo, replace)
 		
-graph export "$res_dir/3_Crossvalidation_withinmig/FigE7b_cvalt_within.png", ///
-			width(4000) as(png) name("rsqmswdailyyeardemo") replace
+graph export "$res_dir/3_Crossvalidation_withinmig/FigS8b_cvalt_within.pdf", ///
+			width(7) as(pdf) name("rsqmswdailyyeardemo") replace
 
 
 
