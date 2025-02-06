@@ -8,7 +8,7 @@ using CSV, OnlineStats, Plots, DataFrames, StatsPlots, XLSX, Query
 ######################################################### Read IPUMS data #################################################
 ###########################################################################################################################
 # Charge raw file
-ipums_d = CSV.File(joinpath(@__DIR__,"../ipumsi_00001.csv");limit=20) |> DataFrame
+ipums_d = CSV.File(joinpath(@__DIR__,"../../../../Desktop/ipumsi_00001.csv");limit=20) |> DataFrame
 
 # Obtain variables names
 cn = names(ipums_d) ; print(cn)
@@ -19,19 +19,18 @@ crossmigcol = [
     :YEAR, :COUNTRY,                                                # census country, year
     :PERWT,                                                         # representative weight of each individual surveyed
     :AGE, :SEX, :EDATTAIN,                                          # demographics of individual surveyed
-    :BPLCOUNTRY, :YRIMM, :MIGCAUSE,                                 # birth place, year of immigration, reason for migrating (largely missing)
-    :URBAN                                                          # rural/urban status of individual surveyed
+    :BPLCOUNTRY, :YRIMM,                                            # birth place, year of immigration
+    :NCHILD, :ELDCH, :YNGCH                                         # children in household
 ]
 # For within-country migration
 withinmigcol = [
     :YEAR, :COUNTRY,                                                # census country, year
     :PERWT,                                                         # representative weight of each individual surveyed
     :AGE, :SEX, :EDATTAIN,                                          # demographics of individual surveyed
-    :GEOLEV1, :AREAMOLLWGEO1,                                       # subnational area of residence, surface of subnational area
+    :GEOLEV1,                                                       # subnational area of residence
     :MIGRATE1, :MIGRATE5, :MIGRATE0, :MIGRATEC,                     # migration status 1, 5, 10 years ago, last census
     :GEOMIG1_P, :GEOMIG1_1, :GEOMIG1_5, :GEOMIG1_10, :MIGYRS1,      # area of previous residence, 1, 5, 10 years ago, years residing in current area 
-    :MIGCAUSE,                                                      # reason for migrating (largely missing)
-    :URBAN                                                          # rural/urban status of individual surveyed
+    :NCHILD, :ELDCH, :YNGCH                                         # children in household
 ]
 
 allmigcol = union(crossmigcol,withinmigcol)
@@ -45,7 +44,7 @@ allmigcol = union(crossmigcol,withinmigcol)
 # First, gather indexes of last row for each country in the raw dataset
 
 # Charge first column, which contains country codes 
-c1 = CSV.File(joinpath(@__DIR__,"../ipumsi_00001.csv");select=[1]) |> DataFrame        # takes about 15 min to run
+c1 = CSV.File(joinpath(@__DIR__,"../../../../Desktop/ipumsi_00001.csv");select=[1]) |> DataFrame        # takes about 15 min to run
 
 # Initialize to first row
 j0 = c1[1,1]
@@ -63,7 +62,7 @@ while j < size(c1,1)
 end
 
 # Match with country labels
-ctrycode = CSV.File(joinpath(@__DIR__,"../Input_data/1_raw/Coordinates/ipums_ctrycode.csv")) |> DataFrame
+ctrycode = CSV.File(joinpath(@__DIR__,"../../../../Stanford_Benveniste Dropbox/Hélène Benveniste/migration-demographics-agriculture/Climate-mig-demo_Input/1_raw/Coordinates/ipums_ctrycode.csv")) |> DataFrame
 indc = innerjoin(rename(indc,:country=>:code),rename(ctrycode,:Value=>:code),on=:code)
 
 
@@ -73,12 +72,12 @@ indc = innerjoin(rename(indc,:country=>:code),rename(ctrycode,:Value=>:code),on=
 for i in eachindex(indc[:,1])
     if i == 1
         # initialize with first country
-        dfc = CSV.Rows(joinpath(@__DIR__,"../ipumsi_00001.csv"); limit = indc[1,:lastind], select=allmigcol) |> DataFrame        
+        dfc = CSV.Rows(joinpath(@__DIR__,"../../../../Desktop/ipumsi_00001.csv"); limit = indc[1,:lastind], select=allmigcol) |> DataFrame        
     else
-        dfc = CSV.Rows(joinpath(@__DIR__,"../ipumsi_00001.csv"),reusebuffer=true; select=allmigcol, skipto = indc[i-1,:lastind]+2, limit = indc[i,:lastind] - indc[i-1,:lastind]) |> DataFrame
+        dfc = CSV.Rows(joinpath(@__DIR__,"../../../../Desktop/ipumsi_00001.csv"),reusebuffer=true; select=allmigcol, skipto = indc[i-1,:lastind]+2, limit = indc[i,:lastind] - indc[i-1,:lastind]) |> DataFrame
     end
 
-    CSV.write(joinpath(@__DIR__,string("../Input_data/1_raw/Country_census/ctry_", indc[i,:Label],".csv")), dfc)
+    CSV.write(joinpath(@__DIR__,string("../../../../Stanford_Benveniste Dropbox/Hélène Benveniste/migration-demographics-agriculture/Climate-mig-demo_Input/1_raw/Country_census/ctry_", indc[i,:Label],".csv")), dfc)
     
     print(i, " ",indc[i,:Label], "  ")
 end
