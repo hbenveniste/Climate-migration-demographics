@@ -42,20 +42,40 @@ forvalues s=1/$seeds {
 			
 		}
 		
-		* Calculate the R2 over all left-out folds
 		egen testys = rowmin(testytrue*)
-		egen testysx = mean(testys)
-		
-		gen totvar = (testys - testysx)^2
-		egen tss = sum(totvar)
 		egen testyhats = rowmin(testyhat_*)
+	
+		if "$metric" == "rsquare" {
+			* Calculate the R2 over all left-out folds
+			egen testysx = mean(testys)
+			
+			gen totvar = (testys - testysx)^2
+			egen tss = sum(totvar)
+			
+			gen reserr = (testyhats - testys)^2
+			egen rss = sum(reserr)
+			
+			gen rsq`s' = 1 - rss/tss
+			
+			drop testysx totvar tss reserr rss
+		}
 		
-		gen reserr = (testyhats - testys)^2
-		egen rss = sum(reserr)
+		if "$metric" == "crps" {
+			* Calculate the CRPS over all left-out folds
+			egen testyhatsx = mean(testyhats)
+			egen testyhatssd = sd(testyhats)
+			gen testyse = (testys - testyhatsx) / testyhatssd
 		
-		gen rsq`s' = 1 - rss/tss
+			gen phi_se = normalden(testyse)
+			gen Phi_se = normal(testyse)
+		
+			gen crps = testyhatssd * (testyse * (2 * Phi_se - 1) + 2 * phi_se - 1/sqrt(_pi))
+			egen avcrps`s' = mean(crps)
+			
+			drop testyhatsx testyhatssd testyse phi_se Phi_se crps
+		}
 
-		drop sid testyhat_* testytrue* testys testysx totvar tss testyhats reserr rss
+		drop sid testyhat_* testytrue* testys testyhats 
 		
 	}
 }
@@ -63,6 +83,11 @@ forvalues s=1/$seeds {
 macro drop _names
 
 quietly {
-	keep rsq*
+	if "$metric" == "crps" {
+		keep avcrps*
+	}
+	if "$metric" == "rsquare" {
+		keep rsq*
+	}
 	keep in 1/1
 }

@@ -31,6 +31,9 @@ global folds "random"
 * Select number of seeds for the uncertainty range of performance
 global seeds 20
 
+* Select performance metric between R2 and CRPS
+global metric "rsquare"
+
 * Single out dependent variable
 global depvar ln_outmigshare
 
@@ -53,7 +56,13 @@ use "$input_dir/2_intermediate/_residualized_cross.dta"
 gen model = "T,S"
 
 * Reshape in long format
-reshape long rsq, i(model) j(seeds)
+if "$metric" == "rsquare" {
+	reshape long rsq, i(model) j(seeds)
+}
+if "$metric" == "crps" {
+	reshape long avcrps, i(model) j(seeds)
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
+}
 
 * Rename to match fold type
 if "$folds" == "year" {
@@ -74,7 +83,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
@@ -86,7 +100,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "S"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
@@ -98,7 +117,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*climzone"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
@@ -110,7 +134,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*age"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
@@ -122,7 +151,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*edu"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
@@ -134,7 +168,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*sex"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
@@ -146,7 +185,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	if "$folds" == "year" {
 		rename rsq rsqyear 
 	}
@@ -161,7 +205,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T1,S3*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	if "$folds" == "year" {
 		rename rsq rsqyear 
 	}
@@ -176,7 +225,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*climzone*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_Crossvalidation/rsqimm.dta", replace
@@ -188,7 +242,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S*(age+edu+sex)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_Crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_Crossvalidation/rsqimm.dta", replace
@@ -200,7 +259,12 @@ do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S placebo*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	if "$folds" == "year" {
 		rename rsq rsqyear 
 	}

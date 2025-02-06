@@ -26,10 +26,13 @@ if "$CODE" == "" {
 **# Prepare for cross-validation ***
 ****************************************************************
 * Select method for folds creation: random, cross-year
-global folds "year"
+global folds "random"
 
 * Select number of seeds for the uncertainty range of performance
 global seeds 20
+
+* Select performance metric between R2 and CRPS
+global metric "rsquare"
 
 * Single out dependent variable
 global depvar ln_outmigshare
@@ -47,13 +50,19 @@ global indepvar c.tmax_day_pop_uncert c.sm_day_pop_uncert c.tmax2_day_pop_uncert
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 
 * Create file gathering all performances
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 
 * Name model
 gen model = "T,S"
 
 * Reshape in long format
-reshape long rsq, i(model) j(seeds)
+if "$metric" == "rsquare" {
+	reshape long rsq, i(model) j(seeds)
+}
+if "$metric" == "crps" {
+	reshape long avcrps, i(model) j(seeds)
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+}
 
 * Rename to match fold type
 if "$folds" == "year" {
@@ -71,10 +80,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -83,10 +97,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.sm_day_pop_uncert c.sm2_day_pop_uncert c.sm3_day_pop_uncert
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "S"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -95,10 +114,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert c.sm_day_pop_uncert c.tmax2_day_pop_uncert c.sm2_day_pop_uncert c.tmax3_day_pop_uncert c.sm3_day_pop_uncert c.tmax_day_pop_uncert#i.climgroup c.sm_day_pop_uncert#i.climgroup c.tmax2_day_pop_uncert#i.climgroup c.sm2_day_pop_uncert#i.climgroup c.tmax3_day_pop_uncert#i.climgroup c.sm3_day_pop_uncert#i.climgroup
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S*climzone"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -107,10 +131,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert c.sm_day_pop_uncert c.sm2_day_pop_uncert c.sm3_day_pop_uncert c.tmax_day_pop_uncert#i.climgroup c.tmax2_day_pop_uncert#i.climgroup c.tmax3_day_pop_uncert#i.climgroup c.sm_day_pop_uncert#i.climgroup c.sm2_day_pop_uncert#i.climgroup c.sm3_day_pop_uncert#i.climgroup c.tmax_day_pop_uncert#i.agemigcat c.tmax2_day_pop_uncert#i.agemigcat c.tmax3_day_pop_uncert#i.agemigcat c.sm_day_pop_uncert#i.agemigcat c.sm2_day_pop_uncert#i.agemigcat c.sm3_day_pop_uncert#i.agemigcat c.tmax_day_pop_uncert#i.climgroup#i.agemigcat c.tmax2_day_pop_uncert#i.climgroup#i.agemigcat c.tmax3_day_pop_uncert#i.climgroup#i.agemigcat c.sm_day_pop_uncert#i.climgroup#i.agemigcat c.sm2_day_pop_uncert#i.climgroup#i.agemigcat c.sm3_day_pop_uncert#i.climgroup#i.agemigcat
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S*climzone*age"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -119,10 +148,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert c.sm_day_pop_uncert c.sm2_day_pop_uncert c.sm3_day_pop_uncert c.tmax_day_pop_uncert#i.climgroup c.tmax2_day_pop_uncert#i.climgroup c.tmax3_day_pop_uncert#i.climgroup c.sm_day_pop_uncert#i.climgroup c.sm2_day_pop_uncert#i.climgroup c.sm3_day_pop_uncert#i.climgroup c.tmax_day_pop_uncert#i.edattain c.tmax2_day_pop_uncert#i.edattain c.tmax3_day_pop_uncert#i.edattain c.sm_day_pop_uncert#i.edattain c.sm2_day_pop_uncert#i.edattain c.sm3_day_pop_uncert#i.edattain c.tmax_day_pop_uncert#i.climgroup#i.edattain c.tmax2_day_pop_uncert#i.climgroup#i.edattain c.tmax3_day_pop_uncert#i.climgroup#i.edattain c.sm_day_pop_uncert#i.climgroup#i.edattain c.sm2_day_pop_uncert#i.climgroup#i.edattain c.sm3_day_pop_uncert#i.climgroup#i.edattain
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S*climzone*edu"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -131,10 +165,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert c.sm_day_pop_uncert c.sm2_day_pop_uncert c.sm3_day_pop_uncert c.tmax_day_pop_uncert#i.climgroup c.tmax2_day_pop_uncert#i.climgroup c.tmax3_day_pop_uncert#i.climgroup c.sm_day_pop_uncert#i.climgroup c.sm2_day_pop_uncert#i.climgroup c.sm3_day_pop_uncert#i.climgroup c.tmax_day_pop_uncert#i.sex c.tmax2_day_pop_uncert#i.sex c.tmax3_day_pop_uncert#i.sex c.sm_day_pop_uncert#i.sex c.sm2_day_pop_uncert#i.sex c.sm3_day_pop_uncert#i.sex c.tmax_day_pop_uncert#i.climgroup#i.sex c.tmax2_day_pop_uncert#i.climgroup#i.sex c.tmax3_day_pop_uncert#i.climgroup#i.sex c.sm_day_pop_uncert#i.climgroup#i.sex c.sm2_day_pop_uncert#i.climgroup#i.sex c.sm3_day_pop_uncert#i.climgroup#i.sex
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S*climzone*sex"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -143,10 +182,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert c.sm_day_pop_uncert c.sm2_day_pop_uncert c.sm3_day_pop_uncert c.tmax_day_pop_uncert#i.climgroup c.tmax2_day_pop_uncert#i.climgroup c.tmax3_day_pop_uncert#i.climgroup c.sm_day_pop_uncert#i.climgroup c.sm2_day_pop_uncert#i.climgroup c.sm3_day_pop_uncert#i.climgroup c.tmax_day_pop_uncert#i.agemigcat c.tmax2_day_pop_uncert#i.agemigcat c.tmax3_day_pop_uncert#i.agemigcat c.sm_day_pop_uncert#i.agemigcat c.sm2_day_pop_uncert#i.agemigcat c.sm3_day_pop_uncert#i.agemigcat c.tmax_day_pop_uncert#i.climgroup#i.agemigcat c.tmax2_day_pop_uncert#i.climgroup#i.agemigcat c.tmax3_day_pop_uncert#i.climgroup#i.agemigcat c.sm_day_pop_uncert#i.climgroup#i.agemigcat c.sm2_day_pop_uncert#i.climgroup#i.agemigcat c.sm3_day_pop_uncert#i.climgroup#i.agemigcat c.tmax_day_pop_uncert#i.edattain c.tmax2_day_pop_uncert#i.edattain c.tmax3_day_pop_uncert#i.edattain c.sm_day_pop_uncert#i.edattain c.sm2_day_pop_uncert#i.edattain c.sm3_day_pop_uncert#i.edattain c.tmax_day_pop_uncert#i.climgroup#i.edattain c.tmax2_day_pop_uncert#i.climgroup#i.edattain c.tmax3_day_pop_uncert#i.climgroup#i.edattain c.sm_day_pop_uncert#i.climgroup#i.edattain c.sm2_day_pop_uncert#i.climgroup#i.edattain c.sm3_day_pop_uncert#i.climgroup#i.edattain
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S*climzone*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	if "$folds" == "year" {
 		rename rsq rsqyear 
 	}
@@ -158,10 +202,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert c.sm_day_pop_uncert c.sm2_day_pop_uncert c.sm3_day_pop_uncert c.tmax_day_pop_uncert#i.climgroup c.tmax2_day_pop_uncert#i.climgroup c.tmax3_day_pop_uncert#i.climgroup c.sm_day_pop_uncert#i.climgroup c.sm2_day_pop_uncert#i.climgroup c.sm3_day_pop_uncert#i.climgroup c.tmax_day_pop_uncert#i.agemigcat c.tmax2_day_pop_uncert#i.agemigcat c.tmax3_day_pop_uncert#i.agemigcat c.sm_day_pop_uncert#i.agemigcat c.sm2_day_pop_uncert#i.agemigcat c.sm3_day_pop_uncert#i.agemigcat c.tmax_day_pop_uncert#i.climgroup#i.agemigcat c.tmax2_day_pop_uncert#i.climgroup#i.agemigcat c.tmax3_day_pop_uncert#i.climgroup#i.agemigcat c.sm_day_pop_uncert#i.climgroup#i.agemigcat c.sm2_day_pop_uncert#i.climgroup#i.agemigcat c.sm3_day_pop_uncert#i.climgroup#i.agemigcat c.tmax_day_pop_uncert#i.edattain c.tmax2_day_pop_uncert#i.edattain c.tmax3_day_pop_uncert#i.edattain c.sm_day_pop_uncert#i.edattain c.sm2_day_pop_uncert#i.edattain c.sm3_day_pop_uncert#i.edattain c.tmax_day_pop_uncert#i.climgroup#i.edattain c.tmax2_day_pop_uncert#i.climgroup#i.edattain c.tmax3_day_pop_uncert#i.climgroup#i.edattain c.sm_day_pop_uncert#i.climgroup#i.edattain c.sm2_day_pop_uncert#i.climgroup#i.edattain c.sm3_day_pop_uncert#i.climgroup#i.edattain c.tmax_day_pop_uncert#i.sex c.tmax2_day_pop_uncert#i.sex c.tmax3_day_pop_uncert#i.sex c.sm_day_pop_uncert#i.sex c.sm2_day_pop_uncert#i.sex c.sm3_day_pop_uncert#i.sex c.tmax_day_pop_uncert#i.climgroup#i.sex c.tmax2_day_pop_uncert#i.climgroup#i.sex c.tmax3_day_pop_uncert#i.climgroup#i.sex c.sm_day_pop_uncert#i.climgroup#i.sex c.sm2_day_pop_uncert#i.climgroup#i.sex c.sm3_day_pop_uncert#i.climgroup#i.sex
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S*climzone*(age+edu+sex)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -170,10 +219,15 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 global indepvar c.tmax_day_pop_uncert_rand c.tmax2_day_pop_uncert_rand c.tmax3_day_pop_uncert_rand c.sm_day_pop_uncert_rand c.sm2_day_pop_uncert_rand c.sm3_day_pop_uncert_rand c.tmax_day_pop_uncert_rand#i.climgroup c.tmax2_day_pop_uncert_rand#i.climgroup c.tmax3_day_pop_uncert_rand#i.climgroup c.sm_day_pop_uncert_rand#i.climgroup c.sm2_day_pop_uncert_rand#i.climgroup c.sm3_day_pop_uncert_rand#i.climgroup c.tmax_day_pop_uncert_rand#i.agemigcat c.tmax2_day_pop_uncert_rand#i.agemigcat c.tmax3_day_pop_uncert_rand#i.agemigcat c.sm_day_pop_uncert_rand#i.agemigcat c.sm2_day_pop_uncert_rand#i.agemigcat c.sm3_day_pop_uncert_rand#i.agemigcat c.tmax_day_pop_uncert_rand#i.climgroup#i.agemigcat c.tmax2_day_pop_uncert_rand#i.climgroup#i.agemigcat c.tmax3_day_pop_uncert_rand#i.climgroup#i.agemigcat c.sm_day_pop_uncert_rand#i.climgroup#i.agemigcat c.sm2_day_pop_uncert_rand#i.climgroup#i.agemigcat c.sm3_day_pop_uncert_rand#i.climgroup#i.agemigcat c.tmax_day_pop_uncert_rand#i.edattain c.tmax2_day_pop_uncert_rand#i.edattain c.tmax3_day_pop_uncert_rand#i.edattain c.sm_day_pop_uncert_rand#i.edattain c.sm2_day_pop_uncert_rand#i.edattain c.sm3_day_pop_uncert_rand#i.edattain c.tmax_day_pop_uncert_rand#i.climgroup#i.edattain c.tmax2_day_pop_uncert_rand#i.climgroup#i.edattain c.tmax3_day_pop_uncert_rand#i.climgroup#i.edattain c.sm_day_pop_uncert_rand#i.climgroup#i.edattain c.sm2_day_pop_uncert_rand#i.climgroup#i.edattain c.sm3_day_pop_uncert_rand#i.climgroup#i.edattain
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "§input_dir/2_intermediate/_residualized_within.dta" 
+use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S placebo*climzone*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	if "$folds" == "year" {
 		rename rsq rsqyear 
 	}
