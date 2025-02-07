@@ -24,6 +24,9 @@ global folds "random"
 * Select number of seeds for the uncertainty range of performance
 global seeds 20
 
+* Select performance metric between R2 and CRPS
+global metric "rsquare"
+
 * Single out dependent variable
 global depvar ln_outmigshare
 
@@ -35,34 +38,51 @@ global depvar ln_outmigshare
 
 * Linear model in T,S
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop 
+global indepvar tmax_dp sm_dp 
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
-gen model = "T1,S1"
-reshape long rsq, i(model) j(seeds)
-merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
+quietly {
+	gen model = "T1,S1"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
+}
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Quadratic model in T,S
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.tmax2_day_pop c.sm_day_pop c.sm2_day_pop
+global indepvar tmax_dp tmax2_dp sm_dp sm2_dp
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T2,S2"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Restricted cubic spline model in T,S
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop tmax_day_rcs_k4_1_pop tmax_day_rcs_k4_2_pop sm_day_rcs_k4_1_pop sm_day_rcs_k4_2_pop
+global indepvar tmax_dp sm_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S rcs"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
@@ -75,36 +95,51 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Model in P
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar prcp_day_pop prcp2_day_pop prcp3_day_pop
+global indepvar prcp_dp prcp2_dp prcp3_dp
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "P3"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Model in T,P
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.tmax2_day_pop c.tmax3_day_pop prcp_day_pop prcp2_day_pop prcp3_day_pop
+global indepvar tmax_dp tmax2_dp tmax3_dp prcp_dp prcp2_dp prcp3_dp
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T3,P3"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Model in T,P per age and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.tmax2_day_pop c.tmax3_day_pop prcp_day_pop prcp2_day_pop prcp3_day_pop c.tmax_day_pop#i.agemigcat c.prcp_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.prcp2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.prcp3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.prcp_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.prcp2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.prcp3_day_pop#i.edattain
+global indepvar tmax_dp_age1 tmax_dp_edu1 tmax_dp_age2 tmax_dp_edu2 tmax_dp_age3 tmax_dp_edu3 tmax_dp_age4 tmax_dp_edu4 tmax2_dp_age1 tmax2_dp_edu1 tmax2_dp_age2 tmax2_dp_edu2 tmax2_dp_age3 tmax2_dp_edu3 tmax2_dp_age4 tmax2_dp_edu4 tmax3_dp_age1 tmax3_dp_edu1 tmax3_dp_age2 tmax3_dp_edu2 tmax3_dp_age3 tmax3_dp_edu3 tmax3_dp_age4 tmax3_dp_edu4 prcp_dp_age1 prcp_dp_edu1 prcp_dp_age2 prcp_dp_edu2 prcp_dp_age3 prcp_dp_edu3 prcp_dp_age4 prcp_dp_edu4 prcp2_dp_age1 prcp2_dp_edu1 prcp2_dp_age2 prcp2_dp_edu2 prcp2_dp_age3 prcp2_dp_edu3 prcp2_dp_age4 prcp2_dp_edu4 prcp3_dp_age1 prcp3_dp_edu1 prcp3_dp_age2 prcp3_dp_edu2 prcp3_dp_age3 prcp3_dp_edu3 prcp3_dp_age4 prcp3_dp_edu4 
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T3,P3*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace

@@ -153,6 +153,10 @@ merge m:1 bpl using `climzone'
 drop if _merge != 3
 drop _merge
 
+* Remove polar zone from sample: too few observations (0.1% of sample) 
+drop if mainclimgroup == 6
+
+
 save `crossmigweather', replace
 
 
@@ -169,9 +173,9 @@ save `crossweathertemp'
 
 * Merge processed weather data with migration data
 use `crossmigweather'
-merge m:1 bplcode yrimm using `crossweathertemp', keepusing(yrimm bplcode *day_pop *l1 *av10 *rcs*) nogenerate
+merge m:1 bplcode yrimm using `crossweathertemp', keepusing(yrimm bplcode *dp *l1 *av10 *rcs*) nogenerate
 
-drop if tmax_day_pop == . | sm_day_pop == . | tmax_day_pop_l1 == . | tmax_day_pop_av10 == .
+drop if tmax_dp == . | sm_dp == . | tmax_dp_l1 == . | tmax_dp_av10 == .
 drop if outmigshare == .
 
 save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace
@@ -179,30 +183,30 @@ save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace
 
 * Add destination weather
 use `crossweathertemp'
-rename (bplcode tmax*day_pop sm*day_pop) (countrycode tmax*day_pop_dest sm*day_pop_dest)
+rename (bplcode tmax*dp sm*dp) (countrycode tmax*dp_dest sm*dp_dest)
 save `crossweathertemp', replace
 
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 
 merge m:1 countrycode yrimm countrycode using `crossweathertemp', keepusing(yrimm countrycode *dest) nogenerate
 
-drop if tmax_day_pop == . | tmax_day_pop_dest == .
+drop if tmax_dp == . | tmax_dp_dest == .
 
 
 * Create randomized weather data
 * We keep the correlation across T/SM the same
 
-drop if tmax_day_pop == . | sm_day_pop == . | tmax2_day_pop == . | sm2_day_pop == . | tmax3_day_pop == . | sm3_day_pop == . | tmax_day_pop_av10 == . | sm_day_pop_av10 == . | tmax2_day_pop_av10 == . | sm2_day_pop_av10 == . | tmax3_day_pop_av10 == . | sm3_day_pop_av10 == .
+drop if tmax_dp == . | sm_dp == . | tmax2_dp == . | sm2_dp == . | tmax3_dp == . | sm3_dp == . | tmax_dp_av10 == . | sm_dp_av10 == . | tmax2_dp_av10 == . | sm2_dp_av10 == . | tmax3_dp_av10 == . | sm3_dp_av10 == .
 
 sort bplcode yrimm
-local permutable tmax_day_pop sm_day_pop tmax2_day_pop sm2_day_pop tmax3_day_pop sm3_day_pop tmax_day_pop_av10 sm_day_pop_av10 tmax2_day_pop_av10 sm2_day_pop_av10 tmax3_day_pop_av10 sm3_day_pop_av10
+local permutable tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10
 set seed 12345
 
 preserve
 keep `permutable'
 gen shuffle = runiform()
 sort shuffle
-rename *pop* *pop*_rand
+rename *dp* *dp*_rand
 drop shuffle
 tempfile permute
 save `permute'
@@ -218,6 +222,37 @@ generate id = _n
 save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace
 
 
+****************************************************************
+**# Create interaction variables ***
+****************************************************************
+* Weather variables, climate zones, and demographics
+local interac "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp prcp_dp prcp2_dp prcp3_dp ///
+				tmax_dp_l1 sm_dp_l1 tmax2_dp_l1 sm2_dp_l1 tmax3_dp_l1 sm3_dp_l1 ///
+				tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10 ///
+				tmax_dp_dest tmax2_dp_dest tmax3_dp_dest sm_dp_dest sm2_dp_dest sm3_dp_dest ///
+				tmax_dp_rand tmax2_dp_rand tmax3_dp_rand sm_dp_rand sm2_dp_rand sm3_dp_rand ///
+				tmax_dp_av10_rand sm_dp_av10_rand tmax2_dp_av10_rand sm2_dp_av10_rand tmax3_dp_av10_rand sm3_dp_av10_rand"
+tab agemigcat, gen(d_age)
+tab edattain, gen(d_edu)
+tab sex, gen(d_sex)
+tab mainclimgroup , gen(d_clim)  
+foreach var of varlist `interac' {
+	forv i=1/5 {
+		gen `var'_clim`i' = `var' * d_clim`i'
+		forv j=1/4 {
+			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'
+			gen `var'_clim`i'_edu`j' = `var' * d_clim`i' * d_edu`j'
+		}
+		forv j=1/2 {
+			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
+		}
+	}
+}
+
+drop d_clim* d_age* d_edu* d_sex*
+
+
+save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace
 
 
 

@@ -71,9 +71,12 @@ merge 1:1 yrimm bpl geolevel1 using `dailypopdens', keepusing(yrimm bpl geolevel
 drop n_* prcp*rcs*
 rename *_fullyear_* *_*
 rename (tmax_pop prcp_pop sm_pop) (tmax_day_pop prcp_day_pop sm_day_pop)
+rename *day_pop* *dp*
+rename *_day_* *_dp_*
+rename *_pop *
 
 * Drop missing values
-drop if tmax_day_pop == . | prcp_day_pop == . | sm_day_pop == .
+drop if tmax_dp == . | prcp_dp == . | sm_dp == .
 
 * Average observations at the country*year level using population weights
 preserve
@@ -86,12 +89,12 @@ merge m:1 bpl yrimm using `wt', nogenerate
 
 gen pop_share = pop / pop_sum
 
-foreach var of varlist tmax_day_pop tmax2_day_pop tmax3_day_pop sm_day_pop sm2_day_pop sm3_day_pop prcp_day_pop prcp2_day_pop prcp3_day_pop tmax_day_rcs_k4_1_pop tmax_day_rcs_k4_2_pop sm_day_rcs_k4_1_pop sm_day_rcs_k4_2_pop {
+foreach var of varlist tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp prcp_dp prcp2_dp prcp3_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2 {
 	gen `var'_popwt = `var' * pop_share
 	replace `var'_popwt = `var' if pop_share == . & pop_sum == 0
 }
 
-collapse (sum) tmax_day_pop_popwt tmax2_day_pop_popwt tmax3_day_pop_popwt sm_day_pop_popwt sm2_day_pop_popwt sm3_day_pop_popwt prcp_day_pop_popwt prcp2_day_pop_popwt prcp3_day_pop_popwt tmax_day_rcs_k4_1_pop_popwt tmax_day_rcs_k4_2_pop_popwt sm_day_rcs_k4_1_pop_popwt sm_day_rcs_k4_2_pop_popwt, by(bpl yrimm)
+collapse (sum) tmax_dp_popwt tmax2_dp_popwt tmax3_dp_popwt sm_dp_popwt sm2_dp_popwt sm3_dp_popwt prcp_dp_popwt prcp2_dp_popwt prcp3_dp_popwt tmax_dp_rcs_k4_1_popwt tmax_dp_rcs_k4_2_popwt sm_dp_rcs_k4_1_popwt sm_dp_rcs_k4_2_popwt, by(bpl yrimm)
 
 rename *_popwt *
 
@@ -102,7 +105,7 @@ save "$input_dir/2_intermediate/crossweather.dta", replace
 **# Create lags of weather variables ***
 ****************************************************************
 * Lags for up to 10 years
-local varlistlag = "tmax_day_pop sm_day_pop tmax2_day_pop sm2_day_pop tmax3_day_pop sm3_day_pop"
+local varlistlag = "tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp"
 sort bpl yrimm
 
 foreach v of local varlistlag {

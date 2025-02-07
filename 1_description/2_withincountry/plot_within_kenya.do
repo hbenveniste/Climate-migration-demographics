@@ -49,14 +49,14 @@ restore
 use "$input_dir/2_intermediate/withinweather.dta"
 
 * Plot temperature over the sample period
-twoway connected tmax_day_pop yrmig if geomig1==404004 & yrmig >=1990 & yrmig<=2010, sort(yrmig) ///	
+twoway connected tmax_dp yrmig if geomig1==404004 & yrmig >=1990 & yrmig<=2010, sort(yrmig) ///	
 				lcolor(red) mcolor(red) xline(2009, lpattern(dash) lcolor(gray)) ///
 				graphregion(fcolor(white)) ///
 				ytitle("Max temperature ({char 176}C)") xtitle("Year") ///
 				name("kentmax", replace)
 
 * Plot soil moisture over the sample period
-twoway connected sm_day_pop yrmig if geomig1==404004 & yrmig >=1990 & yrmig<=2010, sort(yrmig) ///	
+twoway connected sm_dp yrmig if geomig1==404004 & yrmig >=1990 & yrmig<=2010, sort(yrmig) ///	
 				lcolor(emerald) mcolor(emerald) xline(2009, lpattern(dash) lcolor(gray)) ///
 				graphregion(fcolor(white)) ///
 				ytitle("Soil moisture (cm3/cm3)") xtitle("Year") ///

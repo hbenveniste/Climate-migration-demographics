@@ -27,7 +27,10 @@ use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 preserve
 
 * Residualize the migration outcome variable
-reghdfe ln_outmigshare, absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1)  version(3) cache(save, keep(ctrycode yrmig geomig1 geolev1 demo agemigcat edattain sex))
+reghdfe ln_outmigshare, absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1) residuals(res_ln_outmigshare)
+
+keep res_* yrmig geomig1 geolev1 ctrycode demo agemigcat edattain sex
+rename res_* *
 
 * Use demographic groups defined by age and education only for heat map representation
 collapse (mean) ln_outmigshare, by(yrmig geomig1 geolev1 ctrycode agemigcat edattain)

@@ -27,64 +27,86 @@ global folds "random"
 * Select number of seeds for the uncertainty range of performance
 global seeds 20
 
+* Select performance metric between R2 and CRPS
+global metric "rsquare"
+
 * Single out dependent variable
 global depvar ln_outmigshare
 
 
-* Model performing best out-of-sample: T,S origin and destination, cubic, per climate zone and age and education
+* Model performing best out-of-sample: T,S origin and destination, cubic, per age and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 
-global indepvar c.tmax_day_pop c.tmax2_day_pop c.tmax3_day_pop c.sm_day_pop c.sm2_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm_day_pop#i.edattain c.sm2_day_pop#i.edattain c.sm3_day_pop#i.edattain c.tmax_day_pop_dest c.tmax2_day_pop_dest c.tmax3_day_pop_dest c.sm_day_pop_dest c.sm2_day_pop_dest c.sm3_day_pop_dest c.tmax_day_pop_dest#i.agemigcat c.tmax2_day_pop_dest#i.agemigcat c.tmax3_day_pop_dest#i.agemigcat c.sm_day_pop_dest#i.agemigcat c.sm2_day_pop_dest#i.agemigcat c.sm3_day_pop_dest#i.agemigcat c.tmax_day_pop_dest#i.edattain c.tmax2_day_pop_dest#i.edattain c.tmax3_day_pop_dest#i.edattain c.sm_day_pop_dest#i.edattain c.sm2_day_pop_dest#i.edattain c.sm3_day_pop_dest#i.edattain
+global indepvar tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4 tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4 tmax_dp_dest_age1 tmax_dp_dest_age2 tmax_dp_dest_age3 tmax_dp_dest_age4 tmax2_dp_dest_age1 tmax2_dp_dest_age2 tmax2_dp_dest_age3 tmax2_dp_dest_age4 tmax3_dp_dest_age1 tmax3_dp_dest_age2 tmax3_dp_dest_age3 tmax3_dp_dest_age4 sm_dp_dest_age1 sm_dp_dest_age2 sm_dp_dest_age3 sm_dp_dest_age4 sm2_dp_dest_age1 sm2_dp_dest_age2 sm2_dp_dest_age3 sm2_dp_dest_age4 sm3_dp_dest_age1 sm3_dp_dest_age2 sm3_dp_dest_age3 sm3_dp_dest_age4 tmax_dp_dest_edu1 tmax_dp_dest_edu2 tmax_dp_dest_edu3 tmax_dp_dest_edu4 tmax2_dp_dest_edu1 tmax2_dp_dest_edu2 tmax2_dp_dest_edu3 tmax2_dp_dest_edu4 tmax3_dp_dest_edu1 tmax3_dp_dest_edu2 tmax3_dp_dest_edu3 tmax3_dp_dest_edu4 sm_dp_dest_edu1 sm_dp_dest_edu2 sm_dp_dest_edu3 sm_dp_dest_edu4 sm2_dp_dest_edu1 sm2_dp_dest_edu2 sm2_dp_dest_edu3 sm2_dp_dest_edu4 sm3_dp_dest_edu1 sm3_dp_dest_edu2 sm3_dp_dest_edu3 sm3_dp_dest_edu4
 
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
-gen model = "(T3,S3+dest)*(age+edu)"
-reshape long rsq, i(model) j(seeds)
-if "$folds" == "corridor" {
-	rename rsq rsqcorr 
+quietly {
+	gen model = "(T3,S3+dest)*(age+edu)"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "corridor" {
+		rename rsq rsqcorr 
+	}
+	if "$folds" == "country" {
+		rename rsq rsqctry 
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
-if "$folds" == "country" {
-	rename rsq rsqctry 
-}
-if "$folds" == "year" {
-	rename rsq rsqyear 
-}
-merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 
 * Same model, but we impose linear temperature effects (cubic-shaped response mostly linear) to cap the number of estimated parameters 
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 
-global indepvar c.tmax_day_pop c.sm_day_pop c.sm2_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.sm2_day_pop#i.edattain c.sm3_day_pop#i.edattain c.tmax_day_pop_dest c.sm_day_pop_dest c.sm2_day_pop_dest c.sm3_day_pop_dest c.tmax_day_pop_dest#i.agemigcat c.sm_day_pop_dest#i.agemigcat c.sm2_day_pop_dest#i.agemigcat c.sm3_day_pop_dest#i.agemigcat c.tmax_day_pop_dest#i.edattain c.sm_day_pop_dest#i.edattain c.sm2_day_pop_dest#i.edattain c.sm3_day_pop_dest#i.edattain
+global indepvar tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4 tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4 tmax_dp_dest_age1 tmax_dp_dest_age2 tmax_dp_dest_age3 tmax_dp_dest_age4 sm_dp_dest_age1 sm_dp_dest_age2 sm_dp_dest_age3 sm_dp_dest_age4 sm2_dp_dest_age1 sm2_dp_dest_age2 sm2_dp_dest_age3 sm2_dp_dest_age4 sm3_dp_dest_age1 sm3_dp_dest_age2 sm3_dp_dest_age3 sm3_dp_dest_age4 tmax_dp_dest_edu1 tmax_dp_dest_edu2 tmax_dp_dest_edu3 tmax_dp_dest_edu4 sm_dp_dest_edu1 sm_dp_dest_edu2 sm_dp_dest_edu3 sm_dp_dest_edu4 sm2_dp_dest_edu1 sm2_dp_dest_edu2 sm2_dp_dest_edu3 sm2_dp_dest_edu4 sm3_dp_dest_edu1 sm3_dp_dest_edu2 sm3_dp_dest_edu3 sm3_dp_dest_edu4
 
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
-gen model = "(T1,S3+dest)*(age+edu)"
-reshape long rsq, i(model) j(seeds)
-if "$folds" == "corridor" {
-	rename rsq rsqcorr 
+quietly {
+	gen model = "(T1,S3+dest)*(age+edu)"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "corridor" {
+		rename rsq rsqcorr 
+	}
+	if "$folds" == "country" {
+		rename rsq rsqctry 
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
-if "$folds" == "country" {
-	rename rsq rsqctry 
-}
-if "$folds" == "year" {
-	rename rsq rsqyear 
-}
-merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 
 * Same models but without demographic heterogeneity for comparison
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar tmax_day_pop tmax2_day_pop tmax3_day_pop sm_day_pop sm2_day_pop sm3_day_pop tmax_day_pop_dest tmax2_day_pop_dest tmax3_day_pop_dest sm_day_pop_dest sm2_day_pop_dest sm3_day_pop_dest
+global indepvar "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp tmax_dp_dest tmax2_dp_dest tmax3_dp_dest sm_dp_dest sm2_dp_dest sm3_dp_dest"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T3,S3+dest"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	if "$folds" == "corridor" {
 		rename rsq rsqcorr 
 	}
@@ -99,12 +121,17 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar tmax_day_pop sm_day_pop sm2_day_pop sm3_day_pop tmax_day_pop_dest sm_day_pop_dest sm2_day_pop_dest sm3_day_pop_dest
+global indepvar "tmax_dp sm_dp sm2_dp sm3_dp tmax_dp_dest sm_dp_dest sm2_dp_dest sm3_dp_dest"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T1,S3+dest"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	if "$folds" == "corridor" {
 		rename rsq rsqcorr 
 	}

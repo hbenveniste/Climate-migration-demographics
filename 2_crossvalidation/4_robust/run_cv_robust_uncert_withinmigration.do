@@ -27,7 +27,7 @@ use "$input_dir/2_intermediate/withinweather.dta"
 tsset geomig1 yrmig
 sort geomig1 yrmig
 
-local varlist = "tmax_day_pop tmax2_day_pop tmax3_day_pop sm_day_pop sm2_day_pop sm3_day_pop"
+local varlist = "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp"
 
 foreach v of local varlist {
 	egen `v'_e1 = filter(`v'), coef(0 1) lags(0/1) normalise
@@ -63,7 +63,29 @@ drop if _merge != 3
 drop _merge
 
 drop *uncert* *av10
-drop if tmax_day_pop_e == . | sm_day_pop_e == .
+drop if tmax_dp_e == . | sm_dp_e == .
+
+
+* Create interaction variables
+local interac "tmax_dp_e tmax2_dp_e tmax3_dp_e sm_dp_e sm2_dp_e sm3_dp_e"
+tab climgroup , gen(d_clim)  
+tab agemigcat, gen(d_age)
+tab edattain, gen(d_edu)
+tab sex, gen(d_sex)
+foreach var of varlist `interac' {
+	forv i=1/5 {
+		gen `var'_clim`i' = `var' * d_clim`i'
+		forv j=1/4 {
+			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'
+			gen `var'_clim`i'_edu`j' = `var' * d_clim`i' * d_edu`j'
+		}
+		forv j=1/2 {
+			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
+		}
+	}
+}
+drop d_clim* d_age* d_edu* d_sex*
+
 
 save "$input_dir/3_consolidate/withinmigweather_clean_e.dta", replace
 
@@ -77,6 +99,9 @@ global folds "random"
 * Select number of seeds for the uncertainty range of performance
 global seeds 5
 
+* Select performance metric between R2 and CRPS
+global metric "rsquare"
+
 * Single out dependent variable
 global depvar ln_outmigshare
 
@@ -84,24 +109,68 @@ global depvar ln_outmigshare
 * Model with T, S cubic 
 use "$input_dir/3_consolidate/withinmigweather_clean_e.dta"
 
-global indepvar tmax_day_pop_e tmax2_day_pop_e tmax3_day_pop_e sm_day_pop_e sm2_day_pop_e sm3_day_pop_e
+global indepvar "tmax_dp_e tmax2_dp_e tmax3_dp_e sm_dp_e sm2_dp_e sm3_dp_e"
 
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 
 use "$input_dir/2_intermediate/_residualized_within.dta" 
-gen model = "T,S"
-reshape long rsq, i(model) j(seeds)
+quietly {
+	gen model = "T,S"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+		merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin_e.dta", nogenerate
+	}
+}
 save "$input_dir/4_crossvalidation/rsqwithin_e.dta", replace
 
 
 * Model performing best out-of-sample: T,S cubic, per climate zone and age and education
 use "$input_dir/3_consolidate/withinmigweather_clean_e.dta"
-global indepvar c.tmax_day_pop_e c.tmax2_day_pop_e c.tmax3_day_pop_e c.sm_day_pop_e c.sm2_day_pop_e c.sm3_day_pop_e c.tmax_day_pop_e#i.climgroup c.tmax2_day_pop_e#i.climgroup c.tmax3_day_pop_e#i.climgroup c.sm_day_pop_e#i.climgroup c.sm2_day_pop_e#i.climgroup c.sm3_day_pop_e#i.climgroup c.tmax_day_pop_e#i.agemigcat c.tmax2_day_pop_e#i.agemigcat c.tmax3_day_pop_e#i.agemigcat c.sm_day_pop_e#i.agemigcat c.sm2_day_pop_e#i.agemigcat c.sm3_day_pop_e#i.agemigcat c.tmax_day_pop_e#i.climgroup#i.agemigcat c.tmax2_day_pop_e#i.climgroup#i.agemigcat c.tmax3_day_pop_e#i.climgroup#i.agemigcat c.sm_day_pop_e#i.climgroup#i.agemigcat c.sm2_day_pop_e#i.climgroup#i.agemigcat c.sm3_day_pop_e#i.climgroup#i.agemigcat c.tmax_day_pop_e#i.edattain c.tmax2_day_pop_e#i.edattain c.tmax3_day_pop_e#i.edattain c.sm_day_pop_e#i.edattain c.sm2_day_pop_e#i.edattain c.sm3_day_pop_e#i.edattain c.tmax_day_pop_e#i.climgroup#i.edattain c.tmax2_day_pop_e#i.climgroup#i.edattain c.tmax3_day_pop_e#i.climgroup#i.edattain c.sm_day_pop_e#i.climgroup#i.edattain c.sm2_day_pop_e#i.climgroup#i.edattain c.sm3_day_pop_e#i.climgroup#i.edattain
+delimit ;
+global indepvar "tmax_dp_e_clim1_age1 tmax_dp_e_clim1_age2 tmax_dp_e_clim1_age3 tmax_dp_e_clim1_age4 sm_dp_e_clim1_age1 sm_dp_e_clim1_age2 sm_dp_e_clim1_age3 sm_dp_e_clim1_age4 
+				tmax2_dp_e_clim1_age1 tmax2_dp_e_clim1_age2 tmax2_dp_e_clim1_age3 tmax2_dp_e_clim1_age4 sm2_dp_e_clim1_age1 sm2_dp_e_clim1_age2 sm2_dp_e_clim1_age3 sm2_dp_e_clim1_age4 
+				tmax3_dp_e_clim1_age1 tmax3_dp_e_clim1_age2 tmax3_dp_e_clim1_age3 tmax3_dp_e_clim1_age4 sm3_dp_e_clim1_age1 sm3_dp_e_clim1_age2 sm3_dp_e_clim1_age3 sm3_dp_e_clim1_age4 
+				tmax_dp_e_clim2_age1 tmax_dp_e_clim2_age2 tmax_dp_e_clim2_age3 tmax_dp_e_clim2_age4 sm_dp_e_clim2_age1 sm_dp_e_clim2_age2 sm_dp_e_clim2_age3 sm_dp_e_clim2_age4 
+				tmax2_dp_e_clim2_age1 tmax2_dp_e_clim2_age2 tmax2_dp_e_clim2_age3 tmax2_dp_e_clim2_age4 sm2_dp_e_clim2_age1 sm2_dp_e_clim2_age2 sm2_dp_e_clim2_age3 sm2_dp_e_clim2_age4 
+				tmax3_dp_e_clim2_age1 tmax3_dp_e_clim2_age2 tmax3_dp_e_clim2_age3 tmax3_dp_e_clim2_age4 sm3_dp_e_clim2_age1 sm3_dp_e_clim2_age2 sm3_dp_e_clim2_age3 sm3_dp_e_clim2_age4 
+				tmax_dp_e_clim3_age1 tmax_dp_e_clim3_age2 tmax_dp_e_clim3_age3 tmax_dp_e_clim3_age4 sm_dp_e_clim3_age1 sm_dp_e_clim3_age2 sm_dp_e_clim3_age3 sm_dp_e_clim3_age4 
+				tmax2_dp_e_clim3_age1 tmax2_dp_e_clim3_age2 tmax2_dp_e_clim3_age3 tmax2_dp_e_clim3_age4 sm2_dp_e_clim3_age1 sm2_dp_e_clim3_age2 sm2_dp_e_clim3_age3 sm2_dp_e_clim3_age4 
+				tmax3_dp_e_clim3_age1 tmax3_dp_e_clim3_age2 tmax3_dp_e_clim3_age3 tmax3_dp_e_clim3_age4 sm3_dp_e_clim3_age1 sm3_dp_e_clim3_age2 sm3_dp_e_clim3_age3 sm3_dp_e_clim3_age4 
+				tmax_dp_e_clim4_age1 tmax_dp_e_clim4_age2 tmax_dp_e_clim4_age3 tmax_dp_e_clim4_age4 sm_dp_e_clim4_age1 sm_dp_e_clim4_age2 sm_dp_e_clim4_age3 sm_dp_e_clim4_age4 
+				tmax2_dp_e_clim4_age1 tmax2_dp_e_clim4_age2 tmax2_dp_e_clim4_age3 tmax2_dp_e_clim4_age4 sm2_dp_e_clim4_age1 sm2_dp_e_clim4_age2 sm2_dp_e_clim4_age3 sm2_dp_e_clim4_age4 
+				tmax3_dp_e_clim4_age1 tmax3_dp_e_clim4_age2 tmax3_dp_e_clim4_age3 tmax3_dp_e_clim4_age4 sm3_dp_e_clim4_age1 sm3_dp_e_clim4_age2 sm3_dp_e_clim4_age3 sm3_dp_e_clim4_age4 
+				tmax_dp_e_clim5_age1 tmax_dp_e_clim5_age2 tmax_dp_e_clim5_age3 tmax_dp_e_clim5_age4 sm_dp_e_clim5_age1 sm_dp_e_clim5_age2 sm_dp_e_clim5_age3 sm_dp_e_clim5_age4 
+				tmax2_dp_e_clim5_age1 tmax2_dp_e_clim5_age2 tmax2_dp_e_clim5_age3 tmax2_dp_e_clim5_age4 sm2_dp_e_clim5_age1 sm2_dp_e_clim5_age2 sm2_dp_e_clim5_age3 sm2_dp_e_clim5_age4 
+				tmax3_dp_e_clim5_age1 tmax3_dp_e_clim5_age2 tmax3_dp_e_clim5_age3 tmax3_dp_e_clim5_age4 sm3_dp_e_clim5_age1 sm3_dp_e_clim5_age2 sm3_dp_e_clim5_age3 sm3_dp_e_clim5_age4 
+				tmax_dp_e_clim1_edu1 tmax_dp_e_clim1_edu2 tmax_dp_e_clim1_edu3 tmax_dp_e_clim1_edu4 sm_dp_e_clim1_edu1 sm_dp_e_clim1_edu2 sm_dp_e_clim1_edu3 sm_dp_e_clim1_edu4 
+				tmax2_dp_e_clim1_edu1 tmax2_dp_e_clim1_edu2 tmax2_dp_e_clim1_edu3 tmax2_dp_e_clim1_edu4 sm2_dp_e_clim1_edu1 sm2_dp_e_clim1_edu2 sm2_dp_e_clim1_edu3 sm2_dp_e_clim1_edu4 
+				tmax3_dp_e_clim1_edu1 tmax3_dp_e_clim1_edu2 tmax3_dp_e_clim1_edu3 tmax3_dp_e_clim1_edu4 sm3_dp_e_clim1_edu1 sm3_dp_e_clim1_edu2 sm3_dp_e_clim1_edu3 sm3_dp_e_clim1_edu4 
+				tmax_dp_e_clim2_edu1 tmax_dp_e_clim2_edu2 tmax_dp_e_clim2_edu3 tmax_dp_e_clim2_edu4 sm_dp_e_clim2_edu1 sm_dp_e_clim2_edu2 sm_dp_e_clim2_edu3 sm_dp_e_clim2_edu4 
+				tmax2_dp_e_clim2_edu1 tmax2_dp_e_clim2_edu2 tmax2_dp_e_clim2_edu3 tmax2_dp_e_clim2_edu4 sm2_dp_e_clim2_edu1 sm2_dp_e_clim2_edu2 sm2_dp_e_clim2_edu3 sm2_dp_e_clim2_edu4 
+				tmax3_dp_e_clim2_edu1 tmax3_dp_e_clim2_edu2 tmax3_dp_e_clim2_edu3 tmax3_dp_e_clim2_edu4 sm3_dp_e_clim2_edu1 sm3_dp_e_clim2_edu2 sm3_dp_e_clim2_edu3 sm3_dp_e_clim2_edu4 
+				tmax_dp_e_clim3_edu1 tmax_dp_e_clim3_edu2 tmax_dp_e_clim3_edu3 tmax_dp_e_clim3_edu4 sm_dp_e_clim3_edu1 sm_dp_e_clim3_edu2 sm_dp_e_clim3_edu3 sm_dp_e_clim3_edu4 
+				tmax2_dp_e_clim3_edu1 tmax2_dp_e_clim3_edu2 tmax2_dp_e_clim3_edu3 tmax2_dp_e_clim3_edu4 sm2_dp_e_clim3_edu1 sm2_dp_e_clim3_edu2 sm2_dp_e_clim3_edu3 sm2_dp_e_clim3_edu4 
+				tmax3_dp_e_clim3_edu1 tmax3_dp_e_clim3_edu2 tmax3_dp_e_clim3_edu3 tmax3_dp_e_clim3_edu4 sm3_dp_e_clim3_edu1 sm3_dp_e_clim3_edu2 sm3_dp_e_clim3_edu3 sm3_dp_e_clim3_edu4 
+				tmax_dp_e_clim4_edu1 tmax_dp_e_clim4_edu2 tmax_dp_e_clim4_edu3 tmax_dp_e_clim4_edu4 sm_dp_e_clim4_edu1 sm_dp_e_clim4_edu2 sm_dp_e_clim4_edu3 sm_dp_e_clim4_edu4 
+				tmax2_dp_e_clim4_edu1 tmax2_dp_e_clim4_edu2 tmax2_dp_e_clim4_edu3 tmax2_dp_e_clim4_edu4 sm2_dp_e_clim4_edu1 sm2_dp_e_clim4_edu2 sm2_dp_e_clim4_edu3 sm2_dp_e_clim4_edu4 
+				tmax3_dp_e_clim4_edu1 tmax3_dp_e_clim4_edu2 tmax3_dp_e_clim4_edu3 tmax3_dp_e_clim4_edu4 sm3_dp_e_clim4_edu1 sm3_dp_e_clim4_edu2 sm3_dp_e_clim4_edu3 sm3_dp_e_clim4_edu4 
+				tmax_dp_e_clim5_edu1 tmax_dp_e_clim5_edu2 tmax_dp_e_clim5_edu3 tmax_dp_e_clim5_edu4 sm_dp_e_clim5_edu1 sm_dp_e_clim5_edu2 sm_dp_e_clim5_edu3 sm_dp_e_clim5_edu4 
+				tmax2_dp_e_clim5_edu1 tmax2_dp_e_clim5_edu2 tmax2_dp_e_clim5_edu3 tmax2_dp_e_clim5_edu4 sm2_dp_e_clim5_edu1 sm2_dp_e_clim5_edu2 sm2_dp_e_clim5_edu3 sm2_dp_e_clim5_edu4 
+				tmax3_dp_e_clim5_edu1 tmax3_dp_e_clim5_edu2 tmax3_dp_e_clim5_edu3 tmax3_dp_e_clim5_edu4 sm3_dp_e_clim5_edu1 sm3_dp_e_clim5_edu2 sm3_dp_e_clim5_edu3 sm3_dp_e_clim5_edu4";
+delimit cr
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S*climzone*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin_e.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin_e.dta", replace
@@ -147,14 +216,14 @@ local depvar ln_outmigshare
 
 
 * Model performing best out-of-sample: T,S cubic, per climate zone and age and education
-local indepvar c.tmax_day_pop_e##i.climgroup##i.agemigcat c.tmax2_day_pop_e##i.climgroup##i.agemigcat c.tmax3_day_pop_e##i.climgroup##i.agemigcat c.sm_day_pop_e##i.climgroup##i.agemigcat c.sm2_day_pop_e##i.climgroup##i.agemigcat c.sm3_day_pop_e##i.climgroup##i.agemigcat c.tmax_day_pop_e##i.climgroup##i.edattain c.tmax2_day_pop_e##i.climgroup##i.edattain c.tmax3_day_pop_e##i.climgroup##i.edattain c.sm_day_pop_e##i.climgroup##i.edattain c.sm2_day_pop_e##i.climgroup##i.edattain c.sm3_day_pop_e##i.climgroup##i.edattain
+local indepvar c.tmax_dp_e##i.climgroup##i.agemigcat c.tmax2_dp_e##i.climgroup##i.agemigcat c.tmax3_dp_e##i.climgroup##i.agemigcat c.sm_dp_e##i.climgroup##i.agemigcat c.sm2_dp_e##i.climgroup##i.agemigcat c.sm3_dp_e##i.climgroup##i.agemigcat c.tmax_dp_e##i.climgroup##i.edattain c.tmax2_dp_e##i.climgroup##i.edattain c.tmax3_dp_e##i.climgroup##i.edattain c.sm_dp_e##i.climgroup##i.edattain c.sm2_dp_e##i.climgroup##i.edattain c.sm3_dp_e##i.climgroup##i.edattain
 
 reghdfe `depvar' `indepvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1)
 estimates save "$input_dir/5_estimation/mwithin_tspd1_e_cz_eduage.ster", replace
 
 
 * Same model but without demographic heterogeneity for comparison
-local indepvar c.tmax_day_pop_e##i.climgroup c.tmax2_day_pop_e##i.climgroup c.tmax3_day_pop_e##i.climgroup c.sm_day_pop_e##i.climgroup c.sm2_day_pop_e##i.climgroup c.sm3_day_pop_e##i.climgroup
+local indepvar c.tmax_dp_e##i.climgroup c.tmax2_dp_e##i.climgroup c.tmax3_dp_e##i.climgroup c.sm_dp_e##i.climgroup c.sm2_dp_e##i.climgroup c.sm3_dp_e##i.climgroup
 
 reghdfe `depvar' `indepvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1)
 estimates save "$input_dir/5_estimation/mwithin_tspd1_e_cz.ster", replace
@@ -218,12 +287,12 @@ forvalues c=1/1 {
 	* Calculate migration responses per age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd1_e_cz_eduage.ster"
 
-	local line_base = "_b[tmax_day_pop_e]* (t - `tmean_`c'')+ _b[tmax2_day_pop_e] * (t^2 - `tmean_`c''^2)+ _b[tmax3_day_pop_e] * (t^3 - `tmean_`c''^3)"
+	local line_base = "_b[tmax_dp_e]* (t - `tmean_`c'')+ _b[tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
 	local line_age1 = "0"
 	local line_edu1 = "0"
 	forv i = 2/4 {
-		local line_age`i' = "_b[`i'.agemigcat#c.tmax_day_pop_e]* (t - `tmean_`c'')+ _b[`i'.agemigcat#c.tmax2_day_pop_e] * (t^2 - `tmean_`c''^2)+ _b[`i'.agemigcat#c.tmax3_day_pop_e] * (t^3 - `tmean_`c''^3)"
-		local line_edu`i' = "_b[`i'.edattain#c.tmax_day_pop_e]* (t - `tmean_`c'')+ _b[`i'.edattain#c.tmax2_day_pop_e] * (t^2 - `tmean_`c''^2)+ _b[`i'.edattain#c.tmax3_day_pop_e] * (t^3 - `tmean_`c''^3)"
+		local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp_e]* (t - `tmean_`c'')+ _b[`i'.agemigcat#c.tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[`i'.agemigcat#c.tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.tmax_dp_e]* (t - `tmean_`c'')+ _b[`i'.edattain#c.tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[`i'.edattain#c.tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
 	}
 	if `c' == 1 {
 		local line_clim = "0"
@@ -233,12 +302,12 @@ forvalues c=1/1 {
 		}
 	}
 	else {
-		local line_clim = "_b[`c'.climgroup#c.tmax_day_pop_e]* (t - `tmean_`c'') + _b[`c'.climgroup#c.tmax2_day_pop_e] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#c.tmax3_day_pop_e] * (t^3 - `tmean_`c''^3)"
+		local line_clim = "_b[`c'.climgroup#c.tmax_dp_e]* (t - `tmean_`c'') + _b[`c'.climgroup#c.tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#c.tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
 		local line_climage1 = "0"
 		local line_climedu1 = "0"
 		forv i = 2/4 {
-			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.tmax_day_pop_e]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.tmax2_day_pop_e] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.tmax3_day_pop_e] * (t^3 - `tmean_`c''^3)"
-			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.tmax_day_pop_e]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.tmax2_day_pop_e] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.tmax3_day_pop_e] * (t^3 - `tmean_`c''^3)"
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.tmax_dp_e]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.tmax_dp_e]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
 		}
 	}
 
@@ -258,10 +327,10 @@ forvalues c=1/1 {
 	estimates use "$input_dir/5_estimation/mwithin_tspd1_e_cz.ster"
 
 	if `c' == 1 {
-		local line0 = "_b[tmax_day_pop_e]* (t - `tmean_`c'')+ _b[tmax2_day_pop_e] * (t^2 - `tmean_`c''^2)+ _b[tmax3_day_pop_e] * (t^3 - `tmean_`c''^3)"
+		local line0 = "_b[tmax_dp_e]* (t - `tmean_`c'')+ _b[tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
 	}
 	else {
-		local line0 = "(_b[tmax_day_pop_e] + _b[`c'.climgroup#c.tmax_day_pop_e]) * (t - `tmean_`c'')+ (_b[tmax2_day_pop_e] + _b[`c'.climgroup#c.tmax2_day_pop_e]) * (t^2 - `tmean_`c''^2)+ (_b[tmax3_day_pop_e] + _b[`c'.climgroup#c.tmax3_day_pop_e]) * (t^3 - `tmean_`c''^3)"
+		local line0 = "(_b[tmax_dp_e] + _b[`c'.climgroup#c.tmax_dp_e]) * (t - `tmean_`c'')+ (_b[tmax2_dp_e] + _b[`c'.climgroup#c.tmax2_dp_e]) * (t^2 - `tmean_`c''^2)+ (_b[tmax3_dp_e] + _b[`c'.climgroup#c.tmax3_dp_e]) * (t^3 - `tmean_`c''^3)"
 	}
 	
 	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
@@ -306,12 +375,12 @@ forvalues c=3/3 {
 	* Calculate migration responses per age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd1_e_cz_eduage.ster"
 
-	local line_base = "_b[sm_day_pop_e]* (sm - `smmean_`c'') + _b[sm2_day_pop_e] * (sm^2 - `smmean_`c''^2) + _b[sm3_day_pop_e] * (sm^3 - `smmean_`c''^3)"
+	local line_base = "_b[sm_dp_e]* (sm - `smmean_`c'') + _b[sm2_dp_e] * (sm^2 - `smmean_`c''^2) + _b[sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
 	local line_age1 = "0"
 	local line_edu1 = "0"
 	forv i = 2/4 {
-		local line_age`i' = "_b[`i'.agemigcat#c.sm_day_pop_e]* (sm - `smmean_`c'') + _b[`i'.agemigcat#c.sm2_day_pop_e] * (sm^2 - `smmean_`c''^2) + _b[`i'.agemigcat#c.sm3_day_pop_e] * (sm^3 - `smmean_`c''^3)"
-		local line_edu`i' = "_b[`i'.edattain#c.sm_day_pop_e]* (sm - `smmean_`c'') + _b[`i'.edattain#c.sm2_day_pop_e] * (sm^2 - `smmean_`c''^2) + _b[`i'.edattain#c.sm3_day_pop_e] * (sm^3 - `smmean_`c''^3)"
+		local line_age`i' = "_b[`i'.agemigcat#c.sm_dp_e]* (sm - `smmean_`c'') + _b[`i'.agemigcat#c.sm2_dp_e] * (sm^2 - `smmean_`c''^2) + _b[`i'.agemigcat#c.sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.sm_dp_e]* (sm - `smmean_`c'') + _b[`i'.edattain#c.sm2_dp_e] * (sm^2 - `smmean_`c''^2) + _b[`i'.edattain#c.sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
 	}
 	if `c' == 1 {
 		local line_clim = "0"
@@ -321,12 +390,12 @@ forvalues c=3/3 {
 		}
 	}
 	else {
-		local line_clim = "_b[`c'.climgroup#c.sm_day_pop_e]* (sm - `smmean_`c'') + _b[`c'.climgroup#c.sm2_day_pop_e] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#c.sm3_day_pop_e] * (sm^3 - `smmean_`c''^3)"
+		local line_clim = "_b[`c'.climgroup#c.sm_dp_e]* (sm - `smmean_`c'') + _b[`c'.climgroup#c.sm2_dp_e] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#c.sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
 		local line_climage1 = "0"
 		local line_climedu1 = "0"
 		forv i = 2/4 {
-			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.sm_day_pop_e]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.sm2_day_pop_e] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.sm3_day_pop_e] * (sm^3 - `smmean_`c''^3)"
-			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.sm_day_pop_e]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.sm2_day_pop_e] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.sm3_day_pop_e] * (sm^3 - `smmean_`c''^3)"
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.sm_dp_e]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.sm2_dp_e] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.sm_dp_e]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.sm2_dp_e] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
 		}
 	}
 	
@@ -346,10 +415,10 @@ forvalues c=3/3 {
 	estimates use "$input_dir/5_estimation/mwithin_tspd1_e_cz.ster"
 
 	if `c' == 1 {
-		local line0 = "_b[sm_day_pop_e]* (sm - `smmean_`c'')+ _b[sm2_day_pop_e] * (sm^2 - `smmean_`c''^2)+ _b[sm3_day_pop_e] * (sm^3 - `smmean_`c''^3)"
+		local line0 = "_b[sm_dp_e]* (sm - `smmean_`c'')+ _b[sm2_dp_e] * (sm^2 - `smmean_`c''^2)+ _b[sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
 	}
 	else {
-		local line0 = "(_b[sm_day_pop_e] + _b[`c'.climgroup#c.sm_day_pop_e]) * (sm - `smmean_`c'')+ (_b[sm2_day_pop_e] + _b[`c'.climgroup#c.sm2_day_pop_e]) * (sm^2 - `smmean_`c''^2)+ (_b[sm3_day_pop_e] + _b[`c'.climgroup#c.sm3_day_pop_e]) * (sm^3 - `smmean_`c''^3)"
+		local line0 = "(_b[sm_dp_e] + _b[`c'.climgroup#c.sm_dp_e]) * (sm - `smmean_`c'')+ (_b[sm2_dp_e] + _b[`c'.climgroup#c.sm2_dp_e]) * (sm^2 - `smmean_`c''^2)+ (_b[sm3_dp_e] + _b[`c'.climgroup#c.sm3_dp_e]) * (sm^3 - `smmean_`c''^3)"
 	}
 	
 	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)

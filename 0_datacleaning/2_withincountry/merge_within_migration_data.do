@@ -130,40 +130,40 @@ save `withinmigweather', replace
 **# Import and merge weather data ***
 ****************************************************************
 * Merge processed weather data with migration data
-merge m:1 ctrymig yrmig geomig1 using "$input_dir/2_intermediate/withinweather.dta", keepusing(yrmig ctrymig geomig1 tmax*_uncert* sm*_uncert* prcp*uncert *day_pop_av10) 
+merge m:1 ctrymig yrmig geomig1 using "$input_dir/2_intermediate/withinweather.dta", keepusing(yrmig ctrymig geomig1 tmax*_uncert* sm*_uncert* prcp*uncert *dp_av10) 
 drop if _merge != 3
 drop _merge
 drop prcp*av10 *_l2
-drop if tmax_day_pop_av10 == . | tmax_day_pop_uncert == . | tmax_day_pop_uncert_l1 == . | sm_day_pop_uncert == . | prcp_day_pop_uncert == . | tmax_day_rcs_k4_1_pop_uncert == . 
+drop if tmax_dp_av10 == . | tmax_dp_uncert == . | tmax_dp_uncert_l1 == . | sm_dp_uncert == . | prcp_dp_uncert == . | tmax_dp_rcs_k4_1_uncert == . 
 
 save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
 
 
 * Add destination weather
 use "$input_dir/2_intermediate/withinweather.dta"
-rename (geomig1 tmax*day_pop_uncert sm*day_pop_uncert) (geolev1 tmax*day_pop_uncert_dest sm*day_pop_uncert_dest)
+rename (geomig1 tmax*dp_uncert sm*dp_uncert) (geolev1 tmax*dp_uncert_dest sm*dp_uncert_dest)
 tempfile withinweathertemp
 save `withinweathertemp'
 
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 merge m:1 ctrymig yrmig geolev1 using `withinweathertemp', keepusing(yrmig ctrymig geolev1 *uncert_dest) nogenerate
-drop if tmax_day_pop_uncert == . | tmax_day_pop_uncert_dest == .
+drop if tmax_dp_uncert == . | tmax_dp_uncert_dest == .
 
 
 * Create randomized weather data
 * We keep the correlation across T/SM the same
 
-drop if tmax_day_pop_uncert == . | sm_day_pop_uncert == . | tmax2_day_pop_uncert == . | sm2_day_pop_uncert == . | tmax3_day_pop_uncert == . | sm3_day_pop_uncert == . | tmax_day_pop_av10 == . | sm_day_pop_av10 == . | tmax2_day_pop_av10 == . | sm2_day_pop_av10 == . | tmax3_day_pop_av10 == . | sm3_day_pop_av10 == .
+drop if tmax_dp_uncert == . | sm_dp_uncert == . | tmax2_dp_uncert == . | sm2_dp_uncert == . | tmax3_dp_uncert == . | sm3_dp_uncert == . | tmax_dp_av10 == . | sm_dp_av10 == . | tmax2_dp_av10 == . | sm2_dp_av10 == . | tmax3_dp_av10 == . | sm3_dp_av10 == .
 
 sort ctrymig geomig1 yrmig
-local permutable tmax_day_pop_uncert sm_day_pop_uncert tmax2_day_pop_uncert sm2_day_pop_uncert tmax3_day_pop_uncert sm3_day_pop_uncert tmax_day_pop_av10 sm_day_pop_av10 tmax2_day_pop_av10 sm2_day_pop_av10 tmax3_day_pop_av10 sm3_day_pop_av10
+local permutable tmax_dp_uncert sm_dp_uncert tmax2_dp_uncert sm2_dp_uncert tmax3_dp_uncert sm3_dp_uncert tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10
 set seed 12345
 
 preserve
 keep `permutable'
 gen shuffle = runiform()
 sort shuffle
-rename *_pop_* *_pop_*_rand
+rename *_dp_* *_dp_*_rand
 drop shuffle
 tempfile permute
 save `permute'
@@ -179,6 +179,37 @@ generate id = _n
 save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
 
 
+****************************************************************
+**# Create interaction variables ***
+****************************************************************
+* Weather variables, climate zones, and demographics
+local interac "tmax_dp_uncert sm_dp_uncert tmax2_dp_uncert sm2_dp_uncert tmax3_dp_uncert sm3_dp_uncert prcp_dp_uncert prcp2_dp_uncert prcp3_dp_uncert ///
+				tmax_dp_uncert_l1 sm_dp_uncert_l1 tmax2_dp_uncert_l1 sm2_dp_uncert_l1 tmax3_dp_uncert_l1 sm3_dp_uncert_l1 ///
+				tmax_dp_uncert_dest sm_dp_uncert_dest tmax2_dp_uncert_dest sm2_dp_uncert_dest tmax3_dp_uncert_dest sm3_dp_uncert_dest ///
+				tmax_dp_uncert_rand sm_dp_uncert_rand tmax2_dp_uncert_rand sm2_dp_uncert_rand tmax3_dp_uncert_rand sm3_dp_uncert_rand ///
+				tmax_dp_av10_rand sm_dp_av10_rand tmax2_dp_av10_rand sm2_dp_av10_rand tmax3_dp_av10_rand ///
+				tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10 sm3_dp_av10_rand"
+tab climgroup , gen(d_clim)  
+tab agemigcat, gen(d_age)
+tab edattain, gen(d_edu)
+tab sex, gen(d_sex)
+foreach var of varlist `interac' {
+	forv i=1/5 {
+		gen `var'_clim`i' = `var' * d_clim`i'
+		forv j=1/4 {
+			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'
+			gen `var'_clim`i'_edu`j' = `var' * d_clim`i' * d_edu`j'
+		}
+		forv j=1/2 {
+			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
+		}
+	}
+}
+
+drop d_clim* d_age* d_edu* d_sex*
+
+
+save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
 
 
 

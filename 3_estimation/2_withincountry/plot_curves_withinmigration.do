@@ -87,12 +87,12 @@ forvalues c=1/5 {
 	* Calculate migration responses per age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz_eduage.ster"
 
-	local line_base = "_b[tmax_day_pop_uncert]* (t - `tmean_`c'')+ _b[tmax2_day_pop_uncert] * (t^2 - `tmean_`c''^2)+ _b[tmax3_day_pop_uncert] * (t^3 - `tmean_`c''^3)"
+	local line_base = "_b[tmax_dp_uncert]* (t - `tmean_`c'')+ _b[tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
 	local line_age1 = "0"
 	local line_edu1 = "0"
 	forv i = 2/4 {
-		local line_age`i' = "_b[`i'.agemigcat#c.tmax_day_pop_uncert]* (t - `tmean_`c'')+ _b[`i'.agemigcat#c.tmax2_day_pop_uncert] * (t^2 - `tmean_`c''^2)+ _b[`i'.agemigcat#c.tmax3_day_pop_uncert] * (t^3 - `tmean_`c''^3)"
-		local line_edu`i' = "_b[`i'.edattain#c.tmax_day_pop_uncert]* (t - `tmean_`c'')+ _b[`i'.edattain#c.tmax2_day_pop_uncert] * (t^2 - `tmean_`c''^2)+ _b[`i'.edattain#c.tmax3_day_pop_uncert] * (t^3 - `tmean_`c''^3)"
+		local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp_uncert]* (t - `tmean_`c'')+ _b[`i'.agemigcat#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`i'.agemigcat#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.tmax_dp_uncert]* (t - `tmean_`c'')+ _b[`i'.edattain#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`i'.edattain#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
 	}
 	if `c' == 1 {
 		local line_clim = "0"
@@ -102,12 +102,12 @@ forvalues c=1/5 {
 		}
 	}
 	else {
-		local line_clim = "_b[`c'.climgroup#c.tmax_day_pop_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#c.tmax2_day_pop_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#c.tmax3_day_pop_uncert] * (t^3 - `tmean_`c''^3)"
+		local line_clim = "_b[`c'.climgroup#c.tmax_dp_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
 		local line_climage1 = "0"
 		local line_climedu1 = "0"
 		forv i = 2/4 {
-			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.tmax_day_pop_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.tmax2_day_pop_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.tmax3_day_pop_uncert] * (t^3 - `tmean_`c''^3)"
-			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.tmax_day_pop_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.tmax2_day_pop_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.tmax3_day_pop_uncert] * (t^3 - `tmean_`c''^3)"
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.tmax_dp_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.tmax_dp_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
 		}
 	}
 
@@ -127,10 +127,10 @@ forvalues c=1/5 {
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz.ster"
 
 	if `c' == 1 {
-		local line0 = "_b[tmax_day_pop_uncert]* (t - `tmean_`c'')+ _b[tmax2_day_pop_uncert] * (t^2 - `tmean_`c''^2)+ _b[tmax3_day_pop_uncert] * (t^3 - `tmean_`c''^3)"
+		local line0 = "_b[tmax_dp_uncert]* (t - `tmean_`c'')+ _b[tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
 	}
 	else {
-		local line0 = "(_b[tmax_day_pop_uncert] + _b[`c'.climgroup#c.tmax_day_pop_uncert]) * (t - `tmean_`c'')+ (_b[tmax2_day_pop_uncert] + _b[`c'.climgroup#c.tmax2_day_pop_uncert]) * (t^2 - `tmean_`c''^2)+ (_b[tmax3_day_pop_uncert] + _b[`c'.climgroup#c.tmax3_day_pop_uncert]) * (t^3 - `tmean_`c''^3)"
+		local line0 = "(_b[tmax_dp_uncert] + _b[`c'.climgroup#c.tmax_dp_uncert]) * (t - `tmean_`c'')+ (_b[tmax2_dp_uncert] + _b[`c'.climgroup#c.tmax2_dp_uncert]) * (t^2 - `tmean_`c''^2)+ (_b[tmax3_dp_uncert] + _b[`c'.climgroup#c.tmax3_dp_uncert]) * (t^3 - `tmean_`c''^3)"
 	}
 	
 	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
@@ -195,12 +195,12 @@ forvalues c=1/5 {
 	* Calculate migration responses per age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz_eduage.ster"
 
-	local line_base = "_b[sm_day_pop_uncert]* (sm - `smmean_`c'') + _b[sm2_day_pop_uncert] * (sm^2 - `smmean_`c''^2) + _b[sm3_day_pop_uncert] * (sm^3 - `smmean_`c''^3)"
+	local line_base = "_b[sm_dp_uncert]* (sm - `smmean_`c'') + _b[sm2_dp_uncert] * (sm^2 - `smmean_`c''^2) + _b[sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
 	local line_age1 = "0"
 	local line_edu1 = "0"
 	forv i = 2/4 {
-		local line_age`i' = "_b[`i'.agemigcat#c.sm_day_pop_uncert]* (sm - `smmean_`c'') + _b[`i'.agemigcat#c.sm2_day_pop_uncert] * (sm^2 - `smmean_`c''^2) + _b[`i'.agemigcat#c.sm3_day_pop_uncert] * (sm^3 - `smmean_`c''^3)"
-		local line_edu`i' = "_b[`i'.edattain#c.sm_day_pop_uncert]* (sm - `smmean_`c'') + _b[`i'.edattain#c.sm2_day_pop_uncert] * (sm^2 - `smmean_`c''^2) + _b[`i'.edattain#c.sm3_day_pop_uncert] * (sm^3 - `smmean_`c''^3)"
+		local line_age`i' = "_b[`i'.agemigcat#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`i'.agemigcat#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2) + _b[`i'.agemigcat#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`i'.edattain#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2) + _b[`i'.edattain#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
 	}
 	if `c' == 1 {
 		local line_clim = "0"
@@ -210,12 +210,12 @@ forvalues c=1/5 {
 		}
 	}
 	else {
-		local line_clim = "_b[`c'.climgroup#c.sm_day_pop_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#c.sm2_day_pop_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#c.sm3_day_pop_uncert] * (sm^3 - `smmean_`c''^3)"
+		local line_clim = "_b[`c'.climgroup#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
 		local line_climage1 = "0"
 		local line_climedu1 = "0"
 		forv i = 2/4 {
-			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.sm_day_pop_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.sm2_day_pop_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.sm3_day_pop_uncert] * (sm^3 - `smmean_`c''^3)"
-			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.sm_day_pop_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.sm2_day_pop_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.sm3_day_pop_uncert] * (sm^3 - `smmean_`c''^3)"
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
 		}
 	}
 	
@@ -235,10 +235,10 @@ forvalues c=1/5 {
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz.ster"
 
 	if `c' == 1 {
-		local line0 = "_b[sm_day_pop_uncert]* (sm - `smmean_`c'')+ _b[sm2_day_pop_uncert] * (sm^2 - `smmean_`c''^2)+ _b[sm3_day_pop_uncert] * (sm^3 - `smmean_`c''^3)"
+		local line0 = "_b[sm_dp_uncert]* (sm - `smmean_`c'')+ _b[sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
 	}
 	else {
-		local line0 = "(_b[sm_day_pop_uncert] + _b[`c'.climgroup#c.sm_day_pop_uncert]) * (sm - `smmean_`c'')+ (_b[sm2_day_pop_uncert] + _b[`c'.climgroup#c.sm2_day_pop_uncert]) * (sm^2 - `smmean_`c''^2)+ (_b[sm3_day_pop_uncert] + _b[`c'.climgroup#c.sm3_day_pop_uncert]) * (sm^3 - `smmean_`c''^3)"
+		local line0 = "(_b[sm_dp_uncert] + _b[`c'.climgroup#c.sm_dp_uncert]) * (sm - `smmean_`c'')+ (_b[sm2_dp_uncert] + _b[`c'.climgroup#c.sm2_dp_uncert]) * (sm^2 - `smmean_`c''^2)+ (_b[sm3_dp_uncert] + _b[`c'.climgroup#c.sm3_dp_uncert]) * (sm^3 - `smmean_`c''^3)"
 	}
 	
 	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)

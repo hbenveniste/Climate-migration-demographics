@@ -30,7 +30,7 @@ forvalues s=1/$seeds {
 			gen fw = .
 			bsample if sid!=`i' , weight(fw)
 			
-			reghdfe $depvar $names if (sid!=`i') [fweight=fw], noabsorb vce(cluster __ID3__) 
+			reghdfe $depvar $indepvar if (sid!=`i') [fweight=fw], noabsorb 
 			
 			* Predict value over the left-out fold
 			predict pyhat, xb
@@ -79,8 +79,6 @@ forvalues s=1/$seeds {
 		
 	}
 }
-
-macro drop _names
 
 quietly {
 	if "$metric" == "crps" {

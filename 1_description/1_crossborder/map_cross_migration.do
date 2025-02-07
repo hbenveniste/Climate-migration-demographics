@@ -49,12 +49,12 @@ save `outmigipumsavyrs', replace
 
 * Match with shape file 
 * Do this step only once
-/* cd "C:/Users/Helene/Documents/migration-demographics-agriculture/large-data/Cleaned/Shapefiles"
+/* cd "$input_dir/1_raw/Shapefiles"
 shp2dta using world_countries_2020_noant, database(ctrydb) coordinates(ctrycoord) genid(id)
 use "ctrydb.dta"
 rename BPL_CODE ipumscode
 save "ctrydb.dta", replace
-cd "C:/Users/Helene/Documents/migration-demographics-agriculture/large-data/Cleaned"
+cd "$code_dir"
 */
 
 use `outmigipumsavyrs'
@@ -68,7 +68,7 @@ export delimited using "$res_dir/1_Description/outmigipumsavyrs.csv", replace
 ****************************************************************
 **# Prepare to plot the average inmigration rate at the country level ***
 ****************************************************************
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/3_consolidate/crossmigweather_clean.dta", clear
 
 * Calculate inmigration rate into each country across demographics and origins
 collapse (sum) nbtotmig (mean) countrypop, by(country countrycode yrimm)

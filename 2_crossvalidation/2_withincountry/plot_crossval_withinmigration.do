@@ -78,9 +78,25 @@ graph box rsqyear, over(modelaltnb, gap(120) label(angle(50) labsize(medium))) n
 		title("Cross-year folds") xsize(3) ///
 		name(rsqmswdailyyeardemo, replace)
 		
-graph export "$res_dir/3_Crossvalidation_withinmig/FigS8b_cvalt_within.pdf", ///
-			width(7) as(pdf) name("rsqmswdailyyeardemo") replace
+graph export "$res_dir/3_Crossvalidation_withinmig/FigS8b_cvalt_within.png", ///
+			width(7) as(png) name("rsqmswdailyyeardemo") replace
 
+
+****************************************************************
+**# Plot whisker plot of cross-validation results using the CRPS ***
+****************************************************************
+* Plot whisker plot of the CRPS, over random folds	
+graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsides ///
+		yline(0, lpattern(shortdash) lcolor(red)) ///
+		box(1, color(black)) marker(1, mcolor(black) msize(vsmall)) ///
+		ytitle("Out-of-sample performance (CRPS)", size(medium)) subtitle(, fcolor(none) lstyle(none)) ///
+		ylabel(,labsize(small)) leg(off) ///
+		graphregion(fcolor(white)) note("") ///
+		title("CRPS as performance metric") xsize(7) ///
+		name(rsqwithinmswdailycrpsdemo, replace)
+
+graph export "$res_dir/3_Crossvalidation_withinmig/FigSX_cvcrps_within.png", ///
+			width(7) as(png) name("rsqwithinmswdailycrpsdemo") replace
 
 
 

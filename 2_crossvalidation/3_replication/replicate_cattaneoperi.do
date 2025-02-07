@@ -34,9 +34,12 @@ global folds "random"
 * Select number of seeds for the uncertainty range of performance
 global seeds 20
 
+* Select performance metric between R2 and CRPS
+global metric "rsquare"
+
 * Their preferred specification: Temperature and precipitation per agricultural status and per income level
 * Select independent variables
-global indepvar lnwtem lnwtem_initxtilegdp1 lnwpre lnwpre_initxtilegdp1 lnwtem_initxtileagshare4 lnwpre_initxtileagshare4
+global indepvar "lnwtem lnwtem_initxtilegdp1 lnwpre lnwpre_initxtilegdp1 lnwtem_initxtileagshare4 lnwpre_initxtileagshare4"
 
 
 ****************************************************************
@@ -50,7 +53,12 @@ global depvar lnflow1
 * Residualize data to perform cross-validation 
 preserve
 
-quietly reghdfe $depvar $indepvar, absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num) version(3) cache(save, keep(cc_num origin_code year))
+foreach var in $depvar $indepvar {
+	quietly reghdfe `var', absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num) residuals(res_`var')
+}
+
+keep res_* cc_num origin_code year
+rename res_* *
 
 save "$input_dir/2_intermediate/_residualized_repli.dta", replace
 
@@ -58,18 +66,21 @@ restore
 
 use "$input_dir/2_intermediate/_residualized_repli.dta", clear
 
-* Select weather variables residualized for fixed effects
-quietly ds $depvar year origin_code cc_num __ID*, not
-global names `r(varlist)'
-
 * Run cross-validation 
 do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 
 * Create file gathering all performances
 gen model = "T,P*poor*aggdp"
-reshape long rsq, i(model) j(seeds)
+if "$metric" == "rsquare" {
+	reshape long rsq, i(model) j(seeds)
+	rename rsq rsqcatt
+}
+if "$metric" == "crps" {
+	reshape long avcrps, i(model) j(seeds)
+	rename avcrps avcrpscatt
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqcattaneo.dta", nogenerate
+}
 
-rename rsq rsqcatt
 
 save "$input_dir/4_crossvalidation/rsqcattaneo.dta", replace
 
@@ -85,7 +96,12 @@ global depvar urban_pop
 * Residualize data to perform cross-validation 
 preserve
 
-quietly reghdfe $depvar $indepvar, absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num) version(3) cache(save, keep(cc_num origin_code year))
+foreach var in $depvar $indepvar {
+	quietly reghdfe `var', absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num) residuals(res_`var')
+}
+
+keep res_* cc_num origin_code year
+rename res_* *
 
 save "$input_dir/2_intermediate/_residualized_repli.dta", replace
 
@@ -93,18 +109,19 @@ restore
 
 use "$input_dir/2_intermediate/_residualized_repli.dta", clear
 
-* Select weather variables residualized for fixed effects
-quietly ds $depvar year origin_code cc_num __ID*, not
-global names `r(varlist)'
-
 * Run cross-validation 
 do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 
 * Create file gathering all performances
 gen model = "T,P*poor*aggdp"
-reshape long rsq, i(model) j(seeds)
-
-rename rsq rsqcatturb
+if "$metric" == "rsquare" {
+	reshape long rsq, i(model) j(seeds)
+	rename rsq rsqcatturb
+}
+if "$metric" == "crps" {
+	reshape long avcrps, i(model) j(seeds)
+	rename avcrps avcrpscatturb
+}
 
 merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqcattaneo.dta", nogenerate
 

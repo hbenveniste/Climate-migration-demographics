@@ -53,9 +53,12 @@ merge 1:1 yrmig ctrymig geomig1 using `dailysubpopS', keepusing(yrmig ctrymig ge
 drop n_* *4_d* prcp*rcs*
 rename *_fullyear_* *_*
 rename (tmax_pop prcp_pop sm_pop) (tmax_day_pop prcp_day_pop sm_day_pop)
+rename *day_pop* *dp*
+rename *_day_* *_dp_*
+rename *_pop *
 
 * Drop missing values
-drop if tmax_day_pop == . | prcp_day_pop == . | sm_day_pop == .
+drop if tmax_dp == . | prcp_dp == . | sm_dp == .
 
 
 save "$input_dir/2_intermediate/withinweather.dta", replace
@@ -65,7 +68,7 @@ save "$input_dir/2_intermediate/withinweather.dta", replace
 **# Create lags of weather variables ***
 ****************************************************************
 * Lags for up to 10 years
-local varlist = "tmax_day_pop sm_day_pop tmax2_day_pop sm2_day_pop tmax3_day_pop sm3_day_pop"
+local varlist = "tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp"
 sort geomig1 yrmig
 
 foreach v of local varlist {
@@ -110,7 +113,7 @@ foreach v of local varlist {
 }
 
 * Other functional forms, other weather variables
-local altvarlist = "prcp_day_pop prcp2_day_pop prcp3_day_pop tmax_day_rcs_k4_1_pop tmax_day_rcs_k4_2_pop sm_day_rcs_k4_1_pop sm_day_rcs_k4_2_pop"
+local altvarlist = "prcp_dp prcp2_dp prcp3_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2"
 
 foreach v of local altvarlist {
 	egen `v'_av1 = filter(`v'), coef(1 1) lags(0/1) normalise
@@ -252,6 +255,6 @@ foreach v of local altvarlist {
 }
 
 
-save "withinweather.dta", replace
+save "$input_dir/2_intermediate/withinweather.dta", replace
 
 

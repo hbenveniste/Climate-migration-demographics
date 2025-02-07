@@ -36,7 +36,7 @@ use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 * Model performing best out-of-sample: T,S cubic per age and education
 
 * Select corresponding independent variables
-local indepvar c.tmax_day_pop##i.agemigcat c.tmax2_day_pop##i.agemigcat c.tmax3_day_pop##i.agemigcat c.sm_day_pop##i.agemigcat c.sm2_day_pop##i.agemigcat c.sm3_day_pop##i.agemigcat c.tmax_day_pop##i.edattain c.tmax2_day_pop##i.edattain c.tmax3_day_pop##i.edattain c.sm_day_pop##i.edattain c.sm2_day_pop##i.edattain c.sm3_day_pop##i.edattain
+local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat c.tmax_dp##i.edattain c.tmax2_dp##i.edattain c.tmax3_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain
 
 * Store for table output
 eststo mcross_tspd3_eduage: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
@@ -46,16 +46,16 @@ estimates save "$input_dir/5_estimation/mcross_tspd3_eduage.ster", replace
 
 
 * Same model but with T linear for comparison
-local indepvar c.tmax_day_pop##i.agemigcat c.sm_day_pop##i.agemigcat c.sm2_day_pop##i.agemigcat c.sm3_day_pop##i.agemigcat c.tmax_day_pop##i.edattain c.sm_day_pop##i.edattain c.sm2_day_pop##i.edattain c.sm3_day_pop##i.edattain
+local indepvar c.tmax_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat c.tmax_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain
 eststo mcross_tspd13_eduage: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
 estimates save "$input_dir/5_estimation/mcross_tspd13_eduage.ster", replace
 
 * Same models but without demographic heterogeneity for comparison
-local indepvar tmax_day_pop tmax2_day_pop tmax3_day_pop sm_day_pop sm2_day_pop sm3_day_pop
+local indepvar tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp
 eststo mcross_tspd3: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
 estimates save "$input_dir/5_estimation/mcross_tspd3.ster", replace
 
-local indepvar tmax_day_pop sm_day_pop sm2_day_pop sm3_day_pop
+local indepvar tmax_dp sm_dp sm2_dp sm3_dp
 eststo mcross_tspd13: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
 estimates save "$input_dir/5_estimation/mcross_tspd13.ster", replace
 
@@ -66,12 +66,12 @@ estimates save "$input_dir/5_estimation/mcross_tspd13.ster", replace
 * Supplementary table A.1 
 
 * Label variables
-label variable tmax_day_pop "T"
-label variable tmax2_day_pop "T2"
-label variable tmax3_day_pop "T3"
-label variable sm_day_pop "S"
-label variable sm2_day_pop "S2"
-label variable sm3_day_pop "S3"
+label variable tmax_dp "T"
+label variable tmax2_dp "T2"
+label variable tmax3_dp "T3"
+label variable sm_dp "S"
+label variable sm2_dp "S2"
+label variable sm3_dp "S3"
 label define oename 1 "< Primary" 2 "Primary" 3 "Secondary" 4 "Higher ed", replace
 label values edattain oename
 label define agename 1 "Age under 15" 2 "Age 15-30" 3 "Age 30-45" 4 "Age over 45", replace

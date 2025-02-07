@@ -44,7 +44,7 @@ global depvar ln_outmigshare
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 
 * Select corresponding independent variables
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop
+global indepvar "tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp"
 
 * Run cross-validation 
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
@@ -78,7 +78,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 ****************************************************************
 * Using only T cubic
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.tmax2_day_pop c.tmax3_day_pop
+global indepvar "tmax_dp tmax2_dp tmax3_dp"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -95,7 +95,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Using only S cubic
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.sm_day_pop c.sm2_day_pop c.sm3_day_pop
+global indepvar "sm_dp sm2_dp sm3_dp"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -112,7 +112,10 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Using T,S cubic per climate zone
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.mainclimgroup c.sm_day_pop#i.mainclimgroup c.tmax2_day_pop#i.mainclimgroup c.sm2_day_pop#i.mainclimgroup c.tmax3_day_pop#i.mainclimgroup c.sm3_day_pop#i.mainclimgroup
+#delimit ;
+global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax3_dp_clim1 tmax3_dp_clim2 tmax3_dp_clim3 tmax3_dp_clim4 tmax3_dp_clim5
+				sm_dp_clim1 sm_dp_clim2 sm_dp_clim3 sm_dp_clim4 sm_dp_clim5 sm2_dp_clim1 sm2_dp_clim2 sm2_dp_clim3 sm2_dp_clim4 sm2_dp_clim5 sm3_dp_clim1 sm3_dp_clim2 sm3_dp_clim3 sm3_dp_clim4 sm3_dp_clim5";
+#delimit cr
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -127,13 +130,29 @@ quietly {
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
-* Using T,S cubic per age
+* Using T,S cubic per climate zone and age
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat
+#delimit ;
+global indepvar "tmax_dp_clim1_age1 tmax_dp_clim1_age2 tmax_dp_clim1_age3 tmax_dp_clim1_age4 tmax_dp_clim2_age1 tmax_dp_clim2_age2 tmax_dp_clim2_age3 tmax_dp_clim2_age4 
+				tmax_dp_clim3_age1 tmax_dp_clim3_age2 tmax_dp_clim3_age3 tmax_dp_clim3_age4 tmax_dp_clim4_age1 tmax_dp_clim4_age2 tmax_dp_clim4_age3 tmax_dp_clim4_age4 
+				tmax_dp_clim5_age1 tmax_dp_clim5_age2 tmax_dp_clim5_age3 tmax_dp_clim5_age4 tmax2_dp_clim1_age1 tmax2_dp_clim1_age2 tmax2_dp_clim1_age3 tmax2_dp_clim1_age4 
+				tmax2_dp_clim2_age1 tmax2_dp_clim2_age2 tmax2_dp_clim2_age3 tmax2_dp_clim2_age4 tmax2_dp_clim3_age1 tmax2_dp_clim3_age2 tmax2_dp_clim3_age3 tmax2_dp_clim3_age4 
+				tmax2_dp_clim4_age1 tmax2_dp_clim4_age2 tmax2_dp_clim4_age3 tmax2_dp_clim4_age4 tmax2_dp_clim5_age1 tmax2_dp_clim5_age2 tmax2_dp_clim5_age3 tmax2_dp_clim5_age4 
+				tmax3_dp_clim1_age1 tmax3_dp_clim1_age2 tmax3_dp_clim1_age3 tmax3_dp_clim1_age4 tmax3_dp_clim2_age1 tmax3_dp_clim2_age2 tmax3_dp_clim2_age3 tmax3_dp_clim2_age4 
+				tmax3_dp_clim3_age1 tmax3_dp_clim3_age2 tmax3_dp_clim3_age3 tmax3_dp_clim3_age4 tmax3_dp_clim4_age1 tmax3_dp_clim4_age2 tmax3_dp_clim4_age3 tmax3_dp_clim4_age4 
+				tmax3_dp_clim5_age1 tmax3_dp_clim5_age2 tmax3_dp_clim5_age3 tmax3_dp_clim5_age4 sm_dp_clim1_age1 sm_dp_clim1_age2 sm_dp_clim1_age3 sm_dp_clim1_age4 
+				sm_dp_clim2_age1 sm_dp_clim2_age2 sm_dp_clim2_age3 sm_dp_clim2_age4 sm_dp_clim3_age1 sm_dp_clim3_age2 sm_dp_clim3_age3 sm_dp_clim3_age4 
+				sm_dp_clim4_age1 sm_dp_clim4_age2 sm_dp_clim4_age3 sm_dp_clim4_age4 sm_dp_clim5_age1 sm_dp_clim5_age2 sm_dp_clim5_age3 sm_dp_clim5_age4 
+				sm2_dp_clim1_age1 sm2_dp_clim1_age2 sm2_dp_clim1_age3 sm2_dp_clim1_age4 sm2_dp_clim2_age1 sm2_dp_clim2_age2 sm2_dp_clim2_age3 sm2_dp_clim2_age4 
+				sm2_dp_clim3_age1 sm2_dp_clim3_age2 sm2_dp_clim3_age3 sm2_dp_clim3_age4 sm2_dp_clim4_age1 sm2_dp_clim4_age2 sm2_dp_clim4_age3 sm2_dp_clim4_age4 
+				sm2_dp_clim5_age1 sm2_dp_clim5_age2 sm2_dp_clim5_age3 sm2_dp_clim5_age4 sm3_dp_clim1_age1 sm3_dp_clim1_age2 sm3_dp_clim1_age3 sm3_dp_clim1_age4 
+				sm3_dp_clim2_age1 sm3_dp_clim2_age2 sm3_dp_clim2_age3 sm3_dp_clim2_age4 sm3_dp_clim3_age1 sm3_dp_clim3_age2 sm3_dp_clim3_age3 sm3_dp_clim3_age4 
+				sm3_dp_clim4_age1 sm3_dp_clim4_age2 sm3_dp_clim4_age3 sm3_dp_clim4_age4 sm3_dp_clim5_age1 sm3_dp_clim5_age2 sm3_dp_clim5_age3 sm3_dp_clim5_age4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T,S*age"
+	gen model = "T,S*climzone*age"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
@@ -144,13 +163,29 @@ quietly {
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
-* Using T,S cubic per education
+* Using T,S cubic per climate zone and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain
+#delimit ;
+global indepvar "tmax_dp_clim1_edu1 tmax_dp_clim1_edu2 tmax_dp_clim1_edu3 tmax_dp_clim1_edu4 tmax_dp_clim2_edu1 tmax_dp_clim2_edu2 tmax_dp_clim2_edu3 tmax_dp_clim2_edu4 
+				tmax_dp_clim3_edu1 tmax_dp_clim3_edu2 tmax_dp_clim3_edu3 tmax_dp_clim3_edu4 tmax_dp_clim4_edu1 tmax_dp_clim4_edu2 tmax_dp_clim4_edu3 tmax_dp_clim4_edu4 
+				tmax_dp_clim5_edu1 tmax_dp_clim5_edu2 tmax_dp_clim5_edu3 tmax_dp_clim5_edu4 tmax2_dp_clim1_edu1 tmax2_dp_clim1_edu2 tmax2_dp_clim1_edu3 tmax2_dp_clim1_edu4 
+				tmax2_dp_clim2_edu1 tmax2_dp_clim2_edu2 tmax2_dp_clim2_edu3 tmax2_dp_clim2_edu4 tmax2_dp_clim3_edu1 tmax2_dp_clim3_edu2 tmax2_dp_clim3_edu3 tmax2_dp_clim3_edu4 
+				tmax2_dp_clim4_edu1 tmax2_dp_clim4_edu2 tmax2_dp_clim4_edu3 tmax2_dp_clim4_edu4 tmax2_dp_clim5_edu1 tmax2_dp_clim5_edu2 tmax2_dp_clim5_edu3 tmax2_dp_clim5_edu4 
+				tmax3_dp_clim1_edu1 tmax3_dp_clim1_edu2 tmax3_dp_clim1_edu3 tmax3_dp_clim1_edu4 tmax3_dp_clim2_edu1 tmax3_dp_clim2_edu2 tmax3_dp_clim2_edu3 tmax3_dp_clim2_edu4 
+				tmax3_dp_clim3_edu1 tmax3_dp_clim3_edu2 tmax3_dp_clim3_edu3 tmax3_dp_clim3_edu4 tmax3_dp_clim4_edu1 tmax3_dp_clim4_edu2 tmax3_dp_clim4_edu3 tmax3_dp_clim4_edu4 
+				tmax3_dp_clim5_edu1 tmax3_dp_clim5_edu2 tmax3_dp_clim5_edu3 tmax3_dp_clim5_edu4 sm_dp_clim1_edu1 sm_dp_clim1_edu2 sm_dp_clim1_edu3 sm_dp_clim1_edu4 
+				sm_dp_clim2_edu1 sm_dp_clim2_edu2 sm_dp_clim2_edu3 sm_dp_clim2_edu4 sm_dp_clim3_edu1 sm_dp_clim3_edu2 sm_dp_clim3_edu3 sm_dp_clim3_edu4 
+				sm_dp_clim4_edu1 sm_dp_clim4_edu2 sm_dp_clim4_edu3 sm_dp_clim4_edu4 sm_dp_clim5_edu1 sm_dp_clim5_edu2 sm_dp_clim5_edu3 sm_dp_clim5_edu4 
+				sm2_dp_clim1_edu1 sm2_dp_clim1_edu2 sm2_dp_clim1_edu3 sm2_dp_clim1_edu4 sm2_dp_clim2_edu1 sm2_dp_clim2_edu2 sm2_dp_clim2_edu3 sm2_dp_clim2_edu4 
+				sm2_dp_clim3_edu1 sm2_dp_clim3_edu2 sm2_dp_clim3_edu3 sm2_dp_clim3_edu4 sm2_dp_clim4_edu1 sm2_dp_clim4_edu2 sm2_dp_clim4_edu3 sm2_dp_clim4_edu4 
+				sm2_dp_clim5_edu1 sm2_dp_clim5_edu2 sm2_dp_clim5_edu3 sm2_dp_clim5_edu4 sm3_dp_clim1_edu1 sm3_dp_clim1_edu2 sm3_dp_clim1_edu3 sm3_dp_clim1_edu4 
+				sm3_dp_clim2_edu1 sm3_dp_clim2_edu2 sm3_dp_clim2_edu3 sm3_dp_clim2_edu4 sm3_dp_clim3_edu1 sm3_dp_clim3_edu2 sm3_dp_clim3_edu3 sm3_dp_clim3_edu4 
+				sm3_dp_clim4_edu1 sm3_dp_clim4_edu2 sm3_dp_clim4_edu3 sm3_dp_clim4_edu4 sm3_dp_clim5_edu1 sm3_dp_clim5_edu2 sm3_dp_clim5_edu3 sm3_dp_clim5_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T,S*edu"
+	gen model = "T,S*climzone*edu"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
@@ -161,58 +196,25 @@ quietly {
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
-* Using T,S cubic per sex
+* Using T,S cubic per climate zone and sex
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.sex c.sm_day_pop#i.sex c.tmax2_day_pop#i.sex c.sm2_day_pop#i.sex c.tmax3_day_pop#i.sex c.sm3_day_pop#i.sex
+#delimit ;
+global indepvar "tmax_dp_clim1_sex1 tmax_dp_clim1_sex2 tmax_dp_clim2_sex1 tmax_dp_clim2_sex2 tmax_dp_clim3_sex1 tmax_dp_clim3_sex2 tmax_dp_clim4_sex1 tmax_dp_clim4_sex2 tmax_dp_clim5_sex1 tmax_dp_clim5_sex2 
+				tmax2_dp_clim1_sex1 tmax2_dp_clim1_sex2 tmax2_dp_clim2_sex1 tmax2_dp_clim2_sex2 tmax2_dp_clim3_sex1 tmax2_dp_clim3_sex2 tmax2_dp_clim4_sex1 tmax2_dp_clim4_sex2 tmax2_dp_clim5_sex1 tmax2_dp_clim5_sex2 
+				tmax3_dp_clim1_sex1 tmax3_dp_clim1_sex2 tmax3_dp_clim2_sex1 tmax3_dp_clim2_sex2 tmax3_dp_clim3_sex1 tmax3_dp_clim3_sex2 tmax3_dp_clim4_sex1 tmax3_dp_clim4_sex2 tmax3_dp_clim5_sex1 tmax3_dp_clim5_sex2 
+				sm_dp_clim1_sex1 sm_dp_clim1_sex2 sm_dp_clim2_sex1 sm_dp_clim2_sex2 sm_dp_clim3_sex1 sm_dp_clim3_sex2 sm_dp_clim4_sex1 sm_dp_clim4_sex2 sm_dp_clim5_sex1 sm_dp_clim5_sex2 
+				sm2_dp_clim1_sex1 sm2_dp_clim1_sex2 sm2_dp_clim2_sex1 sm2_dp_clim2_sex2 sm2_dp_clim3_sex1 sm2_dp_clim3_sex2 sm2_dp_clim4_sex1 sm2_dp_clim4_sex2 sm2_dp_clim5_sex1 sm2_dp_clim5_sex2 
+				sm3_dp_clim1_sex1 sm3_dp_clim1_sex2 sm3_dp_clim2_sex1 sm3_dp_clim2_sex2 sm3_dp_clim3_sex1 sm3_dp_clim3_sex2 sm3_dp_clim4_sex1 sm3_dp_clim4_sex2 sm3_dp_clim5_sex1 sm3_dp_clim5_sex2";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T,S*sex"
+	gen model = "T,S*climzone*sex"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
 	if "$metric" == "crps" {
 		reshape long avcrps, i(model) j(seeds)
-	}
-	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
-}
-save "$input_dir/4_crossvalidation/rsqimm.dta", replace
-
-* Using T,S cubic per age and education
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
-quietly {
-	gen model = "T,S*(age+edu)"
-	if "$metric" == "rsquare" {
-		reshape long rsq, i(model) j(seeds)
-	}
-	if "$metric" == "crps" {
-		reshape long avcrps, i(model) j(seeds)
-	}
-	if "$folds" == "year" {
-		rename rsq rsqyear 
-	}
-	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
-}
-save "$input_dir/4_crossvalidation/rsqimm.dta", replace
-
-* Using T linear, S cubic per age and education
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.sm2_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.sm2_day_pop#i.edattain c.sm3_day_pop#i.edattain
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
-quietly {
-	gen model = "T1,S3*(age+edu)"
-	if "$metric" == "rsquare" {
-		reshape long rsq, i(model) j(seeds)
-	}
-	if "$metric" == "crps" {
-		reshape long avcrps, i(model) j(seeds)
-	}
-	if "$folds" == "year" {
-		rename rsq rsqyear 
 	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
@@ -220,7 +222,38 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Using T,S cubic per climate zone and age and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain c.tmax_day_pop#i.mainclimgroup c.sm_day_pop#i.mainclimgroup c.tmax2_day_pop#i.mainclimgroup c.sm2_day_pop#i.mainclimgroup c.tmax3_day_pop#i.mainclimgroup c.sm3_day_pop#i.mainclimgroup c.tmax_day_pop#i.mainclimgroup#i.edattain c.sm_day_pop#i.mainclimgroup#i.edattain c.tmax2_day_pop#i.mainclimgroup#i.edattain c.sm2_day_pop#i.mainclimgroup#i.edattain c.tmax3_day_pop#i.mainclimgroup#i.edattain c.sm3_day_pop#i.mainclimgroup#i.edattain c.tmax_day_pop#i.mainclimgroup#i.agemigcat c.sm_day_pop#i.mainclimgroup#i.agemigcat c.tmax2_day_pop#i.mainclimgroup#i.agemigcat c.sm2_day_pop#i.mainclimgroup#i.agemigcat c.tmax3_day_pop#i.mainclimgroup#i.agemigcat c.sm3_day_pop#i.mainclimgroup#i.agemigcat
+#delimit ;
+global indepvar "tmax_dp_clim1_age1 tmax_dp_clim1_age2 tmax_dp_clim1_age3 tmax_dp_clim1_age4 tmax_dp_clim2_age1 tmax_dp_clim2_age2 tmax_dp_clim2_age3 tmax_dp_clim2_age4 
+				tmax_dp_clim3_age1 tmax_dp_clim3_age2 tmax_dp_clim3_age3 tmax_dp_clim3_age4 tmax_dp_clim4_age1 tmax_dp_clim4_age2 tmax_dp_clim4_age3 tmax_dp_clim4_age4 
+				tmax_dp_clim5_age1 tmax_dp_clim5_age2 tmax_dp_clim5_age3 tmax_dp_clim5_age4 tmax2_dp_clim1_age1 tmax2_dp_clim1_age2 tmax2_dp_clim1_age3 tmax2_dp_clim1_age4 
+				tmax2_dp_clim2_age1 tmax2_dp_clim2_age2 tmax2_dp_clim2_age3 tmax2_dp_clim2_age4 tmax2_dp_clim3_age1 tmax2_dp_clim3_age2 tmax2_dp_clim3_age3 tmax2_dp_clim3_age4 
+				tmax2_dp_clim4_age1 tmax2_dp_clim4_age2 tmax2_dp_clim4_age3 tmax2_dp_clim4_age4 tmax2_dp_clim5_age1 tmax2_dp_clim5_age2 tmax2_dp_clim5_age3 tmax2_dp_clim5_age4 
+				tmax3_dp_clim1_age1 tmax3_dp_clim1_age2 tmax3_dp_clim1_age3 tmax3_dp_clim1_age4 tmax3_dp_clim2_age1 tmax3_dp_clim2_age2 tmax3_dp_clim2_age3 tmax3_dp_clim2_age4 
+				tmax3_dp_clim3_age1 tmax3_dp_clim3_age2 tmax3_dp_clim3_age3 tmax3_dp_clim3_age4 tmax3_dp_clim4_age1 tmax3_dp_clim4_age2 tmax3_dp_clim4_age3 tmax3_dp_clim4_age4 
+				tmax3_dp_clim5_age1 tmax3_dp_clim5_age2 tmax3_dp_clim5_age3 tmax3_dp_clim5_age4 sm_dp_clim1_age1 sm_dp_clim1_age2 sm_dp_clim1_age3 sm_dp_clim1_age4 
+				sm_dp_clim2_age1 sm_dp_clim2_age2 sm_dp_clim2_age3 sm_dp_clim2_age4 sm_dp_clim3_age1 sm_dp_clim3_age2 sm_dp_clim3_age3 sm_dp_clim3_age4 
+				sm_dp_clim4_age1 sm_dp_clim4_age2 sm_dp_clim4_age3 sm_dp_clim4_age4 sm_dp_clim5_age1 sm_dp_clim5_age2 sm_dp_clim5_age3 sm_dp_clim5_age4 
+				sm2_dp_clim1_age1 sm2_dp_clim1_age2 sm2_dp_clim1_age3 sm2_dp_clim1_age4 sm2_dp_clim2_age1 sm2_dp_clim2_age2 sm2_dp_clim2_age3 sm2_dp_clim2_age4 
+				sm2_dp_clim3_age1 sm2_dp_clim3_age2 sm2_dp_clim3_age3 sm2_dp_clim3_age4 sm2_dp_clim4_age1 sm2_dp_clim4_age2 sm2_dp_clim4_age3 sm2_dp_clim4_age4 
+				sm2_dp_clim5_age1 sm2_dp_clim5_age2 sm2_dp_clim5_age3 sm2_dp_clim5_age4 sm3_dp_clim1_age1 sm3_dp_clim1_age2 sm3_dp_clim1_age3 sm3_dp_clim1_age4 
+				sm3_dp_clim2_age1 sm3_dp_clim2_age2 sm3_dp_clim2_age3 sm3_dp_clim2_age4 sm3_dp_clim3_age1 sm3_dp_clim3_age2 sm3_dp_clim3_age3 sm3_dp_clim3_age4 
+				sm3_dp_clim4_age1 sm3_dp_clim4_age2 sm3_dp_clim4_age3 sm3_dp_clim4_age4 sm3_dp_clim5_age1 sm3_dp_clim5_age2 sm3_dp_clim5_age3 sm3_dp_clim5_age4 
+				tmax_dp_clim1_edu1 tmax_dp_clim1_edu2 tmax_dp_clim1_edu3 tmax_dp_clim1_edu4 tmax_dp_clim2_edu1 tmax_dp_clim2_edu2 tmax_dp_clim2_edu3 tmax_dp_clim2_edu4 
+				tmax_dp_clim3_edu1 tmax_dp_clim3_edu2 tmax_dp_clim3_edu3 tmax_dp_clim3_edu4 tmax_dp_clim4_edu1 tmax_dp_clim4_edu2 tmax_dp_clim4_edu3 tmax_dp_clim4_edu4 
+				tmax_dp_clim5_edu1 tmax_dp_clim5_edu2 tmax_dp_clim5_edu3 tmax_dp_clim5_edu4 tmax2_dp_clim1_edu1 tmax2_dp_clim1_edu2 tmax2_dp_clim1_edu3 tmax2_dp_clim1_edu4 
+				tmax2_dp_clim2_edu1 tmax2_dp_clim2_edu2 tmax2_dp_clim2_edu3 tmax2_dp_clim2_edu4 tmax2_dp_clim3_edu1 tmax2_dp_clim3_edu2 tmax2_dp_clim3_edu3 tmax2_dp_clim3_edu4 
+				tmax2_dp_clim4_edu1 tmax2_dp_clim4_edu2 tmax2_dp_clim4_edu3 tmax2_dp_clim4_edu4 tmax2_dp_clim5_edu1 tmax2_dp_clim5_edu2 tmax2_dp_clim5_edu3 tmax2_dp_clim5_edu4 
+				tmax3_dp_clim1_edu1 tmax3_dp_clim1_edu2 tmax3_dp_clim1_edu3 tmax3_dp_clim1_edu4 tmax3_dp_clim2_edu1 tmax3_dp_clim2_edu2 tmax3_dp_clim2_edu3 tmax3_dp_clim2_edu4 
+				tmax3_dp_clim3_edu1 tmax3_dp_clim3_edu2 tmax3_dp_clim3_edu3 tmax3_dp_clim3_edu4 tmax3_dp_clim4_edu1 tmax3_dp_clim4_edu2 tmax3_dp_clim4_edu3 tmax3_dp_clim4_edu4 
+				tmax3_dp_clim5_edu1 tmax3_dp_clim5_edu2 tmax3_dp_clim5_edu3 tmax3_dp_clim5_edu4 sm_dp_clim1_edu1 sm_dp_clim1_edu2 sm_dp_clim1_edu3 sm_dp_clim1_edu4 
+				sm_dp_clim2_edu1 sm_dp_clim2_edu2 sm_dp_clim2_edu3 sm_dp_clim2_edu4 sm_dp_clim3_edu1 sm_dp_clim3_edu2 sm_dp_clim3_edu3 sm_dp_clim3_edu4 
+				sm_dp_clim4_edu1 sm_dp_clim4_edu2 sm_dp_clim4_edu3 sm_dp_clim4_edu4 sm_dp_clim5_edu1 sm_dp_clim5_edu2 sm_dp_clim5_edu3 sm_dp_clim5_edu4 
+				sm2_dp_clim1_edu1 sm2_dp_clim1_edu2 sm2_dp_clim1_edu3 sm2_dp_clim1_edu4 sm2_dp_clim2_edu1 sm2_dp_clim2_edu2 sm2_dp_clim2_edu3 sm2_dp_clim2_edu4 
+				sm2_dp_clim3_edu1 sm2_dp_clim3_edu2 sm2_dp_clim3_edu3 sm2_dp_clim3_edu4 sm2_dp_clim4_edu1 sm2_dp_clim4_edu2 sm2_dp_clim4_edu3 sm2_dp_clim4_edu4 
+				sm2_dp_clim5_edu1 sm2_dp_clim5_edu2 sm2_dp_clim5_edu3 sm2_dp_clim5_edu4 sm3_dp_clim1_edu1 sm3_dp_clim1_edu2 sm3_dp_clim1_edu3 sm3_dp_clim1_edu4 
+				sm3_dp_clim2_edu1 sm3_dp_clim2_edu2 sm3_dp_clim2_edu3 sm3_dp_clim2_edu4 sm3_dp_clim3_edu1 sm3_dp_clim3_edu2 sm3_dp_clim3_edu3 sm3_dp_clim3_edu4 
+				sm3_dp_clim4_edu1 sm3_dp_clim4_edu2 sm3_dp_clim4_edu3 sm3_dp_clim4_edu4 sm3_dp_clim5_edu1 sm3_dp_clim5_edu2 sm3_dp_clim5_edu3 sm3_dp_clim5_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -231,17 +264,98 @@ quietly {
 	if "$metric" == "crps" {
 		reshape long avcrps, i(model) j(seeds)
 	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
 }
-save "$input_dir/4_Crossvalidation/rsqimm.dta", replace
+save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
-* Using T,S cubic per age, education, and sex
+* Using T linear, S cubic per climate zone and age and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop c.sm_day_pop c.tmax2_day_pop c.sm2_day_pop c.tmax3_day_pop c.sm3_day_pop c.tmax_day_pop#i.agemigcat c.sm_day_pop#i.agemigcat c.tmax2_day_pop#i.agemigcat c.sm2_day_pop#i.agemigcat c.tmax3_day_pop#i.agemigcat c.sm3_day_pop#i.agemigcat c.tmax_day_pop#i.edattain c.sm_day_pop#i.edattain c.tmax2_day_pop#i.edattain c.sm2_day_pop#i.edattain c.tmax3_day_pop#i.edattain c.sm3_day_pop#i.edattain c.tmax_day_pop#i.sex c.sm_day_pop#i.sex c.tmax2_day_pop#i.sex c.sm2_day_pop#i.sex c.tmax3_day_pop#i.sex c.sm3_day_pop#i.sex
+#delimit ;
+global indepvar "tmax_dp_clim1_age1 tmax_dp_clim1_age2 tmax_dp_clim1_age3 tmax_dp_clim1_age4 tmax_dp_clim2_age1 tmax_dp_clim2_age2 tmax_dp_clim2_age3 tmax_dp_clim2_age4 
+				tmax_dp_clim3_age1 tmax_dp_clim3_age2 tmax_dp_clim3_age3 tmax_dp_clim3_age4 tmax_dp_clim4_age1 tmax_dp_clim4_age2 tmax_dp_clim4_age3 tmax_dp_clim4_age4 
+				tmax_dp_clim5_age1 tmax_dp_clim5_age2 tmax_dp_clim5_age3 tmax_dp_clim5_age4 sm_dp_clim1_age1 sm_dp_clim1_age2 sm_dp_clim1_age3 sm_dp_clim1_age4 
+				sm_dp_clim2_age1 sm_dp_clim2_age2 sm_dp_clim2_age3 sm_dp_clim2_age4 sm_dp_clim3_age1 sm_dp_clim3_age2 sm_dp_clim3_age3 sm_dp_clim3_age4 
+				sm_dp_clim4_age1 sm_dp_clim4_age2 sm_dp_clim4_age3 sm_dp_clim4_age4 sm_dp_clim5_age1 sm_dp_clim5_age2 sm_dp_clim5_age3 sm_dp_clim5_age4 
+				sm2_dp_clim1_age1 sm2_dp_clim1_age2 sm2_dp_clim1_age3 sm2_dp_clim1_age4 sm2_dp_clim2_age1 sm2_dp_clim2_age2 sm2_dp_clim2_age3 sm2_dp_clim2_age4 
+				sm2_dp_clim3_age1 sm2_dp_clim3_age2 sm2_dp_clim3_age3 sm2_dp_clim3_age4 sm2_dp_clim4_age1 sm2_dp_clim4_age2 sm2_dp_clim4_age3 sm2_dp_clim4_age4 
+				sm2_dp_clim5_age1 sm2_dp_clim5_age2 sm2_dp_clim5_age3 sm2_dp_clim5_age4 sm3_dp_clim1_age1 sm3_dp_clim1_age2 sm3_dp_clim1_age3 sm3_dp_clim1_age4 
+				sm3_dp_clim2_age1 sm3_dp_clim2_age2 sm3_dp_clim2_age3 sm3_dp_clim2_age4 sm3_dp_clim3_age1 sm3_dp_clim3_age2 sm3_dp_clim3_age3 sm3_dp_clim3_age4 
+				sm3_dp_clim4_age1 sm3_dp_clim4_age2 sm3_dp_clim4_age3 sm3_dp_clim4_age4 sm3_dp_clim5_age1 sm3_dp_clim5_age2 sm3_dp_clim5_age3 sm3_dp_clim5_age4 
+				tmax_dp_clim1_edu1 tmax_dp_clim1_edu2 tmax_dp_clim1_edu3 tmax_dp_clim1_edu4 tmax_dp_clim2_edu1 tmax_dp_clim2_edu2 tmax_dp_clim2_edu3 tmax_dp_clim2_edu4 
+				tmax_dp_clim3_edu1 tmax_dp_clim3_edu2 tmax_dp_clim3_edu3 tmax_dp_clim3_edu4 tmax_dp_clim4_edu1 tmax_dp_clim4_edu2 tmax_dp_clim4_edu3 tmax_dp_clim4_edu4 
+				tmax_dp_clim5_edu1 tmax_dp_clim5_edu2 tmax_dp_clim5_edu3 tmax_dp_clim5_edu4 sm_dp_clim1_edu1 sm_dp_clim1_edu2 sm_dp_clim1_edu3 sm_dp_clim1_edu4 
+				sm_dp_clim2_edu1 sm_dp_clim2_edu2 sm_dp_clim2_edu3 sm_dp_clim2_edu4 sm_dp_clim3_edu1 sm_dp_clim3_edu2 sm_dp_clim3_edu3 sm_dp_clim3_edu4 
+				sm_dp_clim4_edu1 sm_dp_clim4_edu2 sm_dp_clim4_edu3 sm_dp_clim4_edu4 sm_dp_clim5_edu1 sm_dp_clim5_edu2 sm_dp_clim5_edu3 sm_dp_clim5_edu4 
+				sm2_dp_clim1_edu1 sm2_dp_clim1_edu2 sm2_dp_clim1_edu3 sm2_dp_clim1_edu4 sm2_dp_clim2_edu1 sm2_dp_clim2_edu2 sm2_dp_clim2_edu3 sm2_dp_clim2_edu4 
+				sm2_dp_clim3_edu1 sm2_dp_clim3_edu2 sm2_dp_clim3_edu3 sm2_dp_clim3_edu4 sm2_dp_clim4_edu1 sm2_dp_clim4_edu2 sm2_dp_clim4_edu3 sm2_dp_clim4_edu4 
+				sm2_dp_clim5_edu1 sm2_dp_clim5_edu2 sm2_dp_clim5_edu3 sm2_dp_clim5_edu4 sm3_dp_clim1_edu1 sm3_dp_clim1_edu2 sm3_dp_clim1_edu3 sm3_dp_clim1_edu4 
+				sm3_dp_clim2_edu1 sm3_dp_clim2_edu2 sm3_dp_clim2_edu3 sm3_dp_clim2_edu4 sm3_dp_clim3_edu1 sm3_dp_clim3_edu2 sm3_dp_clim3_edu3 sm3_dp_clim3_edu4 
+				sm3_dp_clim4_edu1 sm3_dp_clim4_edu2 sm3_dp_clim4_edu3 sm3_dp_clim4_edu4 sm3_dp_clim5_edu1 sm3_dp_clim5_edu2 sm3_dp_clim5_edu3 sm3_dp_clim5_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T,S*(age+edu+sex)"
+	gen model = "T1,S3*climzone*(age+edu)"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
+}
+save "$input_dir/4_crossvalidation/rsqimm.dta", replace
+
+* Using T,S cubic per climate zone and age, education, and sex
+use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+#delimit ;
+global indepvar "tmax_dp_clim1_age1 tmax_dp_clim1_age2 tmax_dp_clim1_age3 tmax_dp_clim1_age4 tmax_dp_clim2_age1 tmax_dp_clim2_age2 tmax_dp_clim2_age3 tmax_dp_clim2_age4 
+				tmax_dp_clim3_age1 tmax_dp_clim3_age2 tmax_dp_clim3_age3 tmax_dp_clim3_age4 tmax_dp_clim4_age1 tmax_dp_clim4_age2 tmax_dp_clim4_age3 tmax_dp_clim4_age4 
+				tmax_dp_clim5_age1 tmax_dp_clim5_age2 tmax_dp_clim5_age3 tmax_dp_clim5_age4 tmax2_dp_clim1_age1 tmax2_dp_clim1_age2 tmax2_dp_clim1_age3 tmax2_dp_clim1_age4 
+				tmax2_dp_clim2_age1 tmax2_dp_clim2_age2 tmax2_dp_clim2_age3 tmax2_dp_clim2_age4 tmax2_dp_clim3_age1 tmax2_dp_clim3_age2 tmax2_dp_clim3_age3 tmax2_dp_clim3_age4 
+				tmax2_dp_clim4_age1 tmax2_dp_clim4_age2 tmax2_dp_clim4_age3 tmax2_dp_clim4_age4 tmax2_dp_clim5_age1 tmax2_dp_clim5_age2 tmax2_dp_clim5_age3 tmax2_dp_clim5_age4 
+				tmax3_dp_clim1_age1 tmax3_dp_clim1_age2 tmax3_dp_clim1_age3 tmax3_dp_clim1_age4 tmax3_dp_clim2_age1 tmax3_dp_clim2_age2 tmax3_dp_clim2_age3 tmax3_dp_clim2_age4 
+				tmax3_dp_clim3_age1 tmax3_dp_clim3_age2 tmax3_dp_clim3_age3 tmax3_dp_clim3_age4 tmax3_dp_clim4_age1 tmax3_dp_clim4_age2 tmax3_dp_clim4_age3 tmax3_dp_clim4_age4 
+				tmax3_dp_clim5_age1 tmax3_dp_clim5_age2 tmax3_dp_clim5_age3 tmax3_dp_clim5_age4 sm_dp_clim1_age1 sm_dp_clim1_age2 sm_dp_clim1_age3 sm_dp_clim1_age4 
+				sm_dp_clim2_age1 sm_dp_clim2_age2 sm_dp_clim2_age3 sm_dp_clim2_age4 sm_dp_clim3_age1 sm_dp_clim3_age2 sm_dp_clim3_age3 sm_dp_clim3_age4 
+				sm_dp_clim4_age1 sm_dp_clim4_age2 sm_dp_clim4_age3 sm_dp_clim4_age4 sm_dp_clim5_age1 sm_dp_clim5_age2 sm_dp_clim5_age3 sm_dp_clim5_age4 
+				sm2_dp_clim1_age1 sm2_dp_clim1_age2 sm2_dp_clim1_age3 sm2_dp_clim1_age4 sm2_dp_clim2_age1 sm2_dp_clim2_age2 sm2_dp_clim2_age3 sm2_dp_clim2_age4 
+				sm2_dp_clim3_age1 sm2_dp_clim3_age2 sm2_dp_clim3_age3 sm2_dp_clim3_age4 sm2_dp_clim4_age1 sm2_dp_clim4_age2 sm2_dp_clim4_age3 sm2_dp_clim4_age4 
+				sm2_dp_clim5_age1 sm2_dp_clim5_age2 sm2_dp_clim5_age3 sm2_dp_clim5_age4 sm3_dp_clim1_age1 sm3_dp_clim1_age2 sm3_dp_clim1_age3 sm3_dp_clim1_age4 
+				sm3_dp_clim2_age1 sm3_dp_clim2_age2 sm3_dp_clim2_age3 sm3_dp_clim2_age4 sm3_dp_clim3_age1 sm3_dp_clim3_age2 sm3_dp_clim3_age3 sm3_dp_clim3_age4 
+				sm3_dp_clim4_age1 sm3_dp_clim4_age2 sm3_dp_clim4_age3 sm3_dp_clim4_age4 sm3_dp_clim5_age1 sm3_dp_clim5_age2 sm3_dp_clim5_age3 sm3_dp_clim5_age4 
+				tmax_dp_clim1_edu1 tmax_dp_clim1_edu2 tmax_dp_clim1_edu3 tmax_dp_clim1_edu4 tmax_dp_clim2_edu1 tmax_dp_clim2_edu2 tmax_dp_clim2_edu3 tmax_dp_clim2_edu4 
+				tmax_dp_clim3_edu1 tmax_dp_clim3_edu2 tmax_dp_clim3_edu3 tmax_dp_clim3_edu4 tmax_dp_clim4_edu1 tmax_dp_clim4_edu2 tmax_dp_clim4_edu3 tmax_dp_clim4_edu4 
+				tmax_dp_clim5_edu1 tmax_dp_clim5_edu2 tmax_dp_clim5_edu3 tmax_dp_clim5_edu4 tmax2_dp_clim1_edu1 tmax2_dp_clim1_edu2 tmax2_dp_clim1_edu3 tmax2_dp_clim1_edu4 
+				tmax2_dp_clim2_edu1 tmax2_dp_clim2_edu2 tmax2_dp_clim2_edu3 tmax2_dp_clim2_edu4 tmax2_dp_clim3_edu1 tmax2_dp_clim3_edu2 tmax2_dp_clim3_edu3 tmax2_dp_clim3_edu4 
+				tmax2_dp_clim4_edu1 tmax2_dp_clim4_edu2 tmax2_dp_clim4_edu3 tmax2_dp_clim4_edu4 tmax2_dp_clim5_edu1 tmax2_dp_clim5_edu2 tmax2_dp_clim5_edu3 tmax2_dp_clim5_edu4 
+				tmax3_dp_clim1_edu1 tmax3_dp_clim1_edu2 tmax3_dp_clim1_edu3 tmax3_dp_clim1_edu4 tmax3_dp_clim2_edu1 tmax3_dp_clim2_edu2 tmax3_dp_clim2_edu3 tmax3_dp_clim2_edu4 
+				tmax3_dp_clim3_edu1 tmax3_dp_clim3_edu2 tmax3_dp_clim3_edu3 tmax3_dp_clim3_edu4 tmax3_dp_clim4_edu1 tmax3_dp_clim4_edu2 tmax3_dp_clim4_edu3 tmax3_dp_clim4_edu4 
+				tmax3_dp_clim5_edu1 tmax3_dp_clim5_edu2 tmax3_dp_clim5_edu3 tmax3_dp_clim5_edu4 sm_dp_clim1_edu1 sm_dp_clim1_edu2 sm_dp_clim1_edu3 sm_dp_clim1_edu4 
+				sm_dp_clim2_edu1 sm_dp_clim2_edu2 sm_dp_clim2_edu3 sm_dp_clim2_edu4 sm_dp_clim3_edu1 sm_dp_clim3_edu2 sm_dp_clim3_edu3 sm_dp_clim3_edu4 
+				sm_dp_clim4_edu1 sm_dp_clim4_edu2 sm_dp_clim4_edu3 sm_dp_clim4_edu4 sm_dp_clim5_edu1 sm_dp_clim5_edu2 sm_dp_clim5_edu3 sm_dp_clim5_edu4 
+				sm2_dp_clim1_edu1 sm2_dp_clim1_edu2 sm2_dp_clim1_edu3 sm2_dp_clim1_edu4 sm2_dp_clim2_edu1 sm2_dp_clim2_edu2 sm2_dp_clim2_edu3 sm2_dp_clim2_edu4 
+				sm2_dp_clim3_edu1 sm2_dp_clim3_edu2 sm2_dp_clim3_edu3 sm2_dp_clim3_edu4 sm2_dp_clim4_edu1 sm2_dp_clim4_edu2 sm2_dp_clim4_edu3 sm2_dp_clim4_edu4 
+				sm2_dp_clim5_edu1 sm2_dp_clim5_edu2 sm2_dp_clim5_edu3 sm2_dp_clim5_edu4 sm3_dp_clim1_edu1 sm3_dp_clim1_edu2 sm3_dp_clim1_edu3 sm3_dp_clim1_edu4 
+				sm3_dp_clim2_edu1 sm3_dp_clim2_edu2 sm3_dp_clim2_edu3 sm3_dp_clim2_edu4 sm3_dp_clim3_edu1 sm3_dp_clim3_edu2 sm3_dp_clim3_edu3 sm3_dp_clim3_edu4 
+				sm3_dp_clim4_edu1 sm3_dp_clim4_edu2 sm3_dp_clim4_edu3 sm3_dp_clim4_edu4 sm3_dp_clim5_edu1 sm3_dp_clim5_edu2 sm3_dp_clim5_edu3 sm3_dp_clim5_edu4 
+				tmax_dp_clim1_sex1 tmax_dp_clim1_sex2 tmax_dp_clim2_sex1 tmax_dp_clim2_sex2 tmax_dp_clim3_sex1 tmax_dp_clim3_sex2 tmax_dp_clim4_sex1 tmax_dp_clim4_sex2 tmax_dp_clim5_sex1 tmax_dp_clim5_sex2 
+				tmax2_dp_clim1_sex1 tmax2_dp_clim1_sex2 tmax2_dp_clim2_sex1 tmax2_dp_clim2_sex2 tmax2_dp_clim3_sex1 tmax2_dp_clim3_sex2 tmax2_dp_clim4_sex1 tmax2_dp_clim4_sex2 tmax2_dp_clim5_sex1 tmax2_dp_clim5_sex2 
+				tmax3_dp_clim1_sex1 tmax3_dp_clim1_sex2 tmax3_dp_clim2_sex1 tmax3_dp_clim2_sex2 tmax3_dp_clim3_sex1 tmax3_dp_clim3_sex2 tmax3_dp_clim4_sex1 tmax3_dp_clim4_sex2 tmax3_dp_clim5_sex1 tmax3_dp_clim5_sex2 
+				sm_dp_clim1_sex1 sm_dp_clim1_sex2 sm_dp_clim2_sex1 sm_dp_clim2_sex2 sm_dp_clim3_sex1 sm_dp_clim3_sex2 sm_dp_clim4_sex1 sm_dp_clim4_sex2 sm_dp_clim5_sex1 sm_dp_clim5_sex2 
+				sm2_dp_clim1_sex1 sm2_dp_clim1_sex2 sm2_dp_clim2_sex1 sm2_dp_clim2_sex2 sm2_dp_clim3_sex1 sm2_dp_clim3_sex2 sm2_dp_clim4_sex1 sm2_dp_clim4_sex2 sm2_dp_clim5_sex1 sm2_dp_clim5_sex2 
+				sm3_dp_clim1_sex1 sm3_dp_clim1_sex2 sm3_dp_clim2_sex1 sm3_dp_clim2_sex2 sm3_dp_clim3_sex1 sm3_dp_clim3_sex2 sm3_dp_clim4_sex1 sm3_dp_clim4_sex2 sm3_dp_clim5_sex1 sm3_dp_clim5_sex2";
+#delimit cr				
+do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
+use "$input_dir/2_intermediate/_residualized_cross.dta" 
+quietly {
+	gen model = "T,S*climzone*(age+edu+sex)"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
@@ -252,13 +366,44 @@ quietly {
 }
 save "$input_dir/4_Crossvalidation/rsqimm.dta", replace
 
-* Using placebo version of best performing model: T,S cubic per age and education
+* Using placebo version of best performing model: T,S cubic per climate zone and age and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar c.tmax_day_pop_rand c.sm_day_pop_rand c.tmax2_day_pop_rand c.sm2_day_pop_rand c.tmax3_day_pop_rand c.sm3_day_pop_rand c.tmax_day_pop_rand#i.agemigcat c.sm_day_pop_rand#i.agemigcat c.tmax2_day_pop_rand#i.agemigcat c.sm2_day_pop_rand#i.agemigcat c.tmax3_day_pop_rand#i.agemigcat c.sm3_day_pop_rand#i.agemigcat c.tmax_day_pop_rand#i.edattain c.sm_day_pop_rand#i.edattain c.tmax2_day_pop_rand#i.edattain c.sm2_day_pop_rand#i.edattain c.tmax3_day_pop_rand#i.edattain c.sm3_day_pop_rand#i.edattain
+#delimit ;
+global indepvar "tmax_dp_rand_clim1_age1 tmax_dp_rand_clim1_age2 tmax_dp_rand_clim1_age3 tmax_dp_rand_clim1_age4 tmax_dp_rand_clim2_age1 tmax_dp_rand_clim2_age2 tmax_dp_rand_clim2_age3 tmax_dp_rand_clim2_age4 
+				tmax_dp_rand_clim3_age1 tmax_dp_rand_clim3_age2 tmax_dp_rand_clim3_age3 tmax_dp_rand_clim3_age4 tmax_dp_rand_clim4_age1 tmax_dp_rand_clim4_age2 tmax_dp_rand_clim4_age3 tmax_dp_rand_clim4_age4 
+				tmax_dp_rand_clim5_age1 tmax_dp_rand_clim5_age2 tmax_dp_rand_clim5_age3 tmax_dp_rand_clim5_age4 tmax2_dp_rand_clim1_age1 tmax2_dp_rand_clim1_age2 tmax2_dp_rand_clim1_age3 tmax2_dp_rand_clim1_age4 
+				tmax2_dp_rand_clim2_age1 tmax2_dp_rand_clim2_age2 tmax2_dp_rand_clim2_age3 tmax2_dp_rand_clim2_age4 tmax2_dp_rand_clim3_age1 tmax2_dp_rand_clim3_age2 tmax2_dp_rand_clim3_age3 tmax2_dp_rand_clim3_age4 
+				tmax2_dp_rand_clim4_age1 tmax2_dp_rand_clim4_age2 tmax2_dp_rand_clim4_age3 tmax2_dp_rand_clim4_age4 tmax2_dp_rand_clim5_age1 tmax2_dp_rand_clim5_age2 tmax2_dp_rand_clim5_age3 tmax2_dp_rand_clim5_age4 
+				tmax3_dp_rand_clim1_age1 tmax3_dp_rand_clim1_age2 tmax3_dp_rand_clim1_age3 tmax3_dp_rand_clim1_age4 tmax3_dp_rand_clim2_age1 tmax3_dp_rand_clim2_age2 tmax3_dp_rand_clim2_age3 tmax3_dp_rand_clim2_age4 
+				tmax3_dp_rand_clim3_age1 tmax3_dp_rand_clim3_age2 tmax3_dp_rand_clim3_age3 tmax3_dp_rand_clim3_age4 tmax3_dp_rand_clim4_age1 tmax3_dp_rand_clim4_age2 tmax3_dp_rand_clim4_age3 tmax3_dp_rand_clim4_age4 
+				tmax3_dp_rand_clim5_age1 tmax3_dp_rand_clim5_age2 tmax3_dp_rand_clim5_age3 tmax3_dp_rand_clim5_age4 sm_dp_rand_clim1_age1 sm_dp_rand_clim1_age2 sm_dp_rand_clim1_age3 sm_dp_rand_clim1_age4 
+				sm_dp_rand_clim2_age1 sm_dp_rand_clim2_age2 sm_dp_rand_clim2_age3 sm_dp_rand_clim2_age4 sm_dp_rand_clim3_age1 sm_dp_rand_clim3_age2 sm_dp_rand_clim3_age3 sm_dp_rand_clim3_age4 
+				sm_dp_rand_clim4_age1 sm_dp_rand_clim4_age2 sm_dp_rand_clim4_age3 sm_dp_rand_clim4_age4 sm_dp_rand_clim5_age1 sm_dp_rand_clim5_age2 sm_dp_rand_clim5_age3 sm_dp_rand_clim5_age4 
+				sm2_dp_rand_clim1_age1 sm2_dp_rand_clim1_age2 sm2_dp_rand_clim1_age3 sm2_dp_rand_clim1_age4 sm2_dp_rand_clim2_age1 sm2_dp_rand_clim2_age2 sm2_dp_rand_clim2_age3 sm2_dp_rand_clim2_age4 
+				sm2_dp_rand_clim3_age1 sm2_dp_rand_clim3_age2 sm2_dp_rand_clim3_age3 sm2_dp_rand_clim3_age4 sm2_dp_rand_clim4_age1 sm2_dp_rand_clim4_age2 sm2_dp_rand_clim4_age3 sm2_dp_rand_clim4_age4 
+				sm2_dp_rand_clim5_age1 sm2_dp_rand_clim5_age2 sm2_dp_rand_clim5_age3 sm2_dp_rand_clim5_age4 sm3_dp_rand_clim1_age1 sm3_dp_rand_clim1_age2 sm3_dp_rand_clim1_age3 sm3_dp_rand_clim1_age4 
+				sm3_dp_rand_clim2_age1 sm3_dp_rand_clim2_age2 sm3_dp_rand_clim2_age3 sm3_dp_rand_clim2_age4 sm3_dp_rand_clim3_age1 sm3_dp_rand_clim3_age2 sm3_dp_rand_clim3_age3 sm3_dp_rand_clim3_age4 
+				sm3_dp_rand_clim4_age1 sm3_dp_rand_clim4_age2 sm3_dp_rand_clim4_age3 sm3_dp_rand_clim4_age4 sm3_dp_rand_clim5_age1 sm3_dp_rand_clim5_age2 sm3_dp_rand_clim5_age3 sm3_dp_rand_clim5_age4 
+				tmax_dp_rand_clim1_edu1 tmax_dp_rand_clim1_edu2 tmax_dp_rand_clim1_edu3 tmax_dp_rand_clim1_edu4 tmax_dp_rand_clim2_edu1 tmax_dp_rand_clim2_edu2 tmax_dp_rand_clim2_edu3 tmax_dp_rand_clim2_edu4 
+				tmax_dp_rand_clim3_edu1 tmax_dp_rand_clim3_edu2 tmax_dp_rand_clim3_edu3 tmax_dp_rand_clim3_edu4 tmax_dp_rand_clim4_edu1 tmax_dp_rand_clim4_edu2 tmax_dp_rand_clim4_edu3 tmax_dp_rand_clim4_edu4 
+				tmax_dp_rand_clim5_edu1 tmax_dp_rand_clim5_edu2 tmax_dp_rand_clim5_edu3 tmax_dp_rand_clim5_edu4 tmax2_dp_rand_clim1_edu1 tmax2_dp_rand_clim1_edu2 tmax2_dp_rand_clim1_edu3 tmax2_dp_rand_clim1_edu4 
+				tmax2_dp_rand_clim2_edu1 tmax2_dp_rand_clim2_edu2 tmax2_dp_rand_clim2_edu3 tmax2_dp_rand_clim2_edu4 tmax2_dp_rand_clim3_edu1 tmax2_dp_rand_clim3_edu2 tmax2_dp_rand_clim3_edu3 tmax2_dp_rand_clim3_edu4 
+				tmax2_dp_rand_clim4_edu1 tmax2_dp_rand_clim4_edu2 tmax2_dp_rand_clim4_edu3 tmax2_dp_rand_clim4_edu4 tmax2_dp_rand_clim5_edu1 tmax2_dp_rand_clim5_edu2 tmax2_dp_rand_clim5_edu3 tmax2_dp_rand_clim5_edu4 
+				tmax3_dp_rand_clim1_edu1 tmax3_dp_rand_clim1_edu2 tmax3_dp_rand_clim1_edu3 tmax3_dp_rand_clim1_edu4 tmax3_dp_rand_clim2_edu1 tmax3_dp_rand_clim2_edu2 tmax3_dp_rand_clim2_edu3 tmax3_dp_rand_clim2_edu4 
+				tmax3_dp_rand_clim3_edu1 tmax3_dp_rand_clim3_edu2 tmax3_dp_rand_clim3_edu3 tmax3_dp_rand_clim3_edu4 tmax3_dp_rand_clim4_edu1 tmax3_dp_rand_clim4_edu2 tmax3_dp_rand_clim4_edu3 tmax3_dp_rand_clim4_edu4 
+				tmax3_dp_rand_clim5_edu1 tmax3_dp_rand_clim5_edu2 tmax3_dp_rand_clim5_edu3 tmax3_dp_rand_clim5_edu4 sm_dp_rand_clim1_edu1 sm_dp_rand_clim1_edu2 sm_dp_rand_clim1_edu3 sm_dp_rand_clim1_edu4 
+				sm_dp_rand_clim2_edu1 sm_dp_rand_clim2_edu2 sm_dp_rand_clim2_edu3 sm_dp_rand_clim2_edu4 sm_dp_rand_clim3_edu1 sm_dp_rand_clim3_edu2 sm_dp_rand_clim3_edu3 sm_dp_rand_clim3_edu4 
+				sm_dp_rand_clim4_edu1 sm_dp_rand_clim4_edu2 sm_dp_rand_clim4_edu3 sm_dp_rand_clim4_edu4 sm_dp_rand_clim5_edu1 sm_dp_rand_clim5_edu2 sm_dp_rand_clim5_edu3 sm_dp_rand_clim5_edu4 
+				sm2_dp_rand_clim1_edu1 sm2_dp_rand_clim1_edu2 sm2_dp_rand_clim1_edu3 sm2_dp_rand_clim1_edu4 sm2_dp_rand_clim2_edu1 sm2_dp_rand_clim2_edu2 sm2_dp_rand_clim2_edu3 sm2_dp_rand_clim2_edu4 
+				sm2_dp_rand_clim3_edu1 sm2_dp_rand_clim3_edu2 sm2_dp_rand_clim3_edu3 sm2_dp_rand_clim3_edu4 sm2_dp_rand_clim4_edu1 sm2_dp_rand_clim4_edu2 sm2_dp_rand_clim4_edu3 sm2_dp_rand_clim4_edu4 
+				sm2_dp_rand_clim5_edu1 sm2_dp_rand_clim5_edu2 sm2_dp_rand_clim5_edu3 sm2_dp_rand_clim5_edu4 sm3_dp_rand_clim1_edu1 sm3_dp_rand_clim1_edu2 sm3_dp_rand_clim1_edu3 sm3_dp_rand_clim1_edu4 
+				sm3_dp_rand_clim2_edu1 sm3_dp_rand_clim2_edu2 sm3_dp_rand_clim2_edu3 sm3_dp_rand_clim2_edu4 sm3_dp_rand_clim3_edu1 sm3_dp_rand_clim3_edu2 sm3_dp_rand_clim3_edu3 sm3_dp_rand_clim3_edu4 
+				sm3_dp_rand_clim4_edu1 sm3_dp_rand_clim4_edu2 sm3_dp_rand_clim4_edu3 sm3_dp_rand_clim4_edu4 sm3_dp_rand_clim5_edu1 sm3_dp_rand_clim5_edu2 sm3_dp_rand_clim5_edu3 sm3_dp_rand_clim5_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T,S placebo*(age+edu)"
+	gen model = "T,S placebo*climzone*(age+edu)"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}

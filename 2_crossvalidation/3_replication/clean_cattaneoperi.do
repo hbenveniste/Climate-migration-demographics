@@ -28,10 +28,10 @@ drop if year<=1960
 drop if year>2000
 drop if oecd==1
 drop _WEOFF
-for var wtem wpre : bys iso2:  egen temp6170X = mean(X) if year > 1960 & year <= 1970 / bys iso2: egen mean6170X = mean(temp6170X)
-for var wtem wpre : bys iso2:  egen temp7180X = mean(X) if year > 1970 & year <= 1980 / bys iso2: egen mean7180X = mean(temp7180X)
-for var wtem wpre : bys iso2:  egen temp8190X = mean(X) if year > 1980 & year <= 1990 / bys iso2: egen mean8190X = mean(temp8190X)
-for var wtem wpre : bys iso2:  egen temp9100X = mean(X) if year > 1990 & year <= 2000 / bys iso2: egen mean9100X = mean(temp9100X)
+for var wtem wpre : bys iso2:  egen temp6170X = mean(X) if year > 1960 & year <= 1970 \ bys iso2: egen mean6170X = mean(temp6170X)
+for var wtem wpre : bys iso2:  egen temp7180X = mean(X) if year > 1970 & year <= 1980 \ bys iso2: egen mean7180X = mean(temp7180X)
+for var wtem wpre : bys iso2:  egen temp8190X = mean(X) if year > 1980 & year <= 1990 \ bys iso2: egen mean8190X = mean(temp8190X)
+for var wtem wpre : bys iso2:  egen temp9100X = mean(X) if year > 1990 & year <= 2000 \ bys iso2: egen mean9100X = mean(temp9100X)
 drop temp6170* temp7180* temp8190* temp9100*   
 keep if flow1 !=.   
 drop wtem wpre
@@ -136,11 +136,11 @@ drop if wtem==.
 drop if year<=1950
 drop if oecd==1
 drop _WEOFF
-for var wtem wpre : bys iso2:  egen temp5160X = mean(X) if year > 1950 & year <= 1960 / bys iso2: egen mean5160X = mean(temp5160X)
-for var wtem wpre : bys iso2:  egen temp6170X = mean(X) if year > 1960 & year <= 1970 / bys iso2: egen mean6170X = mean(temp6170X)
-for var wtem wpre : bys iso2:  egen temp7180X = mean(X) if year > 1970 & year <= 1980 / bys iso2: egen mean7180X = mean(temp7180X)
-for var wtem wpre : bys iso2:  egen temp8190X = mean(X) if year > 1980 & year <= 1990 / bys iso2: egen mean8190X = mean(temp8190X)
-for var wtem wpre : bys iso2:  egen temp9100X = mean(X) if year > 1990 & year <= 2000 / bys iso2: egen mean9100X = mean(temp9100X)
+for var wtem wpre : bys iso2:  egen temp5160X = mean(X) if year > 1950 & year <= 1960 \ bys iso2: egen mean5160X = mean(temp5160X)
+for var wtem wpre : bys iso2:  egen temp6170X = mean(X) if year > 1960 & year <= 1970 \ bys iso2: egen mean6170X = mean(temp6170X)
+for var wtem wpre : bys iso2:  egen temp7180X = mean(X) if year > 1970 & year <= 1980 \ bys iso2: egen mean7180X = mean(temp7180X)
+for var wtem wpre : bys iso2:  egen temp8190X = mean(X) if year > 1980 & year <= 1990 \ bys iso2: egen mean8190X = mean(temp8190X)
+for var wtem wpre : bys iso2:  egen temp9100X = mean(X) if year > 1990 & year <= 2000 \ bys iso2: egen mean9100X = mean(temp9100X)
 drop temp5160* temp6170* temp7180* temp8190* temp9100*   
 drop if urban_pop==.
 drop wtem wpre

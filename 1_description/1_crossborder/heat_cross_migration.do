@@ -27,7 +27,10 @@ use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 preserve
 
 * Residualize the migration outcome variable
-reghdfe ln_outmigshare, absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl) version(3) cache(save, keep(bplcode countrycode yrimm demo agemigcat edattain sex))
+reghdfe ln_outmigshare, absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl) residuals(res_ln_outmigshare)
+
+keep res_* bplcode countrycode yrimm demo agemigcat edattain sex 
+rename res_* *
 
 * Use demographic groups defined by age and education only for heat map representation
 collapse (mean) ln_outmigshare, by(yrimm bplcode countrycode agemigcat edattain)

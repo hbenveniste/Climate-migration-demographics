@@ -36,12 +36,12 @@ save `outmigsubnatipumsavyrs'
 
 * Match with shape file
 * Do this step only once
-/* cd "C:/Users/Helene/Documents/migration-demographics-agriculture/large-data/Cleaned/Shapefiles"
+/* cd "$input_dir/1_raw/Shapefiles"
 shp2dta using world_geolev1_2021_equalearth, database(geo1db) coordinates(geo1coord) genid(id)
 use "geo1db.dta"
 destring GEOLEVEL1, gen(geomig1)
 save "geo1db.dta", replace
-cd "C:/Users/Helene/Documents/migration-demographics-agriculture/large-data/Cleaned"
+cd "$code_dir"
 */
 
 use `outmigsubnatipumsavyrs'

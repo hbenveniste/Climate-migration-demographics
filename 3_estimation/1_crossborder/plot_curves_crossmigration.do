@@ -69,12 +69,12 @@ replace t = _n + $tmin - 1
 * Calculate migration responses per age and education based on estimates
 estimates use "$input_dir/5_estimation/mcross_tspd3_eduage.ster"
 
-local line_base = "_b[tmax_day_pop]* (t - `tmean')+ _b[tmax2_day_pop] * (t^2 - `tmean'^2)+ _b[tmax3_day_pop] * (t^3 - `tmean'^3)"
+local line_base = "_b[tmax_dp]* (t - `tmean')+ _b[tmax2_dp] * (t^2 - `tmean'^2)+ _b[tmax3_dp] * (t^3 - `tmean'^3)"
 local line_age1 = "0"
 local line_edu1 = "0"
 forv i = 2/4 {
-	local line_age`i' = "_b[`i'.agemigcat#c.tmax_day_pop]* (t - `tmean')+ _b[`i'.agemigcat#c.tmax2_day_pop] * (t^2 - `tmean'^2)+ _b[`i'.agemigcat#c.tmax3_day_pop] * (t^3 - `tmean'^3)"
-	local line_edu`i' = "_b[`i'.edattain#c.tmax_day_pop]* (t - `tmean')+ _b[`i'.edattain#c.tmax2_day_pop] * (t^2 - `tmean'^2)+ _b[`i'.edattain#c.tmax3_day_pop] * (t^3 - `tmean'^3)"
+	local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp]* (t - `tmean')+ _b[`i'.agemigcat#c.tmax2_dp] * (t^2 - `tmean'^2)+ _b[`i'.agemigcat#c.tmax3_dp] * (t^3 - `tmean'^3)"
+	local line_edu`i' = "_b[`i'.edattain#c.tmax_dp]* (t - `tmean')+ _b[`i'.edattain#c.tmax2_dp] * (t^2 - `tmean'^2)+ _b[`i'.edattain#c.tmax3_dp] * (t^3 - `tmean'^3)"
 }
 
 forv i=1/4 {
@@ -92,7 +92,7 @@ forv i=1/4 {
 * Calculate migration responses without heterogeneity based on estimates
 estimates use "$input_dir/5_estimation/mcross_tspd3.ster"
 
-local line0 = "_b[tmax_day_pop]* (t - `tmean')+ _b[tmax2_day_pop] * (t^2 - `tmean'^2)+ _b[tmax3_day_pop] * (t^3 - `tmean'^3)"
+local line0 = "_b[tmax_dp]* (t - `tmean')+ _b[tmax2_dp] * (t^2 - `tmean'^2)+ _b[tmax3_dp] * (t^3 - `tmean'^3)"
 
 predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
 
@@ -137,12 +137,12 @@ replace sm = (_n + $smmin / 0.01 - 1)*0.01
 * Calculate migration responses per age and education based on estimates
 estimates use "$input_dir/5_estimation/mcross_tspd3_eduage.ster"
 
-local line_base = "_b[sm_day_pop]* (sm - `smmean') + _b[sm2_day_pop] * (sm^2 - `smmean'^2) + _b[sm3_day_pop] * (sm^3 - `smmean'^3)"
+local line_base = "_b[sm_dp]* (sm - `smmean') + _b[sm2_dp] * (sm^2 - `smmean'^2) + _b[sm3_dp] * (sm^3 - `smmean'^3)"
 local line_age1 = "0"
 local line_edu1 = "0"
 forv i = 2/4 {
-	local line_age`i' = "_b[`i'.agemigcat#c.sm_day_pop]* (sm - `smmean') + _b[`i'.agemigcat#c.sm2_day_pop] * (sm^2 - `smmean'^2) + _b[`i'.agemigcat#c.sm3_day_pop] * (sm^3 - `smmean'^3)"
-	local line_edu`i' = "_b[`i'.edattain#c.sm_day_pop]* (sm - `smmean') + _b[`i'.edattain#c.sm2_day_pop] * (sm^2 - `smmean'^2) + _b[`i'.edattain#c.sm3_day_pop] * (sm^3 - `smmean'^3)"
+	local line_age`i' = "_b[`i'.agemigcat#c.sm_dp]* (sm - `smmean') + _b[`i'.agemigcat#c.sm2_dp] * (sm^2 - `smmean'^2) + _b[`i'.agemigcat#c.sm3_dp] * (sm^3 - `smmean'^3)"
+	local line_edu`i' = "_b[`i'.edattain#c.sm_dp]* (sm - `smmean') + _b[`i'.edattain#c.sm2_dp] * (sm^2 - `smmean'^2) + _b[`i'.edattain#c.sm3_dp] * (sm^3 - `smmean'^3)"
 }
 
 forv i=1/4 {
@@ -160,7 +160,7 @@ forv i=1/4 {
 * Calculate migration responses without heterogeneity based on estimates
 estimates use "$input_dir/5_estimation/mcross_tspd3.ster"
 
-local line0 = "_b[sm_day_pop]* (sm - `smmean') + _b[sm2_day_pop] * (sm^2 - `smmean'^2) + _b[sm3_day_pop] * (sm^3 - `smmean'^3)"
+local line0 = "_b[sm_dp]* (sm - `smmean') + _b[sm2_dp] * (sm^2 - `smmean'^2) + _b[sm3_dp] * (sm^3 - `smmean'^3)"
 
 predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
 

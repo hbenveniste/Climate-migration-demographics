@@ -24,6 +24,9 @@ global folds "random"
 * Select number of seeds for the uncertainty range of performance
 global seeds 20
 
+* Select performance metric between R2 and CRPS
+global metric "rsquare"
+
 * Single out dependent variable
 global depvar ln_outmigshare
 
@@ -35,34 +38,51 @@ global depvar ln_outmigshare
 
 * Linear model in T,S
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
-global indepvar c.tmax_day_pop_uncert c.sm_day_pop_uncert 
+global indepvar "tmax_dp_uncert sm_dp_uncert"
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
-gen model = "T1,S1"
-reshape long rsq, i(model) j(seeds)
-merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+quietly {
+	gen model = "T1,S1"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+}
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Quadratic model in T,S
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
-global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.sm_day_pop_uncert c.sm2_day_pop_uncert
+global indepvar "tmax_dp_uncert tmax2_dp_uncert sm_dp_uncert sm2_dp_uncert"
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T2,S2"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Restricted cubic spline model in T,S
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
-global indepvar c.tmax_day_pop_uncert c.sm_day_pop_uncert tmax_day_rcs_k4_1_pop_uncert tmax_day_rcs_k4_2_pop_uncert sm_day_rcs_k4_1_pop_uncert sm_day_rcs_k4_2_pop_uncert
+global indepvar "tmax_dp_uncert sm_dp_uncert tmax_dp_rcs_k4_1_uncert tmax_dp_rcs_k4_2_uncert sm_dp_rcs_k4_1_uncert sm_dp_rcs_k4_2_uncert"
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S rcs"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
@@ -75,36 +95,82 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Model in P
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
-global indepvar prcp_day_pop_uncert prcp2_day_pop_uncert prcp3_day_pop_uncert
+global indepvar "prcp_dp_uncert prcp2_dp_uncert prcp3_dp_uncert"
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "P3"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Model in T,P
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
-global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert prcp_day_pop_uncert prcp2_day_pop_uncert prcp3_day_pop_uncert
+global indepvar "tmax_dp_uncert tmax2_dp_uncert tmax3_dp_uncert prcp_dp_uncert prcp2_dp_uncert prcp3_dp_uncert"
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T3,P3"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Model in T,P per climate zone and age and education
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
-global indepvar c.tmax_day_pop_uncert c.tmax2_day_pop_uncert c.tmax3_day_pop_uncert c.prcp_day_pop_uncert c.prcp2_day_pop_uncert c.prcp3_day_pop_uncert c.tmax_day_pop_uncert#i.climgroup c.tmax2_day_pop_uncert#i.climgroup c.tmax3_day_pop_uncert#i.climgroup c.prcp_day_pop_uncert#i.climgroup c.prcp2_day_pop_uncert#i.climgroup c.prcp3_day_pop_uncert#i.climgroup c.tmax_day_pop_uncert#i.agemigcat c.tmax2_day_pop_uncert#i.agemigcat c.tmax3_day_pop_uncert#i.agemigcat c.prcp_day_pop_uncert#i.agemigcat c.prcp2_day_pop_uncert#i.agemigcat c.prcp3_day_pop_uncert#i.agemigcat c.tmax_day_pop_uncert#i.climgroup#i.agemigcat c.tmax2_day_pop_uncert#i.climgroup#i.agemigcat c.tmax3_day_pop_uncert#i.climgroup#i.agemigcat c.prcp_day_pop_uncert#i.climgroup#i.agemigcat c.prcp2_day_pop_uncert#i.climgroup#i.agemigcat c.prcp3_day_pop_uncert#i.climgroup#i.agemigcat c.tmax_day_pop_uncert#i.edattain c.tmax2_day_pop_uncert#i.edattain c.tmax3_day_pop_uncert#i.edattain c.prcp_day_pop_uncert#i.edattain c.prcp2_day_pop_uncert#i.edattain c.prcp3_day_pop_uncert#i.edattain c.tmax_day_pop_uncert#i.climgroup#i.edattain c.tmax2_day_pop_uncert#i.climgroup#i.edattain c.tmax3_day_pop_uncert#i.climgroup#i.edattain c.prcp_day_pop_uncert#i.climgroup#i.edattain c.prcp2_day_pop_uncert#i.climgroup#i.edattain c.prcp3_day_pop_uncert#i.climgroup#i.edattain
+delimit ;
+global indepvar "tmax_dp_uncert_clim1_age1 tmax_dp_uncert_clim1_age2 tmax_dp_uncert_clim1_age3 tmax_dp_uncert_clim1_age4 prcp_dp_uncert_clim1_age1 prcp_dp_uncert_clim1_age2 prcp_dp_uncert_clim1_age3 prcp_dp_uncert_clim1_age4 
+				tmax2_dp_uncert_clim1_age1 tmax2_dp_uncert_clim1_age2 tmax2_dp_uncert_clim1_age3 tmax2_dp_uncert_clim1_age4 prcp2_dp_uncert_clim1_age1 prcp2_dp_uncert_clim1_age2 prcp2_dp_uncert_clim1_age3 prcp2_dp_uncert_clim1_age4 
+				tmax3_dp_uncert_clim1_age1 tmax3_dp_uncert_clim1_age2 tmax3_dp_uncert_clim1_age3 tmax3_dp_uncert_clim1_age4 prcp3_dp_uncert_clim1_age1 prcp3_dp_uncert_clim1_age2 prcp3_dp_uncert_clim1_age3 prcp3_dp_uncert_clim1_age4 
+				tmax_dp_uncert_clim2_age1 tmax_dp_uncert_clim2_age2 tmax_dp_uncert_clim2_age3 tmax_dp_uncert_clim2_age4 prcp_dp_uncert_clim2_age1 prcp_dp_uncert_clim2_age2 prcp_dp_uncert_clim2_age3 prcp_dp_uncert_clim2_age4 
+				tmax2_dp_uncert_clim2_age1 tmax2_dp_uncert_clim2_age2 tmax2_dp_uncert_clim2_age3 tmax2_dp_uncert_clim2_age4 prcp2_dp_uncert_clim2_age1 prcp2_dp_uncert_clim2_age2 prcp2_dp_uncert_clim2_age3 prcp2_dp_uncert_clim2_age4 
+				tmax3_dp_uncert_clim2_age1 tmax3_dp_uncert_clim2_age2 tmax3_dp_uncert_clim2_age3 tmax3_dp_uncert_clim2_age4 prcp3_dp_uncert_clim2_age1 prcp3_dp_uncert_clim2_age2 prcp3_dp_uncert_clim2_age3 prcp3_dp_uncert_clim2_age4 
+				tmax_dp_uncert_clim3_age1 tmax_dp_uncert_clim3_age2 tmax_dp_uncert_clim3_age3 tmax_dp_uncert_clim3_age4 prcp_dp_uncert_clim3_age1 prcp_dp_uncert_clim3_age2 prcp_dp_uncert_clim3_age3 prcp_dp_uncert_clim3_age4 
+				tmax2_dp_uncert_clim3_age1 tmax2_dp_uncert_clim3_age2 tmax2_dp_uncert_clim3_age3 tmax2_dp_uncert_clim3_age4 prcp2_dp_uncert_clim3_age1 prcp2_dp_uncert_clim3_age2 prcp2_dp_uncert_clim3_age3 prcp2_dp_uncert_clim3_age4 
+				tmax3_dp_uncert_clim3_age1 tmax3_dp_uncert_clim3_age2 tmax3_dp_uncert_clim3_age3 tmax3_dp_uncert_clim3_age4 prcp3_dp_uncert_clim3_age1 prcp3_dp_uncert_clim3_age2 prcp3_dp_uncert_clim3_age3 prcp3_dp_uncert_clim3_age4 
+				tmax_dp_uncert_clim4_age1 tmax_dp_uncert_clim4_age2 tmax_dp_uncert_clim4_age3 tmax_dp_uncert_clim4_age4 prcp_dp_uncert_clim4_age1 prcp_dp_uncert_clim4_age2 prcp_dp_uncert_clim4_age3 prcp_dp_uncert_clim4_age4 
+				tmax2_dp_uncert_clim4_age1 tmax2_dp_uncert_clim4_age2 tmax2_dp_uncert_clim4_age3 tmax2_dp_uncert_clim4_age4 prcp2_dp_uncert_clim4_age1 prcp2_dp_uncert_clim4_age2 prcp2_dp_uncert_clim4_age3 prcp2_dp_uncert_clim4_age4 
+				tmax3_dp_uncert_clim4_age1 tmax3_dp_uncert_clim4_age2 tmax3_dp_uncert_clim4_age3 tmax3_dp_uncert_clim4_age4 prcp3_dp_uncert_clim4_age1 prcp3_dp_uncert_clim4_age2 prcp3_dp_uncert_clim4_age3 prcp3_dp_uncert_clim4_age4 
+				tmax_dp_uncert_clim5_age1 tmax_dp_uncert_clim5_age2 tmax_dp_uncert_clim5_age3 tmax_dp_uncert_clim5_age4 prcp_dp_uncert_clim5_age1 prcp_dp_uncert_clim5_age2 prcp_dp_uncert_clim5_age3 prcp_dp_uncert_clim5_age4 
+				tmax2_dp_uncert_clim5_age1 tmax2_dp_uncert_clim5_age2 tmax2_dp_uncert_clim5_age3 tmax2_dp_uncert_clim5_age4 prcp2_dp_uncert_clim5_age1 prcp2_dp_uncert_clim5_age2 prcp2_dp_uncert_clim5_age3 prcp2_dp_uncert_clim5_age4 
+				tmax3_dp_uncert_clim5_age1 tmax3_dp_uncert_clim5_age2 tmax3_dp_uncert_clim5_age3 tmax3_dp_uncert_clim5_age4 prcp3_dp_uncert_clim5_age1 prcp3_dp_uncert_clim5_age2 prcp3_dp_uncert_clim5_age3 prcp3_dp_uncert_clim5_age4 
+				tmax_dp_uncert_clim1_edu1 tmax_dp_uncert_clim1_edu2 tmax_dp_uncert_clim1_edu3 tmax_dp_uncert_clim1_edu4 prcp_dp_uncert_clim1_edu1 prcp_dp_uncert_clim1_edu2 prcp_dp_uncert_clim1_edu3 prcp_dp_uncert_clim1_edu4 
+				tmax2_dp_uncert_clim1_edu1 tmax2_dp_uncert_clim1_edu2 tmax2_dp_uncert_clim1_edu3 tmax2_dp_uncert_clim1_edu4 prcp2_dp_uncert_clim1_edu1 prcp2_dp_uncert_clim1_edu2 prcp2_dp_uncert_clim1_edu3 prcp2_dp_uncert_clim1_edu4 
+				tmax3_dp_uncert_clim1_edu1 tmax3_dp_uncert_clim1_edu2 tmax3_dp_uncert_clim1_edu3 tmax3_dp_uncert_clim1_edu4 prcp3_dp_uncert_clim1_edu1 prcp3_dp_uncert_clim1_edu2 prcp3_dp_uncert_clim1_edu3 prcp3_dp_uncert_clim1_edu4 
+				tmax_dp_uncert_clim2_edu1 tmax_dp_uncert_clim2_edu2 tmax_dp_uncert_clim2_edu3 tmax_dp_uncert_clim2_edu4 prcp_dp_uncert_clim2_edu1 prcp_dp_uncert_clim2_edu2 prcp_dp_uncert_clim2_edu3 prcp_dp_uncert_clim2_edu4 
+				tmax2_dp_uncert_clim2_edu1 tmax2_dp_uncert_clim2_edu2 tmax2_dp_uncert_clim2_edu3 tmax2_dp_uncert_clim2_edu4 prcp2_dp_uncert_clim2_edu1 prcp2_dp_uncert_clim2_edu2 prcp2_dp_uncert_clim2_edu3 prcp2_dp_uncert_clim2_edu4 
+				tmax3_dp_uncert_clim2_edu1 tmax3_dp_uncert_clim2_edu2 tmax3_dp_uncert_clim2_edu3 tmax3_dp_uncert_clim2_edu4 prcp3_dp_uncert_clim2_edu1 prcp3_dp_uncert_clim2_edu2 prcp3_dp_uncert_clim2_edu3 prcp3_dp_uncert_clim2_edu4 
+				tmax_dp_uncert_clim3_edu1 tmax_dp_uncert_clim3_edu2 tmax_dp_uncert_clim3_edu3 tmax_dp_uncert_clim3_edu4 prcp_dp_uncert_clim3_edu1 prcp_dp_uncert_clim3_edu2 prcp_dp_uncert_clim3_edu3 prcp_dp_uncert_clim3_edu4 
+				tmax2_dp_uncert_clim3_edu1 tmax2_dp_uncert_clim3_edu2 tmax2_dp_uncert_clim3_edu3 tmax2_dp_uncert_clim3_edu4 prcp2_dp_uncert_clim3_edu1 prcp2_dp_uncert_clim3_edu2 prcp2_dp_uncert_clim3_edu3 prcp2_dp_uncert_clim3_edu4 
+				tmax3_dp_uncert_clim3_edu1 tmax3_dp_uncert_clim3_edu2 tmax3_dp_uncert_clim3_edu3 tmax3_dp_uncert_clim3_edu4 prcp3_dp_uncert_clim3_edu1 prcp3_dp_uncert_clim3_edu2 prcp3_dp_uncert_clim3_edu3 prcp3_dp_uncert_clim3_edu4 
+				tmax_dp_uncert_clim4_edu1 tmax_dp_uncert_clim4_edu2 tmax_dp_uncert_clim4_edu3 tmax_dp_uncert_clim4_edu4 prcp_dp_uncert_clim4_edu1 prcp_dp_uncert_clim4_edu2 prcp_dp_uncert_clim4_edu3 prcp_dp_uncert_clim4_edu4 
+				tmax2_dp_uncert_clim4_edu1 tmax2_dp_uncert_clim4_edu2 tmax2_dp_uncert_clim4_edu3 tmax2_dp_uncert_clim4_edu4 prcp2_dp_uncert_clim4_edu1 prcp2_dp_uncert_clim4_edu2 prcp2_dp_uncert_clim4_edu3 prcp2_dp_uncert_clim4_edu4 
+				tmax3_dp_uncert_clim4_edu1 tmax3_dp_uncert_clim4_edu2 tmax3_dp_uncert_clim4_edu3 tmax3_dp_uncert_clim4_edu4 prcp3_dp_uncert_clim4_edu1 prcp3_dp_uncert_clim4_edu2 prcp3_dp_uncert_clim4_edu3 prcp3_dp_uncert_clim4_edu4 
+				tmax_dp_uncert_clim5_edu1 tmax_dp_uncert_clim5_edu2 tmax_dp_uncert_clim5_edu3 tmax_dp_uncert_clim5_edu4 prcp_dp_uncert_clim5_edu1 prcp_dp_uncert_clim5_edu2 prcp_dp_uncert_clim5_edu3 prcp_dp_uncert_clim5_edu4 
+				tmax2_dp_uncert_clim5_edu1 tmax2_dp_uncert_clim5_edu2 tmax2_dp_uncert_clim5_edu3 tmax2_dp_uncert_clim5_edu4 prcp2_dp_uncert_clim5_edu1 prcp2_dp_uncert_clim5_edu2 prcp2_dp_uncert_clim5_edu3 prcp2_dp_uncert_clim5_edu4 
+				tmax3_dp_uncert_clim5_edu1 tmax3_dp_uncert_clim5_edu2 tmax3_dp_uncert_clim5_edu3 tmax3_dp_uncert_clim5_edu4 prcp3_dp_uncert_clim5_edu1 prcp3_dp_uncert_clim5_edu2 prcp3_dp_uncert_clim5_edu3 prcp3_dp_uncert_clim5_edu4";
+delimit cr
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T3,P3*climzone*(age+edu)"
-	reshape long rsq, i(model) j(seeds)
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace

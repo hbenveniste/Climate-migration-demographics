@@ -56,6 +56,7 @@ save `dailysubnat', replace
 
 
 * Create average daily values over several years
+keep ctrymig geomig1 yrmig day tmax_pop sm_pop
 reshape wide tmax_pop sm_pop, i(ctrymig geomig1 yrmig) j(day)
 tsset geomig1 yrmig
 sort geomig1 yrmig
