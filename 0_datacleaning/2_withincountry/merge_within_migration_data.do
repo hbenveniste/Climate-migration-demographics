@@ -120,8 +120,6 @@ replace climgroup = climgroupct if climgroup == .
 drop climgroupct _merge*
 drop if climgroup == .
 
-* Remove polar zone from sample: too few observations (1% of sample) 
-drop if climgroup == 6
 
 save `withinmigweather', replace
 
@@ -130,33 +128,33 @@ save `withinmigweather', replace
 **# Import and merge weather data ***
 ****************************************************************
 * Merge processed weather data with migration data
-merge m:1 ctrymig yrmig geomig1 using "$input_dir/2_intermediate/withinweather.dta", keepusing(yrmig ctrymig geomig1 tmax*_uncert* sm*_uncert* prcp*uncert *dp_av10) 
+merge m:1 ctrymig yrmig geomig1 using "$input_dir/2_intermediate/withinweather.dta", keepusing(yrmig ctrymig geomig1 tmax*_uc* sm*_uc* prcp*uc *dp_a10) 
 drop if _merge != 3
 drop _merge
-drop prcp*av10 *_l2
-drop if tmax_dp_av10 == . | tmax_dp_uncert == . | tmax_dp_uncert_l1 == . | sm_dp_uncert == . | prcp_dp_uncert == . | tmax_dp_rcs_k4_1_uncert == . 
+drop prcp*a10 *_l2
+drop if tmax_dp_a10 == . | tmax_dp_uc == . | tmax_dp_uc_l1 == . | sm_dp_uc == . | prcp_dp_uc == . | tmax_dp_rcs_k4_1_uc == . 
 
 save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
 
 
 * Add destination weather
 use "$input_dir/2_intermediate/withinweather.dta"
-rename (geomig1 tmax*dp_uncert sm*dp_uncert) (geolev1 tmax*dp_uncert_dest sm*dp_uncert_dest)
+rename (geomig1 tmax*dp_uc sm*dp_uc) (geolev1 tmax*dp_uc_des sm*dp_uc_des)
 tempfile withinweathertemp
 save `withinweathertemp'
 
 use "$input_dir/3_consolidate/withinmigweather_clean.dta"
-merge m:1 ctrymig yrmig geolev1 using `withinweathertemp', keepusing(yrmig ctrymig geolev1 *uncert_dest) nogenerate
-drop if tmax_dp_uncert == . | tmax_dp_uncert_dest == .
+merge m:1 ctrymig yrmig geolev1 using `withinweathertemp', keepusing(yrmig ctrymig geolev1 *uc_des) nogenerate
+drop if tmax_dp_uc == . | tmax_dp_uc_des == .
 
 
 * Create randomized weather data
 * We keep the correlation across T/SM the same
 
-drop if tmax_dp_uncert == . | sm_dp_uncert == . | tmax2_dp_uncert == . | sm2_dp_uncert == . | tmax3_dp_uncert == . | sm3_dp_uncert == . | tmax_dp_av10 == . | sm_dp_av10 == . | tmax2_dp_av10 == . | sm2_dp_av10 == . | tmax3_dp_av10 == . | sm3_dp_av10 == .
+drop if tmax_dp_uc == . | sm_dp_uc == . | tmax2_dp_uc == . | sm2_dp_uc == . | tmax3_dp_uc == . | sm3_dp_uc == . | tmax_dp_a10 == . | sm_dp_a10 == . | tmax2_dp_a10 == . | sm2_dp_a10 == . | tmax3_dp_a10 == . | sm3_dp_a10 == .
 
 sort ctrymig geomig1 yrmig
-local permutable tmax_dp_uncert sm_dp_uncert tmax2_dp_uncert sm2_dp_uncert tmax3_dp_uncert sm3_dp_uncert tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10
+local permutable tmax_dp_uc sm_dp_uc tmax2_dp_uc sm2_dp_uc tmax3_dp_uc sm3_dp_uc tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10
 set seed 12345
 
 preserve
@@ -183,18 +181,18 @@ save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
 **# Create interaction variables ***
 ****************************************************************
 * Weather variables, climate zones, and demographics
-local interac "tmax_dp_uncert sm_dp_uncert tmax2_dp_uncert sm2_dp_uncert tmax3_dp_uncert sm3_dp_uncert prcp_dp_uncert prcp2_dp_uncert prcp3_dp_uncert ///
-				tmax_dp_uncert_l1 sm_dp_uncert_l1 tmax2_dp_uncert_l1 sm2_dp_uncert_l1 tmax3_dp_uncert_l1 sm3_dp_uncert_l1 ///
-				tmax_dp_uncert_dest sm_dp_uncert_dest tmax2_dp_uncert_dest sm2_dp_uncert_dest tmax3_dp_uncert_dest sm3_dp_uncert_dest ///
-				tmax_dp_uncert_rand sm_dp_uncert_rand tmax2_dp_uncert_rand sm2_dp_uncert_rand tmax3_dp_uncert_rand sm3_dp_uncert_rand ///
-				tmax_dp_av10_rand sm_dp_av10_rand tmax2_dp_av10_rand sm2_dp_av10_rand tmax3_dp_av10_rand ///
-				tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10 sm3_dp_av10_rand"
+local interac tmax_dp_uc sm_dp_uc tmax2_dp_uc sm2_dp_uc tmax3_dp_uc sm3_dp_uc prcp_dp_uc prcp2_dp_uc prcp3_dp_uc ///
+				tmax_dp_uc_l1 sm_dp_uc_l1 tmax2_dp_uc_l1 sm2_dp_uc_l1 tmax3_dp_uc_l1 sm3_dp_uc_l1 ///
+				tmax_dp_uc_des sm_dp_uc_des tmax2_dp_uc_des sm2_dp_uc_des tmax3_dp_uc_des sm3_dp_uc_des ///
+				tmax_dp_uc_rand sm_dp_uc_rand tmax2_dp_uc_rand sm2_dp_uc_rand tmax3_dp_uc_rand sm3_dp_uc_rand ///
+				tmax_dp_a10_rand sm_dp_a10_rand tmax2_dp_a10_rand sm2_dp_a10_rand tmax3_dp_a10_rand ///
+				tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10 sm3_dp_a10_rand
 tab climgroup , gen(d_clim)  
 tab agemigcat, gen(d_age)
 tab edattain, gen(d_edu)
 tab sex, gen(d_sex)
 foreach var of varlist `interac' {
-	forv i=1/5 {
+	forv i=1/6 {
 		gen `var'_clim`i' = `var' * d_clim`i'
 		forv j=1/4 {
 			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'

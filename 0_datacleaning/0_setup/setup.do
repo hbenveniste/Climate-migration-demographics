@@ -24,7 +24,7 @@ global CODE: env CODE
 global INPUT: env INPUT
 
 * Repository path including the results (RESULTS): specifies the directory on the user's machine in which results from the analysis should be saved. 
-* Results include all figures and tables in the main text, Extended Data, and Supplementary Information.
+* Results include all figures and tables in the main text and Supplementary Information.
 global RESULTS: env RESULTS
 
 global code_dir "$CODE"

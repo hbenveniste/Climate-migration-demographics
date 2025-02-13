@@ -86,21 +86,21 @@ if `run_estim_repli' {
 **# Robustness checks  ***
 ****************************************************************
 * Effects of longer term changes in weather variables
-* Generate supplementary Fig.E9c-f
+* Generate supplementary Fig.S10c-f
 if `run_robust_av' {
 	do "$code_dir/3_estimation/4_robust/run_robust_av_crossmigration.do"
 	do "$code_dir/3_estimation/4_robust/run_robust_av_withinmigration.do"
 }
 
 * Effects of 1-year lagged weather variables
-* Generate supplementary Fig.E10c-f
+* Generate supplementary Fig.S11c-f
 if `run_robust_lags' {
 	do "$code_dir/3_estimation/4_robust/run_robust_lag_crossmigration.do"
 	do "$code_dir/3_estimation/4_robust/run_robust_lag_withinmigration.do"
 }
 
 * Effects of destination weather variables
-* Generate supplementary Fig.E11c-f
+* Generate supplementary Fig.S12c-f
 if `run_robust_dest' {
 	do "$code_dir/3_estimation/4_robust/run_robust_dest_crossmigration.do"
 	do "$code_dir/3_estimation/4_robust/run_robust_dest_withinmigration.do"

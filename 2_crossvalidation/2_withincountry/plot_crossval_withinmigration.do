@@ -79,7 +79,7 @@ graph box rsqyear, over(modelaltnb, gap(120) label(angle(50) labsize(medium))) n
 		name(rsqmswdailyyeardemo, replace)
 		
 graph export "$res_dir/3_Crossvalidation_withinmig/FigS8b_cvalt_within.png", ///
-			width(7) as(png) name("rsqmswdailyyeardemo") replace
+			width(4000) as(png) name("rsqmswdailyyeardemo") replace
 
 
 ****************************************************************
@@ -96,7 +96,7 @@ graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(medium))) noout
 		name(rsqwithinmswdailycrpsdemo, replace)
 
 graph export "$res_dir/3_Crossvalidation_withinmig/FigSX_cvcrps_within.png", ///
-			width(7) as(png) name("rsqwithinmswdailycrpsdemo") replace
+			width(4000) as(png) name("rsqwithinmswdailycrpsdemo") replace
 
 
 

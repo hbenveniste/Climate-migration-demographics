@@ -31,6 +31,7 @@ reghdfe ln_outmigshare, absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(
 
 keep res_* bplcode countrycode yrimm demo agemigcat edattain sex 
 rename res_* *
+drop if ln_outmigshare == .
 
 * Use demographic groups defined by age and education only for heat map representation
 collapse (mean) ln_outmigshare, by(yrimm bplcode countrycode agemigcat edattain)
@@ -60,7 +61,7 @@ heatplot corrmatrix, color(hcl diverging, reverse) ///
 		graphregion(color(white)) ysize(5) xsize(6) ///
 		name(immgraphcoll,replace)
 
-graph export "$res_dir/1_DescriptionS2_corrdemo_crossmig.png", width(4000) as(png) name("immgraphcoll") replace
+graph export "$res_dir/1_Description/FigS2_corrdemo_crossmig.png", width(4000) as(png) name("immgraphcoll") replace
 
 restore
 

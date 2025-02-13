@@ -122,8 +122,6 @@ save "$input_dir/2_intermediate/dailynat.dta", replace
 ****************************************************************
 use "$input_dir/3_consolidate/crossmigweather_clean.dta", clear
 
-preserve
-
 * Obtain all country*country*year*demographics observations available in the cross-border migration data
 keep bpl countrycode yrimm mainclimgroup agemigcat edattain sex
 duplicates drop
@@ -138,6 +136,7 @@ drop if tmax_pop == . | sm_pop == .
 ****************************************************************
 **# Prepare file of daily observations for representation in histograms ***
 ****************************************************************
+* Store file for all climate zones together
 * Winsorize daily weather observations
 winsor2 tmax_pop, cuts(1 99) 
 winsor2 sm_pop, cuts(1 99)
@@ -148,5 +147,26 @@ gen double id = _n
 
 save "$input_dir/3_consolidate/crossweatherdaily.dta", replace
 
-restore
+
+* Store files per climate zone
+* We do not present results for the polar zone because it only accounts for <1% of our observations
+
+drop id tmax_pop_w sm_pop_w 
+
+forvalues c=1/5 {
+	preserve 
+	keep if mainclimgroup == `c'
+
+	* Winsorize daily weather observations
+	winsor2 tmax_pop, cuts(1 99) 
+	winsor2 sm_pop, cuts(1 99)  
+
+	* Create id variable to merge with response curves file 
+	gen double id = _n
+
+	save "$input_dir/3_consolidate/crossweatherdaily_`c'.dta", replace
+
+	restore
+}
+
 

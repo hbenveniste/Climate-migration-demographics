@@ -47,15 +47,15 @@ restore
 preserve
 
 * Max daily temperature and soil moisture in locations for which migration data is available
-keep ctrymig ctrycode geomig1 yrmig tmax_dp_uncert sm_dp_uncert  
+keep ctrymig ctrycode geomig1 yrmig tmax_dp_uc sm_dp_uc  
 duplicates drop
 
 * Average temperature and soil moisture values over the sample period
-collapse (mean) tmax_dp_uncert sm_dp_uncert, by(ctrymig ctrycode geomig1)
+collapse (mean) tmax_dp_uc sm_dp_uc, by(ctrymig ctrycode geomig1)
 
 * Match with shape file 
 merge 1:m geomig1 using "$input_dir/1_raw/Shapefiles/geo1db.dta"
-keep geomig1 ctrycode tmax_dp_uncert sm_dp_uncert id
+keep geomig1 ctrycode tmax_dp_uc sm_dp_uc id
 
 * Save for mapping in QGIS
 export delimited using "$res_dir/1_Description/tsmlevavsubnatipums.csv", replace

@@ -52,7 +52,7 @@ if "$weathervar" == "temperature" & $histo == 1 {
 			(rarea daylowerci0 dayupperci0 t, col(red%10) lwidth(none)) ///
 			(scatteri 0 $tmin_plot 0 $tmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 			`xlab' `ylab' ///
-			|| histo tmax_pop_uncert_w, frequency color(red) width(0.1) `y3lab' ///
+			|| histo tmax_pop_uc_w, frequency color(red) width(0.1) `y3lab' ///
 			plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 			xlabel($tmin_plot(5)$tmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 			title("$czname") legend(off) ///
@@ -75,7 +75,7 @@ if "$weathervar" == "soilmoisture" & $histo == 1 {
 			(rarea daylowerci0 dayupperci0 sm, col(emerald%10) lwidth(none)) ///
 			(scatteri 0 $smmin_plot 0 $smmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 			`xlab' `ylab' ///
-			|| histo sm_pop_uncert_w, frequency color(emerald) width(0.002) `y3lab' ///
+			|| histo sm_pop_uc_w, frequency color(emerald) width(0.002) `y3lab' ///
 			plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 			xlabel($smmin_plot(0.05)$smmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 			title("$czname") legend(off) ///

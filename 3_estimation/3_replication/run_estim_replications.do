@@ -38,7 +38,7 @@ local depvar lnEMjit
 local indepvar tmp_i tmp_4agn pcp_i pcp_4agn lnGDPpcPPP_A1Bj1 lnGDPpcPPP_A1Bi1
 
 * Esimate their specification
-eststo mcross_cai: reghdfe `depvar' `indepvar', absorb(i.to#i.from i.to##c.year i.from##c.year) vce(cluster from) 
+eststo mcross_cai: reghdfe `depvar' `indepvar', absorb(i.to#i.from i.to##c.year i.from##c.year) vce(cluster from) keepsingletons
 
 
 * Generate regression table (section of Supplementary table A.3)

@@ -34,15 +34,16 @@ global robname ""
 **# Prepare for plotting response curves ***
 ****************************************************************
 * Determine empirical support for weather values to plot response curves accordingly
+* Results for each of the 5 considered climate zones
 forvalues c=1/5 {
 	use "$input_dir/3_consolidate/withinweatherdaily_`c'.dta"
 	
-	sum tmax_pop_uncert_w 
+	sum tmax_pop_uc_w 
 	local tmin_`c' = floor(r(min))
 	local tmax_`c' = ceil(r(max))
 	local tmean_`c' = min(0,`tmin_`c'') + (`tmax_`c'' + abs(`tmin_`c'')) / 2
 	
-	sum sm_pop_uncert_w
+	sum sm_pop_uc_w
 	local smmin_`c' = floor(r(min) * 100) / 100
 	local smmax_`c' = ceil(r(max) * 100) / 100
 	local smmean_`c' = (`smmax_`c'' + `smmin_`c'') / 2
@@ -68,7 +69,7 @@ use "$input_dir/3_consolidate/withinmigweather_clean.dta"
 * Select weather variable to be called in curvesdemo_plot_function_withinmigration
 global weathervar temperature
 
-* Plot separately for each climate zone
+* Plot separately for each considered climate zone
 forvalues c=1/5 {
 		
 	global czname: label (climgroup) `c'
@@ -84,15 +85,15 @@ forvalues c=1/5 {
 	replace t = _n + `tmin_`c'' - 1
 
 
-	* Calculate migration responses per age and education based on estimates
+	* Calculate migration responses per climate zone, age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz_eduage.ster"
 
-	local line_base = "_b[tmax_dp_uncert]* (t - `tmean_`c'')+ _b[tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
+	local line_base = "_b[tmax_dp_uc]* (t - `tmean_`c'')+ _b[tmax2_dp_uc] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_uc] * (t^3 - `tmean_`c''^3)"
 	local line_age1 = "0"
 	local line_edu1 = "0"
 	forv i = 2/4 {
-		local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp_uncert]* (t - `tmean_`c'')+ _b[`i'.agemigcat#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`i'.agemigcat#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
-		local line_edu`i' = "_b[`i'.edattain#c.tmax_dp_uncert]* (t - `tmean_`c'')+ _b[`i'.edattain#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`i'.edattain#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
+		local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp_uc]* (t - `tmean_`c'')+ _b[`i'.agemigcat#c.tmax2_dp_uc] * (t^2 - `tmean_`c''^2)+ _b[`i'.agemigcat#c.tmax3_dp_uc] * (t^3 - `tmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.tmax_dp_uc]* (t - `tmean_`c'')+ _b[`i'.edattain#c.tmax2_dp_uc] * (t^2 - `tmean_`c''^2)+ _b[`i'.edattain#c.tmax3_dp_uc] * (t^3 - `tmean_`c''^3)"
 	}
 	if `c' == 1 {
 		local line_clim = "0"
@@ -102,12 +103,12 @@ forvalues c=1/5 {
 		}
 	}
 	else {
-		local line_clim = "_b[`c'.climgroup#c.tmax_dp_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
+		local line_clim = "_b[`c'.climgroup#c.tmax_dp_uc]* (t - `tmean_`c'') + _b[`c'.climgroup#c.tmax2_dp_uc] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#c.tmax3_dp_uc] * (t^3 - `tmean_`c''^3)"
 		local line_climage1 = "0"
 		local line_climedu1 = "0"
 		forv i = 2/4 {
-			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.tmax_dp_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
-			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.tmax_dp_uncert]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.tmax_dp_uc]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.tmax2_dp_uc] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.tmax3_dp_uc] * (t^3 - `tmean_`c''^3)"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.tmax_dp_uc]* (t - `tmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.tmax2_dp_uc] * (t^2 - `tmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.tmax3_dp_uc] * (t^3 - `tmean_`c''^3)"
 		}
 	}
 
@@ -127,10 +128,10 @@ forvalues c=1/5 {
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz.ster"
 
 	if `c' == 1 {
-		local line0 = "_b[tmax_dp_uncert]* (t - `tmean_`c'')+ _b[tmax2_dp_uncert] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_uncert] * (t^3 - `tmean_`c''^3)"
+		local line0 = "_b[tmax_dp_uc]* (t - `tmean_`c'')+ _b[tmax2_dp_uc] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_uc] * (t^3 - `tmean_`c''^3)"
 	}
 	else {
-		local line0 = "(_b[tmax_dp_uncert] + _b[`c'.climgroup#c.tmax_dp_uncert]) * (t - `tmean_`c'')+ (_b[tmax2_dp_uncert] + _b[`c'.climgroup#c.tmax2_dp_uncert]) * (t^2 - `tmean_`c''^2)+ (_b[tmax3_dp_uncert] + _b[`c'.climgroup#c.tmax3_dp_uncert]) * (t^3 - `tmean_`c''^3)"
+		local line0 = "(_b[tmax_dp_uc] + _b[`c'.climgroup#c.tmax_dp_uc]) * (t - `tmean_`c'')+ (_b[tmax2_dp_uc] + _b[`c'.climgroup#c.tmax2_dp_uc]) * (t^2 - `tmean_`c''^2)+ (_b[tmax3_dp_uc] + _b[`c'.climgroup#c.tmax3_dp_uc]) * (t^3 - `tmean_`c''^3)"
 	}
 	
 	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
@@ -141,8 +142,8 @@ forvalues c=1/5 {
 
 	* Merge with daily temperature values to plot histograms
 	if $histo {
-		merge m:1 id using "$input_dir/3_consolidate/withinweatherdaily_`c'.dta", keepusing(id tmax_pop_uncert_w agemigcat edattain) nogenerate
-		keep tmax_pop_uncert_w id t day* agemigcat edattain
+		merge m:1 id using "$input_dir/3_consolidate/withinweatherdaily_`c'.dta", keepusing(id tmax_pop_uc_w agemigcat edattain) nogenerate
+		keep tmax_pop_uc_w id t day* agemigcat edattain
 
 		save "$input_dir/2_intermediate/respcurvedata_withinmig_`c'_t.dta", replace
 	}
@@ -176,7 +177,7 @@ forvalues c=1/5 {
 * Select weather variable to be called in curvesdemo_plot_function_withinmigration
 global weathervar soilmoisture
 
-* Plot separately for each climate zone
+* Plot separately for each considered climate zone
 forvalues c=1/5 {
 		
 	global czname: label (climgroup) `c'
@@ -192,15 +193,15 @@ forvalues c=1/5 {
 	replace sm = (_n + `smmin_`c'' / 0.01 - 1)*0.01
 
 
-	* Calculate migration responses per age and education based on estimates
+	* Calculate migration responses per climate zone, age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz_eduage.ster"
 
-	local line_base = "_b[sm_dp_uncert]* (sm - `smmean_`c'') + _b[sm2_dp_uncert] * (sm^2 - `smmean_`c''^2) + _b[sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
+	local line_base = "_b[sm_dp_uc]* (sm - `smmean_`c'') + _b[sm2_dp_uc] * (sm^2 - `smmean_`c''^2) + _b[sm3_dp_uc] * (sm^3 - `smmean_`c''^3)"
 	local line_age1 = "0"
 	local line_edu1 = "0"
 	forv i = 2/4 {
-		local line_age`i' = "_b[`i'.agemigcat#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`i'.agemigcat#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2) + _b[`i'.agemigcat#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
-		local line_edu`i' = "_b[`i'.edattain#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`i'.edattain#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2) + _b[`i'.edattain#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
+		local line_age`i' = "_b[`i'.agemigcat#c.sm_dp_uc]* (sm - `smmean_`c'') + _b[`i'.agemigcat#c.sm2_dp_uc] * (sm^2 - `smmean_`c''^2) + _b[`i'.agemigcat#c.sm3_dp_uc] * (sm^3 - `smmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.sm_dp_uc]* (sm - `smmean_`c'') + _b[`i'.edattain#c.sm2_dp_uc] * (sm^2 - `smmean_`c''^2) + _b[`i'.edattain#c.sm3_dp_uc] * (sm^3 - `smmean_`c''^3)"
 	}
 	if `c' == 1 {
 		local line_clim = "0"
@@ -210,12 +211,12 @@ forvalues c=1/5 {
 		}
 	}
 	else {
-		local line_clim = "_b[`c'.climgroup#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
+		local line_clim = "_b[`c'.climgroup#c.sm_dp_uc]* (sm - `smmean_`c'') + _b[`c'.climgroup#c.sm2_dp_uc] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#c.sm3_dp_uc] * (sm^3 - `smmean_`c''^3)"
 		local line_climage1 = "0"
 		local line_climedu1 = "0"
 		forv i = 2/4 {
-			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
-			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.sm_dp_uncert]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.sm_dp_uc]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.agemigcat#c.sm2_dp_uc] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.agemigcat#c.sm3_dp_uc] * (sm^3 - `smmean_`c''^3)"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.sm_dp_uc]* (sm - `smmean_`c'') + _b[`c'.climgroup#`i'.edattain#c.sm2_dp_uc] * (sm^2 - `smmean_`c''^2)+ _b[`c'.climgroup#`i'.edattain#c.sm3_dp_uc] * (sm^3 - `smmean_`c''^3)"
 		}
 	}
 	
@@ -235,10 +236,10 @@ forvalues c=1/5 {
 	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz.ster"
 
 	if `c' == 1 {
-		local line0 = "_b[sm_dp_uncert]* (sm - `smmean_`c'')+ _b[sm2_dp_uncert] * (sm^2 - `smmean_`c''^2)+ _b[sm3_dp_uncert] * (sm^3 - `smmean_`c''^3)"
+		local line0 = "_b[sm_dp_uc]* (sm - `smmean_`c'')+ _b[sm2_dp_uc] * (sm^2 - `smmean_`c''^2)+ _b[sm3_dp_uc] * (sm^3 - `smmean_`c''^3)"
 	}
 	else {
-		local line0 = "(_b[sm_dp_uncert] + _b[`c'.climgroup#c.sm_dp_uncert]) * (sm - `smmean_`c'')+ (_b[sm2_dp_uncert] + _b[`c'.climgroup#c.sm2_dp_uncert]) * (sm^2 - `smmean_`c''^2)+ (_b[sm3_dp_uncert] + _b[`c'.climgroup#c.sm3_dp_uncert]) * (sm^3 - `smmean_`c''^3)"
+		local line0 = "(_b[sm_dp_uc] + _b[`c'.climgroup#c.sm_dp_uc]) * (sm - `smmean_`c'')+ (_b[sm2_dp_uc] + _b[`c'.climgroup#c.sm2_dp_uc]) * (sm^2 - `smmean_`c''^2)+ (_b[sm3_dp_uc] + _b[`c'.climgroup#c.sm3_dp_uc]) * (sm^3 - `smmean_`c''^3)"
 	}
 	
 	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
@@ -249,8 +250,8 @@ forvalues c=1/5 {
 
 	* Merge with daily soil moisture values to plot histograms
 	if $histo {
-		merge m:1 id using "$input_dir/3_consolidate/withinweatherdaily_`c'.dta", keepusing(id sm_pop_uncert_w agemigcat edattain) nogenerate
-		keep sm_pop_uncert_w id sm day* agemigcat edattain
+		merge m:1 id using "$input_dir/3_consolidate/withinweatherdaily_`c'.dta", keepusing(id sm_pop_uc_w agemigcat edattain) nogenerate
+		keep sm_pop_uc_w id sm day* agemigcat edattain
 
 		save "$input_dir/2_intermediate/respcurvedata_withinmig_`c'_sm.dta", replace
 	}
@@ -281,7 +282,7 @@ forvalues c=1/5 {
 ****************************************************************
 **# Generate response curves for only climate zone heterogeneity ***
 ****************************************************************
-
+* Plot separately for each considered climate zone
 if `climplot' {
 	
 	forvalues c=1/5 {

@@ -333,8 +333,6 @@ merge m:1 bpl using `climzone', gen(_merge2)
 replace mainclimgroup = mainclimgroupfill if _merge == 2 & _merge2 == 3
 drop if _merge2 == 2
 drop _merge2 mainclimgroupfill
-* Remove polar zone from sample: too few observations (0.1% of sample) 
-drop if mainclimgroup == 6
 save "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta", replace
 
 * Filling randomized weather variables for zero observations
@@ -360,7 +358,7 @@ local interac "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp tmax_dp_rand tmax2_
 tab agemigcat, gen(d_age)
 tab edattain, gen(d_edu)
 tab sex, gen(d_sex)
-foreach var of varlist `interacdem' {
+foreach var of varlist `interac' {
 	forv i=1/4 {
 		gen `var'_age`i' = `var' * d_age`i'
 		gen `var'_edu`i' = `var' * d_edu`i'
@@ -370,8 +368,8 @@ foreach var of varlist `interacdem' {
 	}
 }
 tab mainclimgroup , gen(d_clim)  
-foreach var of varlist `interacclim' {
-	forv i=1/5 {
+foreach var of varlist `interac' {
+	forv i=1/6 {
 		gen `var'_clim`i' = `var' * d_clim`i'
 	}
 }
@@ -389,7 +387,7 @@ global depvar ln_outmigshare
 
 * Using T,S cubic
 use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp
+global indepvar "tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -406,7 +404,14 @@ save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per climate zone
 use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax3_dp_clim1 tmax3_dp_clim2 tmax3_dp_clim3 tmax3_dp_clim4 tmax3_dp_clim5 sm_dp_clim1 sm_dp_clim2 sm_dp_clim3 sm_dp_clim4 sm_dp_clim5 sm2_dp_clim1 sm2_dp_clim2 sm2_dp_clim3 sm2_dp_clim4 sm2_dp_clim5 sm3_dp_clim1 sm3_dp_clim2 sm3_dp_clim3 sm3_dp_clim4 sm3_dp_clim5
+#delimit ;
+global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
+				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
+				tmax3_dp_clim1 tmax3_dp_clim2 tmax3_dp_clim3 tmax3_dp_clim4 tmax3_dp_clim5 tmax3_dp_clim6
+				sm_dp_clim1 sm_dp_clim2 sm_dp_clim3 sm_dp_clim4 sm_dp_clim5 sm_dp_clim6
+				sm2_dp_clim1 sm2_dp_clim2 sm2_dp_clim3 sm2_dp_clim4 sm2_dp_clim5 sm2_dp_clim6
+				sm3_dp_clim1 sm3_dp_clim2 sm3_dp_clim3 sm3_dp_clim4 sm3_dp_clim5 sm3_dp_clim6";
+#delimit cr
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -423,7 +428,10 @@ save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per age
 use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4
+#delimit ;
+global indepvar "tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 
+				sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -440,7 +448,10 @@ save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per education
 use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4
+#delimit ;
+global indepvar "tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
+				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -457,7 +468,10 @@ save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per sex
 use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp_sex1 tmax_dp_sex2 tmax2_dp_sex1 tmax2_dp_sex2 tmax3_dp_sex1 tmax3_dp_sex2 sm_dp_sex1 sm_dp_sex2 sm2_dp_sex1 sm2_dp_sex2 sm3_dp_sex1 sm3_dp_sex2
+#delimit ;
+global indepvar "tmax_dp_sex1 tmax_dp_sex2 tmax2_dp_sex1 tmax2_dp_sex2 tmax3_dp_sex1 tmax3_dp_sex2
+				sm_dp_sex1 sm_dp_sex2 sm2_dp_sex1 sm2_dp_sex2 sm3_dp_sex1 sm3_dp_sex2";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -472,52 +486,67 @@ quietly {
 }
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
-* Using T,S cubic per age and education
+* Using T,S cubic per climate zone, age and education
 use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4 tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4
+#delimit ;
+global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
+				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
+				tmax3_dp_clim1 tmax3_dp_clim2 tmax3_dp_clim3 tmax3_dp_clim4 tmax3_dp_clim5 tmax3_dp_clim6
+				sm_dp_clim1 sm_dp_clim2 sm_dp_clim3 sm_dp_clim4 sm_dp_clim5 sm_dp_clim6
+				sm2_dp_clim1 sm2_dp_clim2 sm2_dp_clim3 sm2_dp_clim4 sm2_dp_clim5 sm2_dp_clim6
+				sm3_dp_clim1 sm3_dp_clim2 sm3_dp_clim3 sm3_dp_clim4 sm3_dp_clim5 sm3_dp_clim6
+				tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 
+				sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4
+				tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
+				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T,S*(age+edu)"
+	gen model = "T,S*(climzone+age+edu)"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
 	if "$metric" == "crps" {
 		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
 	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm_zeros.dta", nogenerate
 }
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
-* Using T,S cubic per age, education, and sex
+* Using placebo version of best performing model: T,S cubic per climate zone, age and education
 use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4 tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4 tmax_dp_sex1 tmax_dp_sex2 tmax2_dp_sex1 tmax2_dp_sex2 tmax3_dp_sex1 tmax3_dp_sex2 sm_dp_sex1 sm_dp_sex2 sm2_dp_sex1 sm2_dp_sex2 sm3_dp_sex1 sm3_dp_sex2
+#delimit ;
+global indepvar "tmax_dp_rand_clim1 tmax_dp_rand_clim2 tmax_dp_rand_clim3 tmax_dp_rand_clim4 tmax_dp_rand_clim5 tmax_dp_rand_clim6 
+				tmax2_dp_rand_clim1 tmax2_dp_rand_clim2 tmax2_dp_rand_clim3 tmax2_dp_rand_clim4 tmax2_dp_rand_clim5 tmax2_dp_rand_clim6 
+				tmax3_dp_rand_clim1 tmax3_dp_rand_clim2 tmax3_dp_rand_clim3 tmax3_dp_rand_clim4 tmax3_dp_rand_clim5 tmax3_dp_rand_clim6 
+				sm_dp_rand_clim1 sm_dp_rand_clim2 sm_dp_rand_clim3 sm_dp_rand_clim4 sm_dp_rand_clim5 sm_dp_rand_clim6 
+				sm2_dp_rand_clim1 sm2_dp_rand_clim2 sm2_dp_rand_clim3 sm2_dp_rand_clim4 sm2_dp_rand_clim5 sm2_dp_rand_clim6 
+				sm3_dp_rand_clim1 sm3_dp_rand_clim2 sm3_dp_rand_clim3 sm3_dp_rand_clim4 sm3_dp_rand_clim5 sm3_dp_rand_clim6
+				tmax_dp_rand_age1 tmax_dp_rand_age2 tmax_dp_rand_age3 tmax_dp_rand_age4 tmax2_dp_rand_age1 tmax2_dp_rand_age2 tmax2_dp_rand_age3 tmax2_dp_rand_age4 
+				tmax3_dp_rand_age1 tmax3_dp_rand_age2 tmax3_dp_rand_age3 tmax3_dp_rand_age4 
+				sm_dp_rand_age1 sm_dp_rand_age2 sm_dp_rand_age3 sm_dp_rand_age4 sm2_dp_rand_age1 sm2_dp_rand_age2 sm2_dp_rand_age3 sm2_dp_rand_age4 
+				sm3_dp_rand_age1 sm3_dp_rand_age2 sm3_dp_rand_age3 sm3_dp_rand_age4
+				tmax_dp_rand_edu1 tmax_dp_rand_edu2 tmax_dp_rand_edu3 tmax_dp_rand_edu4 tmax2_dp_rand_edu1 tmax2_dp_rand_edu2 tmax2_dp_rand_edu3 tmax2_dp_rand_edu4 
+				tmax3_dp_rand_edu1 tmax3_dp_rand_edu2 tmax3_dp_rand_edu3 tmax3_dp_rand_edu4 
+				sm_dp_rand_edu1 sm_dp_rand_edu2 sm_dp_rand_edu3 sm_dp_rand_edu4 sm2_dp_rand_edu1 sm2_dp_rand_edu2 sm2_dp_rand_edu3 sm2_dp_rand_edu4 sm3_dp_rand_edu1 
+				sm3_dp_rand_edu2 sm3_dp_rand_edu3 sm3_dp_rand_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T,S*(age+edu+sex)"
+	gen model = "T,S placebo*(climzone+age+edu)"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
 	if "$metric" == "crps" {
 		reshape long avcrps, i(model) j(seeds)
 	}
-	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm_zeros.dta", nogenerate
-}
-save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
-
-* Using placebo version of best performing model: T,S cubic per age and education
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
-global indepvar tmax_dp_rand_age1 tmax_dp_rand_age2 tmax_dp_rand_age3 tmax_dp_rand_age4 tmax2_dp_rand_age1 tmax2_dp_rand_age2 tmax2_dp_rand_age3 tmax2_dp_rand_age4 tmax3_dp_rand_age1 tmax3_dp_rand_age2 tmax3_dp_rand_age3 tmax3_dp_rand_age4 sm_dp_rand_age1 sm_dp_rand_age2 sm_dp_rand_age3 sm_dp_rand_age4 sm2_dp_rand_age1 sm2_dp_rand_age2 sm2_dp_rand_age3 sm2_dp_rand_age4 sm3_dp_rand_age1 sm3_dp_rand_age2 sm3_dp_rand_age3 sm3_dp_rand_age4 tmax_dp_rand_edu1 tmax_dp_rand_edu2 tmax_dp_rand_edu3 tmax_dp_rand_edu4 tmax2_dp_rand_edu1 tmax2_dp_rand_edu2 tmax2_dp_rand_edu3 tmax2_dp_rand_edu4 tmax3_dp_rand_edu1 tmax3_dp_rand_edu2 tmax3_dp_rand_edu3 tmax3_dp_rand_edu4 sm_dp_rand_edu1 sm_dp_rand_edu2 sm_dp_rand_edu3 sm_dp_rand_edu4 sm2_dp_rand_edu1 sm2_dp_rand_edu2 sm2_dp_rand_edu3 sm2_dp_rand_edu4 sm3_dp_rand_edu1 sm3_dp_rand_edu2 sm3_dp_rand_edu3 sm3_dp_rand_edu4
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
-quietly {
-	gen model = "T,S placebo*(age+edu)"
-	if "$metric" == "rsquare" {
-		reshape long rsq, i(model) j(seeds)
-	}
-	if "$metric" == "crps" {
-		reshape long avcrps, i(model) j(seeds)
+	if "$folds" == "year" {
+		rename rsq rsqyear 
 	}
 	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm_zeros.dta", nogenerate
 }
@@ -537,10 +566,9 @@ replace modelnb = 2 if model == "T,S*climzone"
 replace modelnb = 3 if model == "T,S*age"
 replace modelnb = 4 if model == "T,S*edu"
 replace modelnb = 5 if model == "T,S*sex"
-replace modelnb = 6 if model == "T,S*(age+edu)"
-replace modelnb = 7 if model == "T,S*(age+edu+sex)"
-replace modelnb = 8 if model == "T,S placebo*(age+edu)"
-label define modelname 1 "T,S" 2 "T,S * climate zone" 3 "T,S * age" 4 "T,S * edu" 5 "T,S * sex" 6 "T,S * (age+edu)" 7 "T,S * (age+edu+sex)" 8 "T,S placebo * (age+edu)", modify
+replace modelnb = 6 if model == "T,S*(climzone+age+edu)"
+replace modelnb = 7 if model == "T,S placebo*(climzone+age+edu)"
+label define modelname 1 "T,S" 2 "T,S * climate zone" 3 "T,S * age" 4 "T,S * edu" 5 "T,S * sex" 6 "T,S * (climzone+age+edu)" 7 "T,S placebo * (climzone+age+edu)", modify
 label values modelnb modelname
 
 graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(small))) nooutsides ///
@@ -551,7 +579,7 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(small))) nooutside
 		graphregion(fcolor(white)) note("") ///
 		name(rsqimmmswdailyranddemo_zeros, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigEX_cv_zeros.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigSX_cv_zeros.png", ///
 			width(4000) as(png) name("rsqimmmswdailyranddemo_zeros") replace
 
 			
@@ -562,13 +590,16 @@ use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta", clear
 
 local depvar ln_outmigshare
 
-* Model performing best out-of-sample: T,S cubic per age and education
+* Model performing best out-of-sample: T,S cubic per climate zone, age and education
 * Select corresponding independent variables
-local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat c.tmax_dp##i.edattain c.tmax2_dp##i.edattain c.tmax3_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain
-reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
-estimates save "$input_dir/5_estimation/mcross_tspd3_eduage_zeros.ster", replace
+local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat ///
+				c.tmax_dp##i.edattain c.tmax2_dp##i.edattain c.tmax3_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain ///
+				c.tmax_dp##i.mainclimgroup c.tmax2_dp##i.mainclimgroup c.tmax3_dp##i.mainclimgroup c.sm_dp##i.mainclimgroup c.sm2_dp##i.mainclimgroup c.sm3_dp##i.mainclimgroup
 
-* Same model but without demographic heterogeneity for comparison
+reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
+estimates save "$input_dir/5_estimation/mcross_tspd3_eduagecz_zeros.ster", replace
+
+* Same model but without heterogeneity for comparison
 local indepvar tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp
 reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
 estimates save "$input_dir/5_estimation/mcross_tspd3_zeros.ster", replace
@@ -584,17 +615,20 @@ global histo 0
 global robname ""
 
 * Determine empirical support for weather values to plot response curves accordingly
-use "$input_dir/3_consolidate/crossweatherdaily.dta"
+* Results for each of the 5 considered climate zones
+forvalues c=1/5 {
+	use "$input_dir/3_consolidate/crossweatherdaily_`c'.dta"
 
-sum tmax_pop_w
-global tmin = floor(r(min))
-global tmax = ceil(r(max))
-local tmean = min(0,$tmin) + ($tmax + abs($tmin)) / 2
+	sum tmax_pop_w
+	local tmin_`c' = floor(r(min))
+	local tmax_`c' = ceil(r(max))
+	local tmean_`c' = min(0,`tmin_`c'') + (`tmax_`c'' + abs(`tmin_`c'')) / 2
 
-sum sm_pop_w
-global smmin = floor(r(min) * 100) / 100
-global smmax = ceil(r(max) * 100) / 100
-local smmean = ($smmax + $smmin) / 2
+	sum sm_pop_w
+	local smmin_`c' = floor(r(min) * 100) / 100
+	local smmax_`c' = ceil(r(max) * 100) / 100
+	local smmean_`c' = (`smmax_`c'' + `smmin_`c'') / 2
+}
 
 * Option to clip confidence intervals
 global yclip = 1
@@ -605,113 +639,143 @@ use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
 * Generate response curves for temperature 
 global weathervar temperature
 
-* Create weather intervals for which we calculate migration responses
-preserve
+* Plot separately for each considered climate zone
+forvalues c=1/5 {
+			
+	global czname: label (mainclimgroup) `c'
 
-gen t = .
-local tobs = $tmax - $tmin + 1
-drop if _n > 0
-set obs `tobs'
-replace t = _n + $tmin - 1
+	* Create weather intervals for which we calculate migration responses
+	preserve
+
+	gen t = .
+	local tobs = `tmax_`c'' - `tmin_`c'' + 1
+	drop if _n > 0
+	set obs `tobs'
+	replace t = _n + `tmin_`c'' - 1
 
 
-* Calculate migration responses per age and education based on estimates
-estimates use "$input_dir/5_estimation/mcross_tspd3_eduage_zeros.ster"
+	* Calculate migration responses per climate zone, age and education based on estimates
+	estimates use "$input_dir/5_estimation/mcross_tspd3_eduagecz_zeros.ster"
 
-local line_base = "_b[tmax_dp]* (t - `tmean')+ _b[tmax2_dp] * (t^2 - `tmean'^2)+ _b[tmax3_dp] * (t^3 - `tmean'^3)"
-local line_age1 = "0"
-local line_edu1 = "0"
-forv i = 2/4 {
-	local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp]* (t - `tmean')+ _b[`i'.agemigcat#c.tmax2_dp] * (t^2 - `tmean'^2)+ _b[`i'.agemigcat#c.tmax3_dp] * (t^3 - `tmean'^3)"
-	local line_edu`i' = "_b[`i'.edattain#c.tmax_dp]* (t - `tmean')+ _b[`i'.edattain#c.tmax2_dp] * (t^2 - `tmean'^2)+ _b[`i'.edattain#c.tmax3_dp] * (t^3 - `tmean'^3)"
-}
+	local line_base = "_b[tmax_dp]* (t - `tmean_`c'')+ _b[tmax2_dp] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp] * (t^3 - `tmean_`c''^3)"
+	local line_age1 = "0"
+	local line_edu1 = "0"
+	forv i = 2/4 {
+		local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp]* (t - `tmean_`c'')+ _b[`i'.agemigcat#c.tmax2_dp] * (t^2 - `tmean_`c''^2)+ _b[`i'.agemigcat#c.tmax3_dp] * (t^3 - `tmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.tmax_dp]* (t - `tmean_`c'')+ _b[`i'.edattain#c.tmax2_dp] * (t^2 - `tmean_`c''^2)+ _b[`i'.edattain#c.tmax3_dp] * (t^3 - `tmean_`c''^3)"
+	}
+	if `c' == 1 {
+		local line_clim = "0"
+	}
+	else {
+		local line_clim = "_b[`c'.mainclimgroup#c.tmax_dp]* (t - `tmean_`c'') + _b[`c'.mainclimgroup#c.tmax2_dp] * (t^2 - `tmean_`c''^2)+ _b[`c'.mainclimgroup#c.tmax3_dp] * (t^3 - `tmean_`c''^3)"
+	}
 
-forv i=1/4 {
-	forv j=1/4 {
-		
-		predictnl yhat`i'`j' = `line_base' + `line_age`i'' + `line_edu`j'', ci(lowerci`i'`j' upperci`i'`j') level(90)
-		
-		* Rescale to obtain migration response for a change in weather conditions 1 day during the year
-		foreach var of varlist yhat`i'`j' lowerci`i'`j' upperci`i'`j' {
-			gen day`var' = `var' / 365 * 100
+	forv i=1/4 {
+		forv j=1/4 {
+			
+			predictnl yhat`i'`j' = `line_base' + `line_age`i'' + `line_edu`j'' + `line_clim' , ci(lowerci`i'`j' upperci`i'`j') level(90)
+			
+			* Rescale to obtain migration response for a change in weather conditions 1 day during the year
+			foreach var of varlist yhat`i'`j' lowerci`i'`j' upperci`i'`j' {
+				gen day`var' = `var' / 365 * 100
+			}
 		}
 	}
+
+	* Calculate migration responses without heterogeneity based on estimates
+	estimates use "$input_dir/5_estimation/mcross_tspd3_zeros.ster"
+
+	local line0 = "_b[tmax_dp]* (t - `tmean_`c'')+ _b[tmax2_dp] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp] * (t^3 - `tmean_`c''^3)"
+
+	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
+
+	foreach var of varlist yhat0 lowerci0 upperci0 {
+		gen day`var' = `var' / 365 * 100
+	}
+
+	* Plot response curves
+	global tmax_plot `tmax_`c''
+	global tmin_plot `tmin_`c''
+	do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
+
+	* Export plot 
+	graph export "$res_dir/4_Estimation_crossmig/FigSX_crosstemp_zeros_`c'.png", width(4000) as(png) name("graphcurveall") replace
+
+	restore
+
 }
-
-* Calculate migration responses without heterogeneity based on estimates
-estimates use "$input_dir/5_estimation/mcross_tspd3_zeros.ster"
-
-local line0 = "_b[tmax_dp]* (t - `tmean')+ _b[tmax2_dp] * (t^2 - `tmean'^2)+ _b[tmax3_dp] * (t^3 - `tmean'^3)"
-
-predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
-
-foreach var of varlist yhat0 lowerci0 upperci0 {
-	gen day`var' = `var' / 365 * 100
-}
-
-* Plot response curves
-do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
-
-* Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigEX_crosstemp_zeros.png", width(4000) as(png) name("graphcurveall") replace
-
-restore
 
 
 * Generate response curves for soil moisture 
 global weathervar soilmoisture
 
-* Create weather intervals for which we calculate migration responses
-preserve
+* Plot separately for each considered climate zone
+forvalues c=1/5 {
+			
+	global czname: label (mainclimgroup) `c'
 
-gen sm = .
-local smobs = ($smmax - $smmin) / 0.01 + 1
-drop if _n > 0
-set obs `smobs'
-replace sm = (_n + $smmin / 0.01 - 1)*0.01
+	* Create weather intervals for which we calculate migration responses
+	preserve
+
+	gen sm = .
+	local smobs = round((`smmax_`c'' - `smmin_`c'') / 0.01 + 1)
+	drop if _n > 0
+	set obs `smobs'
+	replace sm = (_n + `smmin_`c'' / 0.01 - 1)*0.01
 
 
-* Calculate migration responses per age and education based on estimates
-estimates use "$input_dir/5_estimation/mcross_tspd3_eduage_zeros.ster"
+	* Calculate migration responses per climate zone, age and education based on estimates
+	estimates use "$input_dir/5_estimation/mcross_tspd3_eduagecz_zeros.ster"
 
-local line_base = "_b[sm_dp]* (sm - `smmean') + _b[sm2_dp] * (sm^2 - `smmean'^2) + _b[sm3_dp] * (sm^3 - `smmean'^3)"
-local line_age1 = "0"
-local line_edu1 = "0"
-forv i = 2/4 {
-	local line_age`i' = "_b[`i'.agemigcat#c.sm_dp]* (sm - `smmean') + _b[`i'.agemigcat#c.sm2_dp] * (sm^2 - `smmean'^2) + _b[`i'.agemigcat#c.sm3_dp] * (sm^3 - `smmean'^3)"
-	local line_edu`i' = "_b[`i'.edattain#c.sm_dp]* (sm - `smmean') + _b[`i'.edattain#c.sm2_dp] * (sm^2 - `smmean'^2) + _b[`i'.edattain#c.sm3_dp] * (sm^3 - `smmean'^3)"
-}
+	local line_base = "_b[sm_dp]* (sm - `smmean_`c'') + _b[sm2_dp] * (sm^2 - `smmean_`c''^2) + _b[sm3_dp] * (sm^3 - `smmean_`c''^3)"
+	local line_age1 = "0"
+	local line_edu1 = "0"
+	forv i = 2/4 {
+		local line_age`i' = "_b[`i'.agemigcat#c.sm_dp]* (sm - `smmean_`c'') + _b[`i'.agemigcat#c.sm2_dp] * (sm^2 - `smmean_`c''^2) + _b[`i'.agemigcat#c.sm3_dp] * (sm^3 - `smmean_`c''^3)"
+		local line_edu`i' = "_b[`i'.edattain#c.sm_dp]* (sm - `smmean_`c'') + _b[`i'.edattain#c.sm2_dp] * (sm^2 - `smmean_`c''^2) + _b[`i'.edattain#c.sm3_dp] * (sm^3 - `smmean_`c''^3)"
+	}
+	if `c' == 1 {
+		local line_clim = "0"
+	}
+	else {
+		local line_clim = "_b[`c'.mainclimgroup#c.sm_dp]* (sm - `smmean_`c'') + _b[`c'.mainclimgroup#c.sm2_dp] * (sm^2 - `smmean_`c''^2)+ _b[`c'.mainclimgroup#c.sm3_dp] * (sm^3 - `smmean_`c''^3)"
+	}
 
-forv i=1/4 {
-	forv j=1/4 {
-		
-		predictnl yhat`i'`j' = `line_base' + `line_age`i'' + `line_edu`j'', ci(lowerci`i'`j' upperci`i'`j') level(90)
-		
-		* Rescale to obtain migration response for a change in weather conditions 1 day during the year
-		foreach var of varlist yhat`i'`j' lowerci`i'`j' upperci`i'`j' {
-			gen day`var' = `var' / 365 * 100
+	forv i=1/4 {
+		forv j=1/4 {
+			
+			predictnl yhat`i'`j' = `line_base' + `line_age`i'' + `line_edu`j'' + `line_clim' , ci(lowerci`i'`j' upperci`i'`j') level(90)
+			
+			* Rescale to obtain migration response for a change in weather conditions 1 day during the year
+			foreach var of varlist yhat`i'`j' lowerci`i'`j' upperci`i'`j' {
+				gen day`var' = `var' / 365 * 100
+			}
 		}
 	}
+
+	* Calculate migration responses without heterogeneity based on estimates
+	estimates use "$input_dir/5_estimation/mcross_tspd3_zeros.ster"
+
+	local line0 = "_b[sm_dp]* (sm - `smmean_`c'') + _b[sm2_dp] * (sm^2 - `smmean_`c''^2) + _b[sm3_dp] * (sm^3 - `smmean_`c''^3)"
+
+	predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
+
+	foreach var of varlist yhat0 lowerci0 upperci0 {
+		gen day`var' = `var' / 365 * 100
+	}
+
+	* Plot response curves
+	global smmax_plot `smmax_`c''
+	global smmin_plot `smmin_`c''
+	do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
+
+	* Export plot 
+	graph export "$res_dir/4_Estimation_crossmig/FigSX_crosssoilm_zeros_`c'.png", width(4000) as(png) name("graphcurveall") replace
+
+	restore
+
 }
-
-* Calculate migration responses without heterogeneity based on estimates
-estimates use "$input_dir/5_estimation/mcross_tspd3_zeros.ster"
-
-local line0 = "_b[sm_dp]* (sm - `smmean') + _b[sm2_dp] * (sm^2 - `smmean'^2) + _b[sm3_dp] * (sm^3 - `smmean'^3)"
-
-predictnl yhat0 = `line0', ci(lowerci0 upperci0) level(90)
-
-foreach var of varlist yhat0 lowerci0 upperci0 {
-	gen day`var' = `var' / 365 * 100
-}
-
-* Plot response curves
-do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
-
-* Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigEX_crosssoilm_zeros.png", width(4000) as(png) name("graphcurveall") replace
-
-restore
 
 
 

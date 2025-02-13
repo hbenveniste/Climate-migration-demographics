@@ -24,13 +24,13 @@ Input data will be available on Harvard Dataverse upon publication. Once it is, 
 # Code repository structure
 `0_datacleaning/` - Code for cleaning and constructing the datasets used to estimate the weather-migration relationships.
 
-`1_description/` - Code for plotting descriptive representations of the migration and weather data (Fig.1, Extended Figs.1,2,6).
+`1_description/` - Code for plotting descriptive representations of the migration and weather data (Fig.1, Supplementary Figs.1,2,3,7).
 
-`2_crossvalidation/` - Code for running the cross-validations and plotting results (Figs.2a,3a, Extended Figs.3,7,9ab,10ab,11ab,13).
+`2_crossvalidation/` - Code for running the cross-validations and plotting results (Figs.2a,3a, Supplementary Figs.4,8,10ab,11ab,12ab,14).
 
-`3_estimation/` - Code for estimating the weather-migration relationships and plotting resulting response curves (Figs.2bc,3bc, Extended Figs.4,5,9c-f,10c-f,11c-f).
+`3_estimation/` - Code for estimating the weather-migration relationships and plotting resulting response curves (Figs.2bc,3bc, Supplementary Figs.5,6,10c-f,11c-f,12c-f).
 
-`4_projection/` - Code for running future projections of cross-border migration and plotting results (Fig.4, Extended Figs.8,12).
+`4_projection/` - Code for running future projections of cross-border migration and plotting results (Fig.4, Supplementary Figs.9,13).
 
 # Running the code
 Start by running the `set.do` file in the `0_datacleaning/0_setup` subfolder.

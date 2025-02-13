@@ -28,7 +28,7 @@ do "$code_dir/2_crossvalidation/3_replication/clean_cattaneoperi.do"
 ****************************************************************
 **# Prepare for cross-validation ***
 ****************************************************************
-* Select method for folds creation: random, cross-corridor, cross-country, cross-year
+* Select method for folds creation: random, cross-year
 global folds "random"
 
 * Select number of seeds for the uncertainty range of performance
@@ -59,6 +59,10 @@ foreach var in $depvar $indepvar {
 
 keep res_* cc_num origin_code year
 rename res_* *
+
+foreach var in $depvar $indepvar {
+	quietly drop if `var' == .
+}
 
 save "$input_dir/2_intermediate/_residualized_repli.dta", replace
 
@@ -102,6 +106,10 @@ foreach var in $depvar $indepvar {
 
 keep res_* cc_num origin_code year
 rename res_* *
+
+foreach var in $depvar $indepvar {
+	quietly drop if `var' == .
+}
 
 save "$input_dir/2_intermediate/_residualized_repli.dta", replace
 

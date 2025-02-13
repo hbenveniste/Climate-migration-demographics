@@ -8,7 +8,7 @@ Conduct robustness checks using an alternative way of dealing with uncertainty o
 ****************************************************************
 **# Initialize ***
 ****************************************************************
-
+/*
 if "$CODE" == "" {
 	global CODE: env CODE
 	global INPUT: env INPUT
@@ -16,7 +16,7 @@ if "$CODE" == "" {
 
 	do "$code_dir/0_datacleaning/0_setup/setup.do"
 }
-
+*/
 
 ****************************************************************
 **# Use weather of the earliest possible year of migration ***
@@ -62,7 +62,7 @@ merge m:1 ctrymig yrmig geomig1 using "$input_dir/2_intermediate/withinweather.d
 drop if _merge != 3
 drop _merge
 
-drop *uncert* *av10
+drop *uc* *a10
 drop if tmax_dp_e == . | sm_dp_e == .
 
 
@@ -73,7 +73,7 @@ tab agemigcat, gen(d_age)
 tab edattain, gen(d_edu)
 tab sex, gen(d_sex)
 foreach var of varlist `interac' {
-	forv i=1/5 {
+	forv i=1/6 {
 		gen `var'_clim`i' = `var' * d_clim`i'
 		forv j=1/4 {
 			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'
@@ -129,7 +129,7 @@ save "$input_dir/4_crossvalidation/rsqwithin_e.dta", replace
 
 * Model performing best out-of-sample: T,S cubic, per climate zone and age and education
 use "$input_dir/3_consolidate/withinmigweather_clean_e.dta"
-delimit ;
+#delimit ;
 global indepvar "tmax_dp_e_clim1_age1 tmax_dp_e_clim1_age2 tmax_dp_e_clim1_age3 tmax_dp_e_clim1_age4 sm_dp_e_clim1_age1 sm_dp_e_clim1_age2 sm_dp_e_clim1_age3 sm_dp_e_clim1_age4 
 				tmax2_dp_e_clim1_age1 tmax2_dp_e_clim1_age2 tmax2_dp_e_clim1_age3 tmax2_dp_e_clim1_age4 sm2_dp_e_clim1_age1 sm2_dp_e_clim1_age2 sm2_dp_e_clim1_age3 sm2_dp_e_clim1_age4 
 				tmax3_dp_e_clim1_age1 tmax3_dp_e_clim1_age2 tmax3_dp_e_clim1_age3 tmax3_dp_e_clim1_age4 sm3_dp_e_clim1_age1 sm3_dp_e_clim1_age2 sm3_dp_e_clim1_age3 sm3_dp_e_clim1_age4 
@@ -145,6 +145,9 @@ global indepvar "tmax_dp_e_clim1_age1 tmax_dp_e_clim1_age2 tmax_dp_e_clim1_age3 
 				tmax_dp_e_clim5_age1 tmax_dp_e_clim5_age2 tmax_dp_e_clim5_age3 tmax_dp_e_clim5_age4 sm_dp_e_clim5_age1 sm_dp_e_clim5_age2 sm_dp_e_clim5_age3 sm_dp_e_clim5_age4 
 				tmax2_dp_e_clim5_age1 tmax2_dp_e_clim5_age2 tmax2_dp_e_clim5_age3 tmax2_dp_e_clim5_age4 sm2_dp_e_clim5_age1 sm2_dp_e_clim5_age2 sm2_dp_e_clim5_age3 sm2_dp_e_clim5_age4 
 				tmax3_dp_e_clim5_age1 tmax3_dp_e_clim5_age2 tmax3_dp_e_clim5_age3 tmax3_dp_e_clim5_age4 sm3_dp_e_clim5_age1 sm3_dp_e_clim5_age2 sm3_dp_e_clim5_age3 sm3_dp_e_clim5_age4 
+				tmax_dp_e_clim6_age1 tmax_dp_e_clim6_age2 tmax_dp_e_clim6_age3 tmax_dp_e_clim6_age4 sm_dp_e_clim6_age1 sm_dp_e_clim6_age2 sm_dp_e_clim6_age3 sm_dp_e_clim6_age4 
+				tmax2_dp_e_clim6_age1 tmax2_dp_e_clim6_age2 tmax2_dp_e_clim6_age3 tmax2_dp_e_clim6_age4 sm2_dp_e_clim6_age1 sm2_dp_e_clim6_age2 sm2_dp_e_clim6_age3 sm2_dp_e_clim6_age4 
+				tmax3_dp_e_clim6_age1 tmax3_dp_e_clim6_age2 tmax3_dp_e_clim6_age3 tmax3_dp_e_clim6_age4 sm3_dp_e_clim6_age1 sm3_dp_e_clim6_age2 sm3_dp_e_clim6_age3 sm3_dp_e_clim6_age4 
 				tmax_dp_e_clim1_edu1 tmax_dp_e_clim1_edu2 tmax_dp_e_clim1_edu3 tmax_dp_e_clim1_edu4 sm_dp_e_clim1_edu1 sm_dp_e_clim1_edu2 sm_dp_e_clim1_edu3 sm_dp_e_clim1_edu4 
 				tmax2_dp_e_clim1_edu1 tmax2_dp_e_clim1_edu2 tmax2_dp_e_clim1_edu3 tmax2_dp_e_clim1_edu4 sm2_dp_e_clim1_edu1 sm2_dp_e_clim1_edu2 sm2_dp_e_clim1_edu3 sm2_dp_e_clim1_edu4 
 				tmax3_dp_e_clim1_edu1 tmax3_dp_e_clim1_edu2 tmax3_dp_e_clim1_edu3 tmax3_dp_e_clim1_edu4 sm3_dp_e_clim1_edu1 sm3_dp_e_clim1_edu2 sm3_dp_e_clim1_edu3 sm3_dp_e_clim1_edu4 
@@ -159,8 +162,11 @@ global indepvar "tmax_dp_e_clim1_age1 tmax_dp_e_clim1_age2 tmax_dp_e_clim1_age3 
 				tmax3_dp_e_clim4_edu1 tmax3_dp_e_clim4_edu2 tmax3_dp_e_clim4_edu3 tmax3_dp_e_clim4_edu4 sm3_dp_e_clim4_edu1 sm3_dp_e_clim4_edu2 sm3_dp_e_clim4_edu3 sm3_dp_e_clim4_edu4 
 				tmax_dp_e_clim5_edu1 tmax_dp_e_clim5_edu2 tmax_dp_e_clim5_edu3 tmax_dp_e_clim5_edu4 sm_dp_e_clim5_edu1 sm_dp_e_clim5_edu2 sm_dp_e_clim5_edu3 sm_dp_e_clim5_edu4 
 				tmax2_dp_e_clim5_edu1 tmax2_dp_e_clim5_edu2 tmax2_dp_e_clim5_edu3 tmax2_dp_e_clim5_edu4 sm2_dp_e_clim5_edu1 sm2_dp_e_clim5_edu2 sm2_dp_e_clim5_edu3 sm2_dp_e_clim5_edu4 
-				tmax3_dp_e_clim5_edu1 tmax3_dp_e_clim5_edu2 tmax3_dp_e_clim5_edu3 tmax3_dp_e_clim5_edu4 sm3_dp_e_clim5_edu1 sm3_dp_e_clim5_edu2 sm3_dp_e_clim5_edu3 sm3_dp_e_clim5_edu4";
-delimit cr
+				tmax3_dp_e_clim5_edu1 tmax3_dp_e_clim5_edu2 tmax3_dp_e_clim5_edu3 tmax3_dp_e_clim5_edu4 sm3_dp_e_clim5_edu1 sm3_dp_e_clim5_edu2 sm3_dp_e_clim5_edu3 sm3_dp_e_clim5_edu4
+				tmax_dp_e_clim6_edu1 tmax_dp_e_clim6_edu2 tmax_dp_e_clim6_edu3 tmax_dp_e_clim6_edu4 sm_dp_e_clim6_edu1 sm_dp_e_clim6_edu2 sm_dp_e_clim6_edu3 sm_dp_e_clim6_edu4 
+				tmax2_dp_e_clim6_edu1 tmax2_dp_e_clim6_edu2 tmax2_dp_e_clim6_edu3 tmax2_dp_e_clim6_edu4 sm2_dp_e_clim6_edu1 sm2_dp_e_clim6_edu2 sm2_dp_e_clim6_edu3 sm2_dp_e_clim6_edu4 
+				tmax3_dp_e_clim6_edu1 tmax3_dp_e_clim6_edu2 tmax3_dp_e_clim6_edu3 tmax3_dp_e_clim6_edu4 sm3_dp_e_clim6_edu1 sm3_dp_e_clim6_edu2 sm3_dp_e_clim6_edu3 sm3_dp_e_clim6_edu4";
+#delimit cr
 do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
 use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
@@ -200,7 +206,7 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 		ysize(6) xsize(5) ///
 		name(rsqwithinmswdailyuncert, replace)
 
-graph export "$res_dir/3_Crossvalidation_withinmig/FigEX_cv_withinuncert.png", ///
+graph export "$res_dir/3_Crossvalidation_withinmig/FigSX_cv_withinuncert.png", ///
 			width(4000) as(png) name("rsqwithinmswdailyuncert") replace
 
 			
@@ -216,7 +222,8 @@ local depvar ln_outmigshare
 
 
 * Model performing best out-of-sample: T,S cubic, per climate zone and age and education
-local indepvar c.tmax_dp_e##i.climgroup##i.agemigcat c.tmax2_dp_e##i.climgroup##i.agemigcat c.tmax3_dp_e##i.climgroup##i.agemigcat c.sm_dp_e##i.climgroup##i.agemigcat c.sm2_dp_e##i.climgroup##i.agemigcat c.sm3_dp_e##i.climgroup##i.agemigcat c.tmax_dp_e##i.climgroup##i.edattain c.tmax2_dp_e##i.climgroup##i.edattain c.tmax3_dp_e##i.climgroup##i.edattain c.sm_dp_e##i.climgroup##i.edattain c.sm2_dp_e##i.climgroup##i.edattain c.sm3_dp_e##i.climgroup##i.edattain
+local indepvar c.tmax_dp_e##i.climgroup##i.agemigcat c.tmax2_dp_e##i.climgroup##i.agemigcat c.tmax3_dp_e##i.climgroup##i.agemigcat c.sm_dp_e##i.climgroup##i.agemigcat c.sm2_dp_e##i.climgroup##i.agemigcat c.sm3_dp_e##i.climgroup##i.agemigcat ///
+				c.tmax_dp_e##i.climgroup##i.edattain c.tmax2_dp_e##i.climgroup##i.edattain c.tmax3_dp_e##i.climgroup##i.edattain c.sm_dp_e##i.climgroup##i.edattain c.sm2_dp_e##i.climgroup##i.edattain c.sm3_dp_e##i.climgroup##i.edattain
 
 reghdfe `depvar' `indepvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1)
 estimates save "$input_dir/5_estimation/mwithin_tspd1_e_cz_eduage.ster", replace
@@ -237,7 +244,7 @@ estimates save "$input_dir/5_estimation/mwithin_tspd1_e_cz.ster", replace
 forvalues c=1/1 {
 	use "$input_dir/3_consolidate/withinweatherdaily_`c'.dta"
 
-	sum tmax_pop_uncert_w 
+	sum tmax_pop_uc_w 
 	local tmin_`c' = floor(r(min))
 	local tmax_`c' = ceil(r(max))
 	local tmean_`c' = min(0,`tmin_`c'') + (`tmax_`c'' + abs(`tmin_`c'')) / 2
@@ -245,7 +252,7 @@ forvalues c=1/1 {
 forvalues c=3/3 {
 	use "$input_dir/3_consolidate/withinweatherdaily_`c'.dta"
 	
-	sum sm_pop_uncert_w
+	sum sm_pop_uc_w
 	local smmin_`c' = floor(r(min) * 100) / 100
 	local smmax_`c' = ceil(r(max) * 100) / 100
 	local smmean_`c' = (`smmax_`c'' + `smmin_`c'') / 2
@@ -284,7 +291,7 @@ forvalues c=1/1 {
 	replace t = _n + `tmin_`c'' - 1
 
 
-	* Calculate migration responses per age and education based on estimates
+	* Calculate migration responses per climate zone, age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd1_e_cz_eduage.ster"
 
 	local line_base = "_b[tmax_dp_e]* (t - `tmean_`c'')+ _b[tmax2_dp_e] * (t^2 - `tmean_`c''^2)+ _b[tmax3_dp_e] * (t^3 - `tmean_`c''^3)"
@@ -346,7 +353,7 @@ forvalues c=1/1 {
 	do "$code_dir/3_estimation/2_withincountry/curvesdemo_plot_function_withinmigration.do"
 
 	* Export plot 
-	graph export "$res_dir/5_Estimation_withinmig/FigEX_withintempe_`c'.png", width(4000) as(png) name("graphcurveall") replace
+	graph export "$res_dir/5_Estimation_withinmig/FigSX_withintempe_`c'.png", width(4000) as(png) name("graphcurveall") replace
 	
 	restore
 
@@ -372,7 +379,7 @@ forvalues c=3/3 {
 	replace sm = (_n + `smmin_`c'' / 0.01 - 1)*0.01
 
 
-	* Calculate migration responses per age and education based on estimates
+	* Calculate migration responses per climate zone, age and education based on estimates
 	estimates use "$input_dir/5_estimation/mwithin_tspd1_e_cz_eduage.ster"
 
 	local line_base = "_b[sm_dp_e]* (sm - `smmean_`c'') + _b[sm2_dp_e] * (sm^2 - `smmean_`c''^2) + _b[sm3_dp_e] * (sm^3 - `smmean_`c''^3)"
@@ -434,7 +441,7 @@ forvalues c=3/3 {
 	do "$code_dir/3_estimation/2_withincountry/curvesdemo_plot_function_withinmigration.do"
 
 	* Export plot 
-	graph export "$res_dir/5_Estimation_withinmig/FigEX_withinsoilme_`c'.png", width(4000) as(png) name("graphcurveall") replace
+	graph export "$res_dir/5_Estimation_withinmig/FigSX_withinsoilme_`c'.png", width(4000) as(png) name("graphcurveall") replace
 	
 	restore
 

@@ -87,42 +87,42 @@ tsset geomig1 yrmig
 sort geomig1 yrmig
 
 foreach v of local varlist {
-	egen `v'_av1 = filter(`v'), coef(1 1) lags(0/1) normalise
-	egen `v'_av5 = filter(`v'), coef(1 1 1 1 1 1) lags(0/5) normalise
-	egen `v'_av6 = filter(`v'), coef(1 1 1 1 1 1 1) lags(0/6) normalise
-	egen `v'_av7 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(0/7) normalise
-	egen `v'_av8 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(0/8) normalise
-	egen `v'_av9 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(0/9) normalise
-	egen `v'_av10 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(0/10) normalise
+	egen `v'_a1 = filter(`v'), coef(1 1) lags(0/1) normalise
+	egen `v'_a5 = filter(`v'), coef(1 1 1 1 1 1) lags(0/5) normalise
+	egen `v'_a6 = filter(`v'), coef(1 1 1 1 1 1 1) lags(0/6) normalise
+	egen `v'_a7 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(0/7) normalise
+	egen `v'_a8 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(0/8) normalise
+	egen `v'_a9 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(0/9) normalise
+	egen `v'_a10 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(0/10) normalise
 	
-	egen `v'_av1l1 = filter(`v'), coef(1 1) lags(1/2) normalise
-	egen `v'_av5l1 = filter(`v'), coef(1 1 1 1 1 1) lags(1/6) normalise
-	egen `v'_av6l1 = filter(`v'), coef(1 1 1 1 1 1 1) lags(1/7) normalise
-	egen `v'_av7l1 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(1/8) normalise
-	egen `v'_av8l1 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(1/9) normalise
-	egen `v'_av9l1 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(1/10) normalise
-	egen `v'_av10l1 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(1/11) normalise
+	egen `v'_a1l1 = filter(`v'), coef(1 1) lags(1/2) normalise
+	egen `v'_a5l1 = filter(`v'), coef(1 1 1 1 1 1) lags(1/6) normalise
+	egen `v'_a6l1 = filter(`v'), coef(1 1 1 1 1 1 1) lags(1/7) normalise
+	egen `v'_a7l1 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(1/8) normalise
+	egen `v'_a8l1 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(1/9) normalise
+	egen `v'_a9l1 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(1/10) normalise
+	egen `v'_a10l1 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(1/11) normalise
 	
-	egen `v'_av1l2 = filter(`v'), coef(1 1) lags(2/3) normalise
-	egen `v'_av5l2 = filter(`v'), coef(1 1 1 1 1 1) lags(2/7) normalise
-	egen `v'_av6l2 = filter(`v'), coef(1 1 1 1 1 1 1) lags(2/8) normalise
-	egen `v'_av7l2 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(2/9) normalise
-	egen `v'_av8l2 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(2/10) normalise
-	egen `v'_av9l2 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(2/11) normalise
-	egen `v'_av10l2 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(2/12) normalise
+	egen `v'_a1l2 = filter(`v'), coef(1 1) lags(2/3) normalise
+	egen `v'_a5l2 = filter(`v'), coef(1 1 1 1 1 1) lags(2/7) normalise
+	egen `v'_a6l2 = filter(`v'), coef(1 1 1 1 1 1 1) lags(2/8) normalise
+	egen `v'_a7l2 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(2/9) normalise
+	egen `v'_a8l2 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(2/10) normalise
+	egen `v'_a9l2 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(2/11) normalise
+	egen `v'_a10l2 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(2/12) normalise
 }
 
 * Other functional forms, other weather variables
 local altvarlist = "prcp_dp prcp2_dp prcp3_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2"
 
 foreach v of local altvarlist {
-	egen `v'_av1 = filter(`v'), coef(1 1) lags(0/1) normalise
-	egen `v'_av5 = filter(`v'), coef(1 1 1 1 1 1) lags(0/5) normalise
-	egen `v'_av6 = filter(`v'), coef(1 1 1 1 1 1 1) lags(0/6) normalise
-	egen `v'_av7 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(0/7) normalise
-	egen `v'_av8 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(0/8) normalise
-	egen `v'_av9 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(0/9) normalise
-	egen `v'_av10 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(0/10) normalise
+	egen `v'_a1 = filter(`v'), coef(1 1) lags(0/1) normalise
+	egen `v'_a5 = filter(`v'), coef(1 1 1 1 1 1) lags(0/5) normalise
+	egen `v'_a6 = filter(`v'), coef(1 1 1 1 1 1 1) lags(0/6) normalise
+	egen `v'_a7 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(0/7) normalise
+	egen `v'_a8 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(0/8) normalise
+	egen `v'_a9 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(0/9) normalise
+	egen `v'_a10 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(0/10) normalise
 }
 
 tsset, clear
@@ -211,47 +211,47 @@ drop _merge
 
 * Create weather variables with proper uncertainty range
 foreach v of local varlist {
-	gen `v'_uncert = `v'
-	replace `v'_uncert = `v'_av1 if migrange == 1
-	replace `v'_uncert = `v'_av5 if migrange == 5
-	replace `v'_uncert = `v'_av6 if migrange == 6
-	replace `v'_uncert = `v'_av7 if migrange == 7
-	replace `v'_uncert = `v'_av8 if migrange == 8
-	replace `v'_uncert = `v'_av9 if migrange == 9
-	replace `v'_uncert = `v'_av10 if migrange == 10
-	replace `v'_uncert = . if migrange == .
+	gen `v'_uc = `v'
+	replace `v'_uc = `v'_a1 if migrange == 1
+	replace `v'_uc = `v'_a5 if migrange == 5
+	replace `v'_uc = `v'_a6 if migrange == 6
+	replace `v'_uc = `v'_a7 if migrange == 7
+	replace `v'_uc = `v'_a8 if migrange == 8
+	replace `v'_uc = `v'_a9 if migrange == 9
+	replace `v'_uc = `v'_a10 if migrange == 10
+	replace `v'_uc = . if migrange == .
 	
-	gen `v'_uncert_l1 = `v'_l1
-	replace `v'_uncert_l1 = `v'_av1l1 if migrange == 1
-	replace `v'_uncert_l1 = `v'_av5l1 if migrange == 5
-	replace `v'_uncert_l1 = `v'_av6l1 if migrange == 6
-	replace `v'_uncert_l1 = `v'_av7l1 if migrange == 7
-	replace `v'_uncert_l1 = `v'_av8l1 if migrange == 8
-	replace `v'_uncert_l1 = `v'_av9l1 if migrange == 9
-	replace `v'_uncert_l1 = `v'_av10l1 if migrange == 10
-	replace `v'_uncert_l1 = . if migrange == .
+	gen `v'_uc_l1 = `v'_l1
+	replace `v'_uc_l1 = `v'_a1l1 if migrange == 1
+	replace `v'_uc_l1 = `v'_a5l1 if migrange == 5
+	replace `v'_uc_l1 = `v'_a6l1 if migrange == 6
+	replace `v'_uc_l1 = `v'_a7l1 if migrange == 7
+	replace `v'_uc_l1 = `v'_a8l1 if migrange == 8
+	replace `v'_uc_l1 = `v'_a9l1 if migrange == 9
+	replace `v'_uc_l1 = `v'_a10l1 if migrange == 10
+	replace `v'_uc_l1 = . if migrange == .
 	
-	gen `v'_uncert_l2 = `v'_l2
-	replace `v'_uncert_l2 = `v'_av1l2 if migrange == 1
-	replace `v'_uncert_l2 = `v'_av5l2 if migrange == 5
-	replace `v'_uncert_l2 = `v'_av6l2 if migrange == 6
-	replace `v'_uncert_l2 = `v'_av7l2 if migrange == 7
-	replace `v'_uncert_l2 = `v'_av8l2 if migrange == 8
-	replace `v'_uncert_l2 = `v'_av9l2 if migrange == 9
-	replace `v'_uncert_l2 = `v'_av10l2 if migrange == 10
-	replace `v'_uncert_l2 = . if migrange == .
+	gen `v'_uc_l2 = `v'_l2
+	replace `v'_uc_l2 = `v'_a1l2 if migrange == 1
+	replace `v'_uc_l2 = `v'_a5l2 if migrange == 5
+	replace `v'_uc_l2 = `v'_a6l2 if migrange == 6
+	replace `v'_uc_l2 = `v'_a7l2 if migrange == 7
+	replace `v'_uc_l2 = `v'_a8l2 if migrange == 8
+	replace `v'_uc_l2 = `v'_a9l2 if migrange == 9
+	replace `v'_uc_l2 = `v'_a10l2 if migrange == 10
+	replace `v'_uc_l2 = . if migrange == .
 }
 
 foreach v of local altvarlist {
-	gen `v'_uncert = `v'
-	replace `v'_uncert = `v'_av1 if migrange == 1
-	replace `v'_uncert = `v'_av5 if migrange == 5
-	replace `v'_uncert = `v'_av6 if migrange == 6
-	replace `v'_uncert = `v'_av7 if migrange == 7
-	replace `v'_uncert = `v'_av8 if migrange == 8
-	replace `v'_uncert = `v'_av9 if migrange == 9
-	replace `v'_uncert = `v'_av10 if migrange == 10
-	replace `v'_uncert = . if migrange == .
+	gen `v'_uc = `v'
+	replace `v'_uc = `v'_a1 if migrange == 1
+	replace `v'_uc = `v'_a5 if migrange == 5
+	replace `v'_uc = `v'_a6 if migrange == 6
+	replace `v'_uc = `v'_a7 if migrange == 7
+	replace `v'_uc = `v'_a8 if migrange == 8
+	replace `v'_uc = `v'_a9 if migrange == 9
+	replace `v'_uc = `v'_a10 if migrange == 10
+	replace `v'_uc = . if migrange == .
 }
 
 

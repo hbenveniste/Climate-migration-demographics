@@ -32,7 +32,7 @@ keep lnEMjit tmp_i pcp_i from to year lnGDPpcPPP_A1Bj1 lnGDPpcPPP_A1Bi1 tmp_4agn
 ****************************************************************
 **# Prepare for cross-validation ***
 ****************************************************************
-* Select method for folds creation: random, cross-corridor, cross-country, cross-year
+* Select method for folds creation: random, cross-year
 global folds "random"
 
 * Select number of seeds for the uncertainty range of performance
@@ -77,6 +77,10 @@ foreach var in lnEMjit tmp_i tmp_4agn pcp_i pcp_4agn lnGDPpcPPP_A1Bj1 lnGDPpcPPP
 
 keep res_* from to year 
 rename res_* *
+
+foreach var in lnEMjit tmp_i tmp_4agn pcp_i pcp_4agn lnGDPpcPPP_A1Bj1 lnGDPpcPPP_A1Bi1 {
+	quietly drop if `var' == .
+}
 
 save "$input_dir/2_intermediate/_residualized_repli.dta", replace
 

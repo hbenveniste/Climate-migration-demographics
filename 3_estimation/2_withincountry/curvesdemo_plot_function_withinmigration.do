@@ -93,7 +93,7 @@ forv j=4(-1)1 {
 					(line dayyhat0 t, lc(gray) lp(dash)) /// 
 					(scatteri 0 $tmin_plot 0 $tmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 					`xlab' `ylab' ///
-					|| histo tmax_pop_uncert_w if (agemigcat == `i' & edattain == `j'), frequency color(red) width(0.1) `y3lab' ///
+					|| histo tmax_pop_uc_w if (agemigcat == `i' & edattain == `j'), frequency color(red) width(0.1) `y3lab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 					xlabel($tmin_plot(5)$tmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 					legend(off) ///
@@ -118,7 +118,7 @@ forv j=4(-1)1 {
 					(line dayyhat0 sm, lc(gray) lp(dash)) /// 
 					(scatteri 0 $smmin_plot 0 $smmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 					`xlab' `ylab' ///
-					|| histo sm_pop_uncert_w if (agemigcat == `i' & edattain == `j'), frequency color(emerald) width(0.002) `y3lab' ///
+					|| histo sm_pop_uc_w if (agemigcat == `i' & edattain == `j'), frequency color(emerald) width(0.002) `y3lab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 					xlabel($smmin_plot(0.05)$smmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 					legend(off) ///

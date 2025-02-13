@@ -153,9 +153,6 @@ merge m:1 bpl using `climzone'
 drop if _merge != 3
 drop _merge
 
-* Remove polar zone from sample: too few observations (0.1% of sample) 
-drop if mainclimgroup == 6
-
 
 save `crossmigweather', replace
 
@@ -173,9 +170,9 @@ save `crossweathertemp'
 
 * Merge processed weather data with migration data
 use `crossmigweather'
-merge m:1 bplcode yrimm using `crossweathertemp', keepusing(yrimm bplcode *dp *l1 *av10 *rcs*) nogenerate
+merge m:1 bplcode yrimm using `crossweathertemp', keepusing(yrimm bplcode *dp *l1 *a10 *rcs*) nogenerate
 
-drop if tmax_dp == . | sm_dp == . | tmax_dp_l1 == . | tmax_dp_av10 == .
+drop if tmax_dp == . | sm_dp == . | tmax_dp_l1 == . | tmax_dp_a10 == .
 drop if outmigshare == .
 
 save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace
@@ -183,23 +180,23 @@ save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace
 
 * Add destination weather
 use `crossweathertemp'
-rename (bplcode tmax*dp sm*dp) (countrycode tmax*dp_dest sm*dp_dest)
+rename (bplcode tmax*dp sm*dp) (countrycode tmax*dp_des sm*dp_des)
 save `crossweathertemp', replace
 
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 
-merge m:1 countrycode yrimm countrycode using `crossweathertemp', keepusing(yrimm countrycode *dest) nogenerate
+merge m:1 countrycode yrimm countrycode using `crossweathertemp', keepusing(yrimm countrycode *des) nogenerate
 
-drop if tmax_dp == . | tmax_dp_dest == .
+drop if tmax_dp == . | tmax_dp_des == .
 
 
 * Create randomized weather data
 * We keep the correlation across T/SM the same
 
-drop if tmax_dp == . | sm_dp == . | tmax2_dp == . | sm2_dp == . | tmax3_dp == . | sm3_dp == . | tmax_dp_av10 == . | sm_dp_av10 == . | tmax2_dp_av10 == . | sm2_dp_av10 == . | tmax3_dp_av10 == . | sm3_dp_av10 == .
+drop if tmax_dp == . | sm_dp == . | tmax2_dp == . | sm2_dp == . | tmax3_dp == . | sm3_dp == . | tmax_dp_a10 == . | sm_dp_a10 == . | tmax2_dp_a10 == . | sm2_dp_a10 == . | tmax3_dp_a10 == . | sm3_dp_a10 == .
 
 sort bplcode yrimm
-local permutable tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10
+local permutable tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10
 set seed 12345
 
 preserve
@@ -226,19 +223,19 @@ save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace
 **# Create interaction variables ***
 ****************************************************************
 * Weather variables, climate zones, and demographics
-local interac "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp prcp_dp prcp2_dp prcp3_dp ///
-				tmax_dp_l1 sm_dp_l1 tmax2_dp_l1 sm2_dp_l1 tmax3_dp_l1 sm3_dp_l1 ///
-				tmax_dp_av10 sm_dp_av10 tmax2_dp_av10 sm2_dp_av10 tmax3_dp_av10 sm3_dp_av10 ///
-				tmax_dp_dest tmax2_dp_dest tmax3_dp_dest sm_dp_dest sm2_dp_dest sm3_dp_dest ///
+local interacclimdemo tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp
+local interacall tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp prcp_dp prcp2_dp prcp3_dp ///
 				tmax_dp_rand tmax2_dp_rand tmax3_dp_rand sm_dp_rand sm2_dp_rand sm3_dp_rand ///
-				tmax_dp_av10_rand sm_dp_av10_rand tmax2_dp_av10_rand sm2_dp_av10_rand tmax3_dp_av10_rand sm3_dp_av10_rand"
+				tmax_dp_l1 sm_dp_l1 tmax2_dp_l1 sm2_dp_l1 tmax3_dp_l1 sm3_dp_l1 ///
+				tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10 ///
+				tmax_dp_des tmax2_dp_des tmax3_dp_des sm_dp_des sm2_dp_des sm3_dp_des ///
+				tmax_dp_a10_rand sm_dp_a10_rand tmax2_dp_a10_rand sm2_dp_a10_rand tmax3_dp_a10_rand sm3_dp_a10_rand
 tab agemigcat, gen(d_age)
 tab edattain, gen(d_edu)
 tab sex, gen(d_sex)
 tab mainclimgroup , gen(d_clim)  
-foreach var of varlist `interac' {
-	forv i=1/5 {
-		gen `var'_clim`i' = `var' * d_clim`i'
+foreach var of varlist `interacclimdemo' {
+	forv i=1/6 {
 		forv j=1/4 {
 			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'
 			gen `var'_clim`i'_edu`j' = `var' * d_clim`i' * d_edu`j'
@@ -246,6 +243,18 @@ foreach var of varlist `interac' {
 		forv j=1/2 {
 			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
 		}
+	}
+}
+foreach var of varlist `interacall' {
+	forv i=1/4 {
+		gen `var'_age`i' = `var' * d_age`i'
+		gen `var'_edu`i' = `var' * d_edu`i'
+	}
+	forv i=1/2 {
+		gen `var'_sex`i' = `var' * d_sex`i'
+	}
+	forv i=1/6 {
+		gen `var'_clim`i' = `var' * d_clim`i'
 	}
 }
 

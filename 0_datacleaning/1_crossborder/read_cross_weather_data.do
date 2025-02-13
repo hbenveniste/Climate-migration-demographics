@@ -128,7 +128,7 @@ save "$input_dir/2_intermediate/crossweather.dta", replace
 ****************************************************************
 * Averages over 10 years
 foreach v of local varlistlag {
-	gen `v'_av10 = (`v' + `v'_l1 + `v'_l2 + `v'_l3 + `v'_l4 + `v'_l5 + `v'_l6 + `v'_l7 + `v'_l8 + `v'_l9) / 10
+	gen `v'_a10 = (`v' + `v'_l1 + `v'_l2 + `v'_l3 + `v'_l4 + `v'_l5 + `v'_l6 + `v'_l7 + `v'_l8 + `v'_l9) / 10
 }
 
 save "$input_dir/2_intermediate/crossweather.dta", replace

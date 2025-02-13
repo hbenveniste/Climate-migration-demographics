@@ -85,17 +85,17 @@ forv j=4(-1)1 {
 			local xlab "xtitle(`empty') xlabel(none) xscale(off) fysize(16.6)"
 		}
 		
-		local y3lab "yscale(alt axis(2) range(0 $range_0) lstyle(none)) yaxis(2) ytitle(`empty',axis(2)) ylabel(,nolabel notick axis(2))"
+		local y3lab "yscale(alt axis(2) range(0 $range_plot) lstyle(none)) yaxis(2) ytitle(`empty',axis(2)) ylabel(,nolabel notick axis(2))"
 		
 		if "$weathervar" == "temperature" & $histo == 1 {
 			graph twoway (line dayyhat`i'`j' t, lc(red)) ///
 					(rarea daylowerci`i'`j' dayupperci`i'`j' t, col(red%10) lwidth(none)) ///
 					(line dayyhat0 t, lc(gray) lp(dash)) /// 
-					(scatteri 0 $tmin 0 $tmax, recast(line) lcolor(black) lwidth(vthin)), ///
+					(scatteri 0 $tmin_plot 0 $tmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 					`xlab' `ylab' ///
 					|| histo tmax_pop_w if (agemigcat == `i' & edattain == `j'), frequency color(red) width(0.1) `y3lab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
-					xlabel($tmin(5)$tmax) ylabel(`ymin'(`ystep')`ymax') ///
+					xlabel($tmin_plot(5)$tmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 					legend(off) ///
 					name(Respcurve_age`i'edu`j', replace)
 		}
@@ -104,10 +104,10 @@ forv j=4(-1)1 {
 			graph twoway (line dayyhat`i'`j' t, lc(red)) ///
 					(rarea daylowerci`i'`j' dayupperci`i'`j' t, col(red%10) lwidth(none)) ///
 					(line dayyhat0 t, lc(gray) lp(dash)) /// 
-					(scatteri 0 $tmin 0 $tmax, recast(line) lcolor(black) lwidth(vthin)), ///
+					(scatteri 0 $tmin_plot 0 $tmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 					`xlab' `ylab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
-					xlabel($tmin(5)$tmax) ylabel(`ymin'(`ystep')`ymax') ///
+					xlabel($tmin_plot(5)$tmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 					legend(off) ///
 					name(Respcurve_age`i'edu`j', replace)
 		}
@@ -116,11 +116,11 @@ forv j=4(-1)1 {
 			graph twoway (line dayyhat`i'`j' sm, lc(emerald)) ///
 					(rarea daylowerci`i'`j' dayupperci`i'`j' sm, col(emerald%10) lwidth(none)) ///
 					(line dayyhat0 sm, lc(gray) lp(dash)) /// 
-					(scatteri 0 $smmin 0 $smmax, recast(line) lcolor(black) lwidth(vthin)), ///
+					(scatteri 0 $smmin_plot 0 $smmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 					`xlab' `ylab' ///
 					|| histo sm_pop_w if (agemigcat == `i' & edattain == `j'), frequency color(emerald) width(0.002) `y3lab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
-					xlabel($smmin(0.05)$smmax) ylabel(`ymin'(`ystep')`ymax') ///
+					xlabel($smmin_plot(0.05)$smmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 					legend(off) ///
 					name(Respcurve_age`i'edu`j', replace)
 		}
@@ -129,10 +129,10 @@ forv j=4(-1)1 {
 			graph twoway (line dayyhat`i'`j' sm, lc(emerald)) ///
 					(rarea daylowerci`i'`j' dayupperci`i'`j' sm, col(emerald%10) lwidth(none)) ///
 					(line dayyhat0 sm, lc(gray) lp(dash)) /// 
-					(scatteri 0 $smmin 0 $smmax, recast(line) lcolor(black) lwidth(vthin)), ///
+					(scatteri 0 $smmin_plot 0 $smmax_plot, recast(line) lcolor(black) lwidth(vthin)), ///
 					`xlab' `ylab' ///
 					plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
-					xlabel($smmin(0.05)$smmax) ylabel(`ymin'(`ystep')`ymax') ///
+					xlabel($smmin_plot(0.05)$smmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
 					legend(off) ///
 					name(Respcurve_age`i'edu`j', replace)
 		}
@@ -142,7 +142,7 @@ forv j=4(-1)1 {
 }
 
 
-graph combine `graphcurve', title("$robname", size(medsmall)) l2title(`edus', size(small)) b2title(`ages', size(small)) graphregion(color(white)) plotregion(color(white)) rows(4) name(graphcurveall, replace)	
+graph combine `graphcurve', title("$czname $robname", size(medsmall)) l2title(`edus', size(small)) b2title(`ages', size(small)) graphregion(color(white)) plotregion(color(white)) rows(4) name(graphcurveall, replace)	
 
 
 

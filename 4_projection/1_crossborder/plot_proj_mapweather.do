@@ -1,6 +1,6 @@
 /*
 
-Plot maps of projected weather values under a climate change scenario of SSP2-4.5: Fig.E12
+Plot maps of projected weather values under a climate change scenario of SSP2-4.5: Fig.S13
 
 */
 
@@ -76,7 +76,7 @@ spmap mrsos3dif_245 using "$input_dir/1_raw/Shapefiles/ctrycoord.dta", id(id) //
 		name(sm3_scalmedds, replace)
 
 
-* Combine maps to form Fig.E12
+* Combine maps to form Fig.S13
 graph combine tmax_scalmedds tmax2_scalmedds tmax3_scalmedds, graphregion(color(white)) row(3) name(scalmedt, replace)
 graph combine sm_scalmedds sm2_scalmedds sm3_scalmedds, graphregion(color(white)) row(3) name(scalmeds, replace)
 graph combine scalmedt scalmeds, graphregion(color(white)) col(2) ysize(6) xsize(8) name(scalmedall, replace)

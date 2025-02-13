@@ -31,6 +31,7 @@ reghdfe ln_outmigshare, absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrm
 
 keep res_* yrmig geomig1 geolev1 ctrycode demo agemigcat edattain sex
 rename res_* *
+drop if ln_outmigshare == .
 
 * Use demographic groups defined by age and education only for heat map representation
 collapse (mean) ln_outmigshare, by(yrmig geomig1 geolev1 ctrycode agemigcat edattain)

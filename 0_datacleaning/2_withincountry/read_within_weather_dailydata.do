@@ -64,13 +64,13 @@ quietly {
 	ds geomig1 yrmig ctrymig, not
 	local othervar `r(varlist)'
 	foreach v of local othervar {
-		egen `v'_av1 = filter(`v'), coef(1 1) lags(0/1) normalise
-		egen `v'_av5 = filter(`v'), coef(1 1 1 1 1 1) lags(0/5) normalise
-		egen `v'_av6 = filter(`v'), coef(1 1 1 1 1 1 1) lags(0/6) normalise
-		egen `v'_av7 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(0/7) normalise
-		egen `v'_av8 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(0/8) normalise
-		egen `v'_av9 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(0/9) normalise
-		egen `v'_av10 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(0/10) normalise
+		egen `v'_a1 = filter(`v'), coef(1 1) lags(0/1) normalise
+		egen `v'_a5 = filter(`v'), coef(1 1 1 1 1 1) lags(0/5) normalise
+		egen `v'_a6 = filter(`v'), coef(1 1 1 1 1 1 1) lags(0/6) normalise
+		egen `v'_a7 = filter(`v'), coef(1 1 1 1 1 1 1 1) lags(0/7) normalise
+		egen `v'_a8 = filter(`v'), coef(1 1 1 1 1 1 1 1 1) lags(0/8) normalise
+		egen `v'_a9 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1) lags(0/9) normalise
+		egen `v'_a10 = filter(`v'), coef(1 1 1 1 1 1 1 1 1 1 1) lags(0/10) normalise
 	}
 }
 tsset, clear
@@ -98,22 +98,22 @@ drop _merge
 
 * Create weather variables with proper uncertainty range
 foreach v of local othervar {
-	gen `v'_uncert = `v'
-	replace `v'_uncert = `v'_av1 if migrange == 1
-	replace `v'_uncert = `v'_av5 if migrange == 5
-	replace `v'_uncert = `v'_av6 if migrange == 6
-	replace `v'_uncert = `v'_av7 if migrange == 7
-	replace `v'_uncert = `v'_av8 if migrange == 8
-	replace `v'_uncert = `v'_av9 if migrange == 9
-	replace `v'_uncert = `v'_av10 if migrange == 10
-	replace `v'_uncert = . if migrange == .
+	gen `v'_uc = `v'
+	replace `v'_uc = `v'_a1 if migrange == 1
+	replace `v'_uc = `v'_a5 if migrange == 5
+	replace `v'_uc = `v'_a6 if migrange == 6
+	replace `v'_uc = `v'_a7 if migrange == 7
+	replace `v'_uc = `v'_a8 if migrange == 8
+	replace `v'_uc = `v'_a9 if migrange == 9
+	replace `v'_uc = `v'_a10 if migrange == 10
+	replace `v'_uc = . if migrange == .
 }
 
-rename (*pop*_uncert) (*pop_uncert*)
-keep ctrymig geomig1 yrmig *uncert*
+rename (*pop*_uc) (*pop_uc*)
+keep ctrymig geomig1 yrmig *uc*
 
-reshape long tmax_pop_uncert sm_pop_uncert, i(ctrymig geomig1 yrmig) j(day)
-drop if tmax_pop_uncert == . & sm_pop_uncert == .
+reshape long tmax_pop_uc sm_pop_uc, i(ctrymig geomig1 yrmig) j(day)
+drop if tmax_pop_uc == . & sm_pop_uc == .
 
 
 save "$input_dir/2_intermediate/dailysubnat.dta", replace
@@ -132,20 +132,22 @@ duplicates drop
 joinby ctrymig geomig1 yrmig using "$input_dir/2_intermediate/dailysubnat.dta"
 
 * Remove incomplete values
-drop if tmax_pop_uncert == . | sm_pop_uncert == .
+drop if tmax_pop_uc == . | sm_pop_uc == .
 
 
 ****************************************************************
 **# Prepare file of daily observations for representation in histograms ***
 ****************************************************************
 * Store files per climate zone
+* We do not present results for the polar zone because it only accounts for <1% of our observations
+
 forvalues c=1/5 {
 	preserve 
 	keep if climgroup == `c'
 
 	* Winsorize daily weather observations
-	winsor2 tmax_pop_uncert, cuts(1 99) 
-	winsor2 sm_pop_uncert, cuts(1 99)  
+	winsor2 tmax_pop_uc, cuts(1 99) 
+	winsor2 sm_pop_uc, cuts(1 99)  
 
 	* Create id variable to merge with response curves file 
 	gen double id = _n

@@ -34,27 +34,40 @@ global metric "rsquare"
 global depvar ln_outmigshare
 
 
-* Model performing best out-of-sample: T,S origin and destination, cubic, per age and education
+* Model performing best out-of-sample: T,S origin and destination, cubic, per climate zone, age and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-
-global indepvar tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4 tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4 tmax_dp_dest_age1 tmax_dp_dest_age2 tmax_dp_dest_age3 tmax_dp_dest_age4 tmax2_dp_dest_age1 tmax2_dp_dest_age2 tmax2_dp_dest_age3 tmax2_dp_dest_age4 tmax3_dp_dest_age1 tmax3_dp_dest_age2 tmax3_dp_dest_age3 tmax3_dp_dest_age4 sm_dp_dest_age1 sm_dp_dest_age2 sm_dp_dest_age3 sm_dp_dest_age4 sm2_dp_dest_age1 sm2_dp_dest_age2 sm2_dp_dest_age3 sm2_dp_dest_age4 sm3_dp_dest_age1 sm3_dp_dest_age2 sm3_dp_dest_age3 sm3_dp_dest_age4 tmax_dp_dest_edu1 tmax_dp_dest_edu2 tmax_dp_dest_edu3 tmax_dp_dest_edu4 tmax2_dp_dest_edu1 tmax2_dp_dest_edu2 tmax2_dp_dest_edu3 tmax2_dp_dest_edu4 tmax3_dp_dest_edu1 tmax3_dp_dest_edu2 tmax3_dp_dest_edu3 tmax3_dp_dest_edu4 sm_dp_dest_edu1 sm_dp_dest_edu2 sm_dp_dest_edu3 sm_dp_dest_edu4 sm2_dp_dest_edu1 sm2_dp_dest_edu2 sm2_dp_dest_edu3 sm2_dp_dest_edu4 sm3_dp_dest_edu1 sm3_dp_dest_edu2 sm3_dp_dest_edu3 sm3_dp_dest_edu4
-
+#delimit ;
+global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
+				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
+				tmax3_dp_clim1 tmax3_dp_clim2 tmax3_dp_clim3 tmax3_dp_clim4 tmax3_dp_clim5 tmax3_dp_clim6
+				sm_dp_clim1 sm_dp_clim2 sm_dp_clim3 sm_dp_clim4 sm_dp_clim5 sm_dp_clim6
+				sm2_dp_clim1 sm2_dp_clim2 sm2_dp_clim3 sm2_dp_clim4 sm2_dp_clim5 sm2_dp_clim6
+				sm3_dp_clim1 sm3_dp_clim2 sm3_dp_clim3 sm3_dp_clim4 sm3_dp_clim5 sm3_dp_clim6
+				tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 
+				sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4
+				tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
+				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4
+				tmax_dp_des_clim1 tmax_dp_des_clim2 tmax_dp_des_clim3 tmax_dp_des_clim4 tmax_dp_des_clim5 tmax_dp_des_clim6 
+				tmax2_dp_des_clim1 tmax2_dp_des_clim2 tmax2_dp_des_clim3 tmax2_dp_des_clim4 tmax2_dp_des_clim5 tmax2_dp_des_clim6
+				tmax3_dp_des_clim1 tmax3_dp_des_clim2 tmax3_dp_des_clim3 tmax3_dp_des_clim4 tmax3_dp_des_clim5 tmax3_dp_des_clim6
+				sm_dp_des_clim1 sm_dp_des_clim2 sm_dp_des_clim3 sm_dp_des_clim4 sm_dp_des_clim5 sm_dp_des_clim6
+				sm2_dp_des_clim1 sm2_dp_des_clim2 sm2_dp_des_clim3 sm2_dp_des_clim4 sm2_dp_des_clim5 sm2_dp_des_clim6
+				sm3_dp_des_clim1 sm3_dp_des_clim2 sm3_dp_des_clim3 sm3_dp_des_clim4 sm3_dp_des_clim5 sm3_dp_des_clim6
+				tmax_dp_des_age1 tmax_dp_des_age2 tmax_dp_des_age3 tmax_dp_des_age4 tmax2_dp_des_age1 tmax2_dp_des_age2 tmax2_dp_des_age3 tmax2_dp_des_age4 tmax3_dp_des_age1 tmax3_dp_des_age2 tmax3_dp_des_age3 tmax3_dp_des_age4 
+				sm_dp_des_age1 sm_dp_des_age2 sm_dp_des_age3 sm_dp_des_age4 sm2_dp_des_age1 sm2_dp_des_age2 sm2_dp_des_age3 sm2_dp_des_age4 sm3_dp_des_age1 sm3_dp_des_age2 sm3_dp_des_age3 sm3_dp_des_age4
+				tmax_dp_des_edu1 tmax_dp_des_edu2 tmax_dp_des_edu3 tmax_dp_des_edu4 tmax2_dp_des_edu1 tmax2_dp_des_edu2 tmax2_dp_des_edu3 tmax2_dp_des_edu4 tmax3_dp_des_edu1 tmax3_dp_des_edu2 tmax3_dp_des_edu3 tmax3_dp_des_edu4 
+				sm_dp_des_edu1 sm_dp_des_edu2 sm_dp_des_edu3 sm_dp_des_edu4 sm2_dp_des_edu1 sm2_dp_des_edu2 sm2_dp_des_edu3 sm2_dp_des_edu4 sm3_dp_des_edu1 sm3_dp_des_edu2 sm3_dp_des_edu3 sm3_dp_des_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "(T3,S3+dest)*(age+edu)"
+	gen model = "(T3,S3+dest)*(climzone+age+edu)"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
 	if "$metric" == "crps" {
 		reshape long avcrps, i(model) j(seeds)
-	}
-	if "$folds" == "corridor" {
-		rename rsq rsqcorr 
-	}
-	if "$folds" == "country" {
-		rename rsq rsqctry 
 	}
 	if "$folds" == "year" {
 		rename rsq rsqyear 
@@ -64,39 +77,9 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 
-* Same model, but we impose linear temperature effects (cubic-shaped response mostly linear) to cap the number of estimated parameters 
+* Same model but without heterogeneity for comparison
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-
-global indepvar tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4 tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4 tmax_dp_dest_age1 tmax_dp_dest_age2 tmax_dp_dest_age3 tmax_dp_dest_age4 sm_dp_dest_age1 sm_dp_dest_age2 sm_dp_dest_age3 sm_dp_dest_age4 sm2_dp_dest_age1 sm2_dp_dest_age2 sm2_dp_dest_age3 sm2_dp_dest_age4 sm3_dp_dest_age1 sm3_dp_dest_age2 sm3_dp_dest_age3 sm3_dp_dest_age4 tmax_dp_dest_edu1 tmax_dp_dest_edu2 tmax_dp_dest_edu3 tmax_dp_dest_edu4 sm_dp_dest_edu1 sm_dp_dest_edu2 sm_dp_dest_edu3 sm_dp_dest_edu4 sm2_dp_dest_edu1 sm2_dp_dest_edu2 sm2_dp_dest_edu3 sm2_dp_dest_edu4 sm3_dp_dest_edu1 sm3_dp_dest_edu2 sm3_dp_dest_edu3 sm3_dp_dest_edu4
-
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
-quietly {
-	gen model = "(T1,S3+dest)*(age+edu)"
-	if "$metric" == "rsquare" {
-		reshape long rsq, i(model) j(seeds)
-	}
-	if "$metric" == "crps" {
-		reshape long avcrps, i(model) j(seeds)
-	}
-	if "$folds" == "corridor" {
-		rename rsq rsqcorr 
-	}
-	if "$folds" == "country" {
-		rename rsq rsqctry 
-	}
-	if "$folds" == "year" {
-		rename rsq rsqyear 
-	}
-	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
-}
-save "$input_dir/4_crossvalidation/rsqimm.dta", replace
-
-
-* Same models but without demographic heterogeneity for comparison
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp tmax_dp_dest tmax2_dp_dest tmax3_dp_dest sm_dp_dest sm2_dp_dest sm3_dp_dest"
+global indepvar "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp tmax_dp_des tmax2_dp_des tmax3_dp_des sm_dp_des sm2_dp_des sm3_dp_des"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -106,37 +89,6 @@ quietly {
 	}
 	if "$metric" == "crps" {
 		reshape long avcrps, i(model) j(seeds)
-	}
-	if "$folds" == "corridor" {
-		rename rsq rsqcorr 
-	}
-	if "$folds" == "country" {
-		rename rsq rsqctry 
-	}
-	if "$folds" == "year" {
-		rename rsq rsqyear 
-	}
-	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqimm.dta", nogenerate
-}
-save "$input_dir/4_crossvalidation/rsqimm.dta", replace
-
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar "tmax_dp sm_dp sm2_dp sm3_dp tmax_dp_dest sm_dp_dest sm2_dp_dest sm3_dp_dest"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
-quietly {
-	gen model = "T1,S3+dest"
-	if "$metric" == "rsquare" {
-		reshape long rsq, i(model) j(seeds)
-	}
-	if "$metric" == "crps" {
-		reshape long avcrps, i(model) j(seeds)
-	}
-	if "$folds" == "corridor" {
-		rename rsq rsqcorr 
-	}
-	if "$folds" == "country" {
-		rename rsq rsqctry 
 	}
 	if "$folds" == "year" {
 		rename rsq rsqyear 
@@ -156,10 +108,10 @@ order *rsq*, sequential last
 
 * Order model specifications
 gen modelnb = 1 if model == "T,S"
-replace modelnb = 2 if model == "T,S*(age+edu)"
+replace modelnb = 2 if model == "T,S*(climzone+age+edu)"
 replace modelnb = 3 if model == "T3,S3+dest"
-replace modelnb = 4 if model == "(T3,S3+dest)*(age+edu)"
-label define modelname 1 "T,S" 2 "T,S * (age+edu)" 3 "T,S + dest" 4 "(T,S+dest)* (age+edu)" , modify
+replace modelnb = 4 if model == "(T3,S3+dest)*(climzone+age+edu)"
+label define modelname 1 "T,S" 2 "T,S * (clim+age+edu)" 3 "T,S + dest" 4 "(T,S+dest)* (clim+age+edu)" , modify
 label values modelnb modelname
 
 * Plot whisker plot

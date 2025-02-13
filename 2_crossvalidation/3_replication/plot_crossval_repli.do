@@ -1,6 +1,6 @@
 /*
 
-Generate whisker plots of cross-validation for replication analysis: Extended Data Fig.E3
+Generate whisker plots of cross-validation for replication analysis: Supplementary Data Fig.S4
 
 */
 

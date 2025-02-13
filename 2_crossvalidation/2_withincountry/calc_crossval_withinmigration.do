@@ -19,6 +19,10 @@ foreach var in $depvar $indepvar {
 keep res_* ctrycode yrmig geomig1 geolev1 demo agemigcat edattain sex climgroup
 rename res_* *
 
+foreach var in $depvar $indepvar {
+	quietly drop if `var' == .
+}
+
 save "$input_dir/2_intermediate/_residualized_within.dta", replace
 
 restore

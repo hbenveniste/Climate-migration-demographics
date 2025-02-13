@@ -85,21 +85,21 @@ if `run_cv_repli' {
 **# Robustness checks  ***
 ****************************************************************
 * Effects of longer term changes in weather variables
-* Generate supplementary Fig.E9a-b
+* Generate supplementary Fig.S10a-b
 if `run_cv_robust_av' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_av_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_av_withinmigration.do"
 }
 
 * Effects of 1-year lagged weather variables
-* Generate supplementary Fig.E10a-b
+* Generate supplementary Fig.S11a-b
 if `run_cv_robust_lags' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_lag_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_lag_withinmigration.do"
 }
 
 * Effects of destination weather variables
-* Generate supplementary Fig.E11ca-b
+* Generate supplementary Fig.S12ca-b
 if `run_cv_robust_dest' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_dest_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_dest_withinmigration.do"
@@ -109,7 +109,7 @@ if `run_cv_robust_dest' {
 ****************************************************************
 **# Determine models functional form and weather variables  ***
 ****************************************************************
-* Generate supplementary Fig.E13a-b
+* Generate supplementary Fig.S13a-b
 if `run_cv_robust_form' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_form_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_form_withinmigration.do"

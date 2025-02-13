@@ -38,7 +38,7 @@ global depvar ln_outmigshare
 
 * Linear model in T,S
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar tmax_dp sm_dp 
+global indepvar "tmax_dp sm_dp"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -55,7 +55,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Quadratic model in T,S
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar tmax_dp tmax2_dp sm_dp sm2_dp
+global indepvar "tmax_dp tmax2_dp sm_dp sm2_dp"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -72,7 +72,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Restricted cubic spline model in T,S
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar tmax_dp sm_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2
+global indepvar "tmax_dp sm_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -95,7 +95,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Model in P
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar prcp_dp prcp2_dp prcp3_dp
+global indepvar "prcp_dp prcp2_dp prcp3_dp"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -112,7 +112,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Model in T,P
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar tmax_dp tmax2_dp tmax3_dp prcp_dp prcp2_dp prcp3_dp
+global indepvar "tmax_dp tmax2_dp tmax3_dp prcp_dp prcp2_dp prcp3_dp"
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
@@ -127,13 +127,24 @@ quietly {
 }
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
-* Model in T,P per age and education
+* Model in T,P per climate zone, age and education
 use "$input_dir/3_consolidate/crossmigweather_clean.dta"
-global indepvar tmax_dp_age1 tmax_dp_edu1 tmax_dp_age2 tmax_dp_edu2 tmax_dp_age3 tmax_dp_edu3 tmax_dp_age4 tmax_dp_edu4 tmax2_dp_age1 tmax2_dp_edu1 tmax2_dp_age2 tmax2_dp_edu2 tmax2_dp_age3 tmax2_dp_edu3 tmax2_dp_age4 tmax2_dp_edu4 tmax3_dp_age1 tmax3_dp_edu1 tmax3_dp_age2 tmax3_dp_edu2 tmax3_dp_age3 tmax3_dp_edu3 tmax3_dp_age4 tmax3_dp_edu4 prcp_dp_age1 prcp_dp_edu1 prcp_dp_age2 prcp_dp_edu2 prcp_dp_age3 prcp_dp_edu3 prcp_dp_age4 prcp_dp_edu4 prcp2_dp_age1 prcp2_dp_edu1 prcp2_dp_age2 prcp2_dp_edu2 prcp2_dp_age3 prcp2_dp_edu3 prcp2_dp_age4 prcp2_dp_edu4 prcp3_dp_age1 prcp3_dp_edu1 prcp3_dp_age2 prcp3_dp_edu2 prcp3_dp_age3 prcp3_dp_edu3 prcp3_dp_age4 prcp3_dp_edu4 
+#delimit ;
+global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
+				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
+				tmax3_dp_clim1 tmax3_dp_clim2 tmax3_dp_clim3 tmax3_dp_clim4 tmax3_dp_clim5 tmax3_dp_clim6
+				prcp_dp_clim1 prcp_dp_clim2 prcp_dp_clim3 prcp_dp_clim4 prcp_dp_clim5 prcp_dp_clim6
+				prcp2_dp_clim1 prcp2_dp_clim2 prcp2_dp_clim3 prcp2_dp_clim4 prcp2_dp_clim5 prcp2_dp_clim6
+				prcp3_dp_clim1 prcp3_dp_clim2 prcp3_dp_clim3 prcp3_dp_clim4 prcp3_dp_clim5 prcp3_dp_clim6
+				tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 
+				prcp_dp_age1 prcp_dp_age2 prcp_dp_age3 prcp_dp_age4 prcp2_dp_age1 prcp2_dp_age2 prcp2_dp_age3 prcp2_dp_age4 prcp3_dp_age1 prcp3_dp_age2 prcp3_dp_age3 prcp3_dp_age4
+				tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
+				prcp_dp_edu1 prcp_dp_edu2 prcp_dp_edu3 prcp_dp_edu4 prcp2_dp_edu1 prcp2_dp_edu2 prcp2_dp_edu3 prcp2_dp_edu4 prcp3_dp_edu1 prcp3_dp_edu2 prcp3_dp_edu3 prcp3_dp_edu4";
+#delimit cr				
 do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
 use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
-	gen model = "T3,P3*(age+edu)"
+	gen model = "T3,P3*(climzone+age+edu)"
 	if "$metric" == "rsquare" {
 		reshape long rsq, i(model) j(seeds)
 	}
@@ -168,9 +179,9 @@ replace modelnb = 6 if model == "T"
 replace modelnb = 7 if model == "S"
 replace modelnb = 8 if model == "P3"
 replace modelnb = 9 if model == "T3,P3"
-replace modelnb = 10 if model == "T,S*(age+edu)"
-replace modelnb = 11 if model == "T3,P3*(age+edu)"
-label define modelname 1 "T,S linear" 2 "T,S quadratic" 3 "T,S cubic" 4 "T,S rcs" 5 ". " 6 "T cubic" 7 "S cubic" 8 "P cubic" 9 "T,P cubic" 10 "T,S*(age+edu)" 11 "T,P*(age+edu)", modify
+replace modelnb = 10 if model == "T,S*(climzone+age+edu)"
+replace modelnb = 11 if model == "T3,P3*(climzone+age+edu)"
+label define modelname 1 "T,S linear" 2 "T,S quadratic" 3 "T,S cubic" 4 "T,S rcs" 5 ". " 6 "T cubic" 7 "S cubic" 8 "P cubic" 9 "T,P cubic" 10 "T,S*(climzone+age+edu)" 11 "T,P*(climzone+age+edu)", modify
 label values modelnb modelname
 
 * Plot whisker plot
