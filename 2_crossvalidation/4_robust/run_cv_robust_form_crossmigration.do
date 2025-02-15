@@ -37,10 +37,9 @@ global depvar ln_outmigshare
 * Models using temperature and soil moisture
 
 * Linear model in T,S
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 global indepvar "tmax_dp sm_dp"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T1,S1"
 	if "$metric" == "rsquare" {
@@ -54,10 +53,9 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Quadratic model in T,S
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 global indepvar "tmax_dp tmax2_dp sm_dp sm2_dp"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T2,S2"
 	if "$metric" == "rsquare" {
@@ -71,10 +69,9 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Restricted cubic spline model in T,S
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 global indepvar "tmax_dp sm_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S rcs"
 	if "$metric" == "rsquare" {
@@ -94,10 +91,9 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 * Models using cubic shape
 
 * Model in P
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 global indepvar "prcp_dp prcp2_dp prcp3_dp"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "P3"
 	if "$metric" == "rsquare" {
@@ -111,10 +107,9 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Model in T,P
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 global indepvar "tmax_dp tmax2_dp tmax3_dp prcp_dp prcp2_dp prcp3_dp"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T3,P3"
 	if "$metric" == "rsquare" {
@@ -128,7 +123,7 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 * Model in T,P per climate zone, age and education
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 #delimit ;
 global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
 				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
@@ -141,8 +136,7 @@ global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp
 				tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
 				prcp_dp_edu1 prcp_dp_edu2 prcp_dp_edu3 prcp_dp_edu4 prcp2_dp_edu1 prcp2_dp_edu2 prcp2_dp_edu3 prcp2_dp_edu4 prcp3_dp_edu1 prcp3_dp_edu2 prcp3_dp_edu3 prcp3_dp_edu4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T3,P3*(climzone+age+edu)"
 	if "$metric" == "rsquare" {

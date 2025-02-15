@@ -18,7 +18,7 @@ if "$CODE" == "" {
 }
 
 * Determine whether to plot results with added daily values distribution
-global histo 0
+global histo 1
 
 * Determine which, if any, robustness check to conduct
 global robname ""

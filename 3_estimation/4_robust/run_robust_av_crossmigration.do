@@ -91,10 +91,10 @@ forvalues c=1/5 {
 	preserve
 
 	gen t = .
-	local tobs = `tmax_`c'' - $tmin + 1
+	local tobs = `tmax_`c'' - `tmin_`c'' + 1
 	drop if _n > 0
 	set obs `tobs'
-	replace t = _n + $tmin - 1
+	replace t = _n + `tmin_`c'' - 1
 
 
 	* Calculate migration responses per climate zone, age and education based on estimates

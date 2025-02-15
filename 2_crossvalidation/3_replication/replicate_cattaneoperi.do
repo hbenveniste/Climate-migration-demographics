@@ -51,8 +51,6 @@ use "$input_dir/3_consolidate/cattaneoperi.dta"
 global depvar lnflow1
 
 * Residualize data to perform cross-validation 
-preserve
-
 foreach var in $depvar $indepvar {
 	quietly reghdfe `var', absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num) residuals(res_`var')
 }
@@ -64,11 +62,6 @@ foreach var in $depvar $indepvar {
 	quietly drop if `var' == .
 }
 
-save "$input_dir/2_intermediate/_residualized_repli.dta", replace
-
-restore
-
-use "$input_dir/2_intermediate/_residualized_repli.dta", clear
 
 * Run cross-validation 
 do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
@@ -98,8 +91,6 @@ use "$input_dir/3_consolidate/cattaneoperiurb.dta"
 global depvar urban_pop
 
 * Residualize data to perform cross-validation 
-preserve
-
 foreach var in $depvar $indepvar {
 	quietly reghdfe `var', absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num) residuals(res_`var')
 }
@@ -111,11 +102,6 @@ foreach var in $depvar $indepvar {
 	quietly drop if `var' == .
 }
 
-save "$input_dir/2_intermediate/_residualized_repli.dta", replace
-
-restore
-
-use "$input_dir/2_intermediate/_residualized_repli.dta", clear
 
 * Run cross-validation 
 do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"

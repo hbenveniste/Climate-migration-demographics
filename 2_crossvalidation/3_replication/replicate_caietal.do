@@ -69,8 +69,6 @@ local coefpcp4agn_a1bi1 = _b[ lnGDPpcPPP_A1Bi1]
 **# Residualize data to perform cross-validation ***
 ****************************************************************
 
-preserve
-
 foreach var in lnEMjit tmp_i tmp_4agn pcp_i pcp_4agn lnGDPpcPPP_A1Bj1 lnGDPpcPPP_A1Bi1 {
 	quietly reghdfe `var', absorb(i.to#i.from i.to##c.year i.from##c.year) vce(cluster from) residuals(res_`var')
 }
@@ -82,16 +80,10 @@ foreach var in lnEMjit tmp_i tmp_4agn pcp_i pcp_4agn lnGDPpcPPP_A1Bj1 lnGDPpcPPP
 	quietly drop if `var' == .
 }
 
-save "$input_dir/2_intermediate/_residualized_repli.dta", replace
-
-restore
-
 
 ****************************************************************
 **# Remove variation due to income ***
 ****************************************************************
-use "$input_dir/2_intermediate/_residualized_repli.dta", clear
-
 gen lnEMjit_nogdp = lnEMjit - `coefgdp_a1bj1' * lnGDPpcPPP_A1Bj1 - `coefgdp_a1bi1' * lnGDPpcPPP_A1Bi1
 gen tmp_i_nogdp = tmp_i - `coeftmpi_a1bj1' * lnGDPpcPPP_A1Bj1 - `coeftmpi_a1bi1' * lnGDPpcPPP_A1Bi1
 gen pcp_i_nogdp = pcp_i - `coefpcpi_a1bj1' * lnGDPpcPPP_A1Bj1 - `coefpcpi_a1bi1' * lnGDPpcPPP_A1Bi1

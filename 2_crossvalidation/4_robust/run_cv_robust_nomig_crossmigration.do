@@ -380,16 +380,62 @@ save "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta", replace
 ****************************************************************
 **# Conduct cross-validation ***
 ****************************************************************
+* Residualize data to perform cross-validation
+local allvar ln_outmigshare ///
+				tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp ///
+				tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 ///
+				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6 ///
+				tmax3_dp_clim1 tmax3_dp_clim2 tmax3_dp_clim3 tmax3_dp_clim4 tmax3_dp_clim5 tmax3_dp_clim6 ///
+				sm_dp_clim1 sm_dp_clim2 sm_dp_clim3 sm_dp_clim4 sm_dp_clim5 sm_dp_clim6 ///
+				sm2_dp_clim1 sm2_dp_clim2 sm2_dp_clim3 sm2_dp_clim4 sm2_dp_clim5 sm2_dp_clim6 ///
+				sm3_dp_clim1 sm3_dp_clim2 sm3_dp_clim3 sm3_dp_clim4 sm3_dp_clim5 sm3_dp_clim6 ///
+				tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 ///
+				sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4 ///
+				tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 ///
+				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4 ///
+				tmax_dp_sex1 tmax_dp_sex2 tmax2_dp_sex1 tmax2_dp_sex2 tmax3_dp_sex1 tmax3_dp_sex2 ///
+				sm_dp_sex1 sm_dp_sex2 sm2_dp_sex1 sm2_dp_sex2 sm3_dp_sex1 sm3_dp_sex2 ///
+				tmax_dp_rand_clim1 tmax_dp_rand_clim2 tmax_dp_rand_clim3 tmax_dp_rand_clim4 tmax_dp_rand_clim5 tmax_dp_rand_clim6 ///
+				tmax2_dp_rand_clim1 tmax2_dp_rand_clim2 tmax2_dp_rand_clim3 tmax2_dp_rand_clim4 tmax2_dp_rand_clim5 tmax2_dp_rand_clim6 ///
+				tmax3_dp_rand_clim1 tmax3_dp_rand_clim2 tmax3_dp_rand_clim3 tmax3_dp_rand_clim4 tmax3_dp_rand_clim5 tmax3_dp_rand_clim6 ///
+				sm_dp_rand_clim1 sm_dp_rand_clim2 sm_dp_rand_clim3 sm_dp_rand_clim4 sm_dp_rand_clim5 sm_dp_rand_clim6 ///
+				sm2_dp_rand_clim1 sm2_dp_rand_clim2 sm2_dp_rand_clim3 sm2_dp_rand_clim4 sm2_dp_rand_clim5 sm2_dp_rand_clim6 ///
+				sm3_dp_rand_clim1 sm3_dp_rand_clim2 sm3_dp_rand_clim3 sm3_dp_rand_clim4 sm3_dp_rand_clim5 sm3_dp_rand_clim6 ///
+				tmax_dp_rand_age1 tmax_dp_rand_age2 tmax_dp_rand_age3 tmax_dp_rand_age4 tmax2_dp_rand_age1 tmax2_dp_rand_age2 tmax2_dp_rand_age3 tmax2_dp_rand_age4 ///
+				tmax3_dp_rand_age1 tmax3_dp_rand_age2 tmax3_dp_rand_age3 tmax3_dp_rand_age4 ///
+				sm_dp_rand_age1 sm_dp_rand_age2 sm_dp_rand_age3 sm_dp_rand_age4 sm2_dp_rand_age1 sm2_dp_rand_age2 sm2_dp_rand_age3 sm2_dp_rand_age4 ///
+				sm3_dp_rand_age1 sm3_dp_rand_age2 sm3_dp_rand_age3 sm3_dp_rand_age4 ///
+				tmax_dp_rand_edu1 tmax_dp_rand_edu2 tmax_dp_rand_edu3 tmax_dp_rand_edu4 tmax2_dp_rand_edu1 tmax2_dp_rand_edu2 tmax2_dp_rand_edu3 tmax2_dp_rand_edu4 ///
+				tmax3_dp_rand_edu1 tmax3_dp_rand_edu2 tmax3_dp_rand_edu3 tmax3_dp_rand_edu4 ///
+				sm_dp_rand_edu1 sm_dp_rand_edu2 sm_dp_rand_edu3 sm_dp_rand_edu4 sm2_dp_rand_edu1 sm2_dp_rand_edu2 sm2_dp_rand_edu3 sm2_dp_rand_edu4 ///
+				sm3_dp_rand_edu1 sm3_dp_rand_edu2 sm3_dp_rand_edu3 sm3_dp_rand_edu4 ///
+
+use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+
+preserve
+
+keep `allvar' bpl bplcode country countrycode yrimm demo agemigcat edattain sex mainclimgroup
+
+foreach var in `allvar' {
+	quietly reghdfe `allvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl) residuals(res_`var')
+}
+
+rename res_* *
+
+save "$input_dir/2_intermediate/_residualized_cross_zeros.dta", replace
+
+restore
+
+
 global folds "random"
 global seeds 20
 global metric "rsquare"
 global depvar ln_outmigshare
 
 * Using T,S cubic
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/2_intermediate/_residualized_cross_zeros.dta"
 global indepvar "tmax_dp sm_dp tmax2_dp sm2_dp tmax3_dp sm3_dp"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S"
 	if "$metric" == "rsquare" {
@@ -403,7 +449,7 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per climate zone
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/2_intermediate/_residualized_cross_zeros.dta"
 #delimit ;
 global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
 				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
@@ -412,8 +458,7 @@ global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp
 				sm2_dp_clim1 sm2_dp_clim2 sm2_dp_clim3 sm2_dp_clim4 sm2_dp_clim5 sm2_dp_clim6
 				sm3_dp_clim1 sm3_dp_clim2 sm3_dp_clim3 sm3_dp_clim4 sm3_dp_clim5 sm3_dp_clim6";
 #delimit cr
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S*climzone"
 	if "$metric" == "rsquare" {
@@ -427,13 +472,12 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per age
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/2_intermediate/_residualized_cross_zeros.dta"
 #delimit ;
 global indepvar "tmax_dp_age1 tmax_dp_age2 tmax_dp_age3 tmax_dp_age4 tmax2_dp_age1 tmax2_dp_age2 tmax2_dp_age3 tmax2_dp_age4 tmax3_dp_age1 tmax3_dp_age2 tmax3_dp_age3 tmax3_dp_age4 
 				sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S*age"
 	if "$metric" == "rsquare" {
@@ -447,13 +491,12 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per education
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/2_intermediate/_residualized_cross_zeros.dta"
 #delimit ;
 global indepvar "tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
 				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S*edu"
 	if "$metric" == "rsquare" {
@@ -467,13 +510,12 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per sex
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/2_intermediate/_residualized_cross_zeros.dta"
 #delimit ;
 global indepvar "tmax_dp_sex1 tmax_dp_sex2 tmax2_dp_sex1 tmax2_dp_sex2 tmax3_dp_sex1 tmax3_dp_sex2
 				sm_dp_sex1 sm_dp_sex2 sm2_dp_sex1 sm2_dp_sex2 sm3_dp_sex1 sm3_dp_sex2";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S*sex"
 	if "$metric" == "rsquare" {
@@ -487,7 +529,7 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using T,S cubic per climate zone, age and education
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/2_intermediate/_residualized_cross_zeros.dta"
 #delimit ;
 global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
 				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
@@ -500,8 +542,7 @@ global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp
 				tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
 				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S*(climzone+age+edu)"
 	if "$metric" == "rsquare" {
@@ -518,7 +559,7 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqimm_zeros.dta", replace
 
 * Using placebo version of best performing model: T,S cubic per climate zone, age and education
-use "$input_dir/3_consolidate/crossmigweather_clean_zeros.dta"
+use "$input_dir/2_intermediate/_residualized_cross_zeros.dta"
 #delimit ;
 global indepvar "tmax_dp_rand_clim1 tmax_dp_rand_clim2 tmax_dp_rand_clim3 tmax_dp_rand_clim4 tmax_dp_rand_clim5 tmax_dp_rand_clim6 
 				tmax2_dp_rand_clim1 tmax2_dp_rand_clim2 tmax2_dp_rand_clim3 tmax2_dp_rand_clim4 tmax2_dp_rand_clim5 tmax2_dp_rand_clim6 
@@ -535,8 +576,7 @@ global indepvar "tmax_dp_rand_clim1 tmax_dp_rand_clim2 tmax_dp_rand_clim3 tmax_d
 				sm_dp_rand_edu1 sm_dp_rand_edu2 sm_dp_rand_edu3 sm_dp_rand_edu4 sm2_dp_rand_edu1 sm2_dp_rand_edu2 sm2_dp_rand_edu3 sm2_dp_rand_edu4 sm3_dp_rand_edu1 
 				sm3_dp_rand_edu2 sm3_dp_rand_edu3 sm3_dp_rand_edu4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S placebo*(climzone+age+edu)"
 	if "$metric" == "rsquare" {

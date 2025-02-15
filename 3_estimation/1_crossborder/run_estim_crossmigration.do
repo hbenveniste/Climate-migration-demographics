@@ -47,14 +47,19 @@ eststo mcross_tspd3_eduagecz: reghdfe `depvar' `indepvar', absorb(i.bpl#i.countr
 estimates save "$input_dir/5_estimation/mcross_tspd3_eduagecz.ster", replace
 
 
+* Same model but without climate zone heterogeneity
+local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat ///
+				c.tmax_dp##i.edattain c.tmax2_dp##i.edattain c.tmax3_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain
+eststo mcross_tspd3_eduage: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
+estimates save "$input_dir/5_estimation/mcross_tspd3_eduage.ster", replace
+
 * Same model but with T linear for comparison
 local indepvar c.tmax_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat ///
-				c.tmax_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain ///
-				c.tmax_dp##i.mainclimgroup c.sm_dp##i.mainclimgroup c.sm2_dp##i.mainclimgroup c.sm3_dp##i.mainclimgroup
-eststo mcross_tspd13_eduagecz: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
-estimates save "$input_dir/5_estimation/mcross_tspd13_eduagecz.ster", replace
+				c.tmax_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain 
+eststo mcross_tspd13_eduage: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
+estimates save "$input_dir/5_estimation/mcross_tspd13_eduage.ster", replace
 
-* Same models but without heterogeneity for comparison
+* Same models but with no heterogeneity for comparison
 local indepvar tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp
 eststo mcross_tspd3: reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
 estimates save "$input_dir/5_estimation/mcross_tspd3.ster", replace
@@ -91,7 +96,7 @@ estadd local fixedoltt "Yes", replace: *
 
 * Export table in .csv
 #delimit ;
-esttab mcross_tspd3 mcross_tspd3_eduagecz using "$res_dir/4_Estimation_crossmig/tableA1_crossdemo.csv", 
+esttab mcross_tspd3 mcross_tspd3_eduage mcross_tspd3_eduagecz using "$res_dir/4_Estimation_crossmig/tableA1_crossdemo.csv", 
 		label se star wide noconstant nobaselevels varwidth(25) 
 		stats(fixedodd fixedy fixedoltt N r2 r2_within, 
 			labels("Or/Dest/Demo FE" "Year FE" "Origin LTT" "N" "R2" "Within-R2")) 

@@ -37,10 +37,9 @@ global depvar ln_outmigshare
 * Models using temperature and soil moisture
 
 * Linear model in T,S
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 global indepvar "tmax_dp_uc sm_dp_uc"
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {
 	gen model = "T1,S1"
 	if "$metric" == "rsquare" {
@@ -54,10 +53,9 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Quadratic model in T,S
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 global indepvar "tmax_dp_uc tmax2_dp_uc sm_dp_uc sm2_dp_uc"
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {
 	gen model = "T2,S2"
 	if "$metric" == "rsquare" {
@@ -71,10 +69,9 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Restricted cubic spline model in T,S
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 global indepvar "tmax_dp_uc sm_dp_uc tmax_dp_rcs_k4_1_uc tmax_dp_rcs_k4_2_uc sm_dp_rcs_k4_1_uc sm_dp_rcs_k4_2_uc"
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {
 	gen model = "T,S rcs"
 	if "$metric" == "rsquare" {
@@ -94,10 +91,9 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 * Models using cubic shape
 
 * Model in P
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 global indepvar "prcp_dp_uc prcp2_dp_uc prcp3_dp_uc"
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {
 	gen model = "P3"
 	if "$metric" == "rsquare" {
@@ -111,10 +107,9 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Model in T,P
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 global indepvar "tmax_dp_uc tmax2_dp_uc tmax3_dp_uc prcp_dp_uc prcp2_dp_uc prcp3_dp_uc"
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {
 	gen model = "T3,P3"
 	if "$metric" == "rsquare" {
@@ -128,7 +123,7 @@ quietly {
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 * Model in T,P per climate zone and age and education
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 #delimit ;
 global indepvar "tmax_dp_uc_clim1_age1 tmax_dp_uc_clim1_age2 tmax_dp_uc_clim1_age3 tmax_dp_uc_clim1_age4 prcp_dp_uc_clim1_age1 prcp_dp_uc_clim1_age2 prcp_dp_uc_clim1_age3 prcp_dp_uc_clim1_age4 
 				tmax2_dp_uc_clim1_age1 tmax2_dp_uc_clim1_age2 tmax2_dp_uc_clim1_age3 tmax2_dp_uc_clim1_age4 prcp2_dp_uc_clim1_age1 prcp2_dp_uc_clim1_age2 prcp2_dp_uc_clim1_age3 prcp2_dp_uc_clim1_age4 
@@ -167,8 +162,7 @@ global indepvar "tmax_dp_uc_clim1_age1 tmax_dp_uc_clim1_age2 tmax_dp_uc_clim1_ag
 				tmax2_dp_uc_clim6_edu1 tmax2_dp_uc_clim6_edu2 tmax2_dp_uc_clim6_edu3 tmax2_dp_uc_clim6_edu4 prcp2_dp_uc_clim6_edu1 prcp2_dp_uc_clim6_edu2 prcp2_dp_uc_clim6_edu3 prcp2_dp_uc_clim6_edu4 
 				tmax3_dp_uc_clim6_edu1 tmax3_dp_uc_clim6_edu2 tmax3_dp_uc_clim6_edu3 tmax3_dp_uc_clim6_edu4 prcp3_dp_uc_clim6_edu1 prcp3_dp_uc_clim6_edu2 prcp3_dp_uc_clim6_edu3 prcp3_dp_uc_clim6_edu4";
 #delimit cr
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {
 	gen model = "T3,P3*climzone*(age+edu)"
 	if "$metric" == "rsquare" {

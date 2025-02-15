@@ -67,9 +67,9 @@ use `cmip6proj'
 * Match coefficients names
 rename (tasmaxdif_245 tasmax2dif_245 tasmax3dif_245 mrsosdif_245 mrsos2dif_245 mrsos3dif_245) (tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp)
 
-* Best performing model over time: T, S cubic per climate zone, age and education
-estimates use "$input_dir/5_estimation/mcross_tspd3_eduagecz.ster"
-foreach var of varlist tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp {
+* Best performing model over time: T linear, S cubic per age and education
+estimates use "$input_dir/5_estimation/mcross_tspd13_eduage.ster"
+foreach var of varlist tmax_dp sm_dp sm2_dp sm3_dp {
 	gen coefh_`var' = _b[`var']
 	forvalues i=2/4 {
 		replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] if edattain == 1 & agemigcat == `i' & mainclimgroup == 1
@@ -77,36 +77,16 @@ foreach var of varlist tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp {
 	forvalues j=2/4 {
 		replace coefh_`var' = _b[`var'] + _b[`j'.edattain#c.`var'] if edattain == `j' & agemigcat == 1 & mainclimgroup == 1
 	}
-	forvalues j=2/6 {
-		replace coefh_`var' = _b[`var'] + _b[`j'.mainclimgroup#c.`var'] if edattain == 1 & agemigcat == 1 & mainclimgroup == `j'
-	}
 	forvalues i=2/4 {
 		forvalues j=2/4 {
 			replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] + _b[`j'.edattain#c.`var'] if edattain == `j' & agemigcat == `i' & mainclimgroup == 1
 		}
 	}
-	forvalues i=2/4 {
-		forvalues j=2/6 {
-			replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] + _b[`j'.mainclimgroup#c.`var'] if edattain == 1 & agemigcat == `i' & mainclimgroup == `j'
-		}
-	}
-	forvalues i=2/4 {
-		forvalues j=2/6 {
-			replace coefh_`var' = _b[`var'] + _b[`i'.edattain#c.`var'] + _b[`j'.mainclimgroup#c.`var'] if edattain == `i' & agemigcat == 1 & mainclimgroup == `j'
-		}
-	}
-	forvalues i=2/4 {
-		forvalues j=2/4 {
-			forvalues k=2/6 {
-				replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] + _b[`j'.edattain#c.`var'] + _b[`k'.mainclimgroup#c.`var'] if edattain == `j' & agemigcat == `i' & mainclimgroup == `k'
-			}
-		}
-	}
 }
 
 * Same model, without heterogeneity
-estimates use "$input_dir/5_estimation/mcross_tspd3.ster"
-foreach var of varlist tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp {
+estimates use "$input_dir/5_estimation/mcross_tspd13.ster"
+foreach var of varlist tmax_dp sm_dp sm2_dp sm3_dp {
 	gen coefnoh_`var' = _b[`var']
 }
 
@@ -118,14 +98,14 @@ foreach var of varlist tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp {
 rename (tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp) (tasmaxdif_245 tasmax2dif_245 tasmax3dif_245 mrsosdif_245 mrsos2dif_245 mrsos3dif_245)
 
 * For scenario SSP2-4.5
-gen log_migrate_diffcch_ssp245 = coefh_tmax_dp * tasmaxdif_245 + coefh_tmax2_dp * tasmax2dif_245 + coefh_tmax3_dp * tasmax3dif_245 + coefh_sm_dp * mrsosdif_245 + coefh_sm2_dp * mrsos2dif_245 + coefh_sm3_dp * mrsos3dif_245
+gen log_migrate_diffcch_ssp245 = coefh_tmax_dp * tasmaxdif_245 + coefh_sm_dp * mrsosdif_245 + coefh_sm2_dp * mrsos2dif_245 + coefh_sm3_dp * mrsos3dif_245
 
-gen log_migrate_diffccnoh_ssp245 = coefnoh_tmax_dp * tasmaxdif_245 + coefnoh_tmax2_dp * tasmax2dif_245 + coefnoh_tmax3_dp * tasmax3dif_245 + coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245
+gen log_migrate_diffccnoh_ssp245 = coefnoh_tmax_dp * tasmaxdif_245 + coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245
 
 * For scenario SSP3-7.0
-gen log_migrate_diffcch_ssp370 = coefh_tmax_dp * tasmaxdif_370 + coefh_tmax2_dp * tasmax2dif_370 + coefh_tmax3_dp * tasmax3dif_370 + coefh_sm_dp * mrsosdif_370 + coefh_sm2_dp * mrsos2dif_370 + coefh_sm3_dp * mrsos3dif_370
+gen log_migrate_diffcch_ssp370 = coefh_tmax_dp * tasmaxdif_370 + coefh_sm_dp * mrsosdif_370 + coefh_sm2_dp * mrsos2dif_370 + coefh_sm3_dp * mrsos3dif_370
 
-gen log_migrate_diffccnoh_ssp370 = coefnoh_tmax_dp * tasmaxdif_370 + coefnoh_tmax2_dp * tasmax2dif_370 + coefnoh_tmax3_dp * tasmax3dif_370 + coefnoh_sm_dp * mrsosdif_370 + coefnoh_sm2_dp * mrsos2dif_370 + coefnoh_sm3_dp * mrsos3dif_370
+gen log_migrate_diffccnoh_ssp370 = coefnoh_tmax_dp * tasmaxdif_370 + coefnoh_sm_dp * mrsosdif_370 + coefnoh_sm2_dp * mrsos2dif_370 + coefnoh_sm3_dp * mrsos3dif_370
 
 * Ensure no negative migration
 foreach var of varlist log_migrate_diffcch_ssp245 log_migrate_diffccnoh_ssp245 log_migrate_diffcch_ssp370 log_migrate_diffccnoh_ssp370 {
@@ -137,9 +117,9 @@ foreach var of varlist log_migrate_diffcch_ssp245 log_migrate_diffccnoh_ssp245 l
 **# Calculate which of temperature or soil moisture dominates the climate change effect ***
 ****************************************************************
 * For scenario SSP2-4.5
-gen log_migrate_diffccnoh_ssp245_t = abs(coefnoh_tmax_dp * tasmaxdif_245 + coefh_tmax2_dp * tasmax2dif_245 + coefh_tmax3_dp * tasmax3dif_245) / (abs(coefnoh_tmax_dp * tasmaxdif_245 + coefh_tmax2_dp * tasmax2dif_245 + coefh_tmax3_dp * tasmax3dif_245) + abs(coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245))
+gen log_migrate_diffccnoh_ssp245_t = abs(coefnoh_tmax_dp * tasmaxdif_245) / (abs(coefnoh_tmax_dp * tasmaxdif_245) + abs(coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245))
 
-gen log_migrate_diffccnoh_ssp245_sm = abs(coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245) / (abs(coefnoh_tmax_dp * tasmaxdif_245 + coefh_tmax2_dp * tasmax2dif_245 + coefh_tmax3_dp * tasmax3dif_245) + abs(coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245))
+gen log_migrate_diffccnoh_ssp245_sm = abs(coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245) / (abs(coefnoh_tmax_dp * tasmaxdif_245) + abs(coefnoh_sm_dp * mrsosdif_245 + coefnoh_sm2_dp * mrsos2dif_245 + coefnoh_sm3_dp * mrsos3dif_245))
 
 
 save "$input_dir/3_consolidate/cmip6proj.dta", replace

@@ -102,10 +102,12 @@ graph export "$res_dir/2_Crossvalidation_crossmig/Fig2a_cv_cross.pdf", ///
 ****************************************************************
 * Order model specifications used for alternative folds
 gen modelaltnb = 1 if model == "T,S"
-replace modelaltnb = 2 if model == "T,S*(climzone+age+edu)"
-replace modelaltnb = 3 if model == "T1,S3*(climzone+age+edu)"
-replace modelaltnb = 4 if model == "T,S placebo*(climzone+age+edu)"
-label define modelaltname 1 "T,S cubic" 2 "T,S cubic*(climzone+age+edu)" 3 "T linear, S cubic*(climzone+age+edu)" 4 "T,S cubic placebo*(climzone+age+edu)", modify
+replace modelaltnb = 2 if model == "T,S*climzone"
+replace modelaltnb = 3 if model == "T,S*(age+edu)"
+replace modelaltnb = 4 if model == "T1,S3*(age+edu)"
+replace modelaltnb = 5 if model == "T,S*(climzone+age+edu)"
+replace modelaltnb = 6 if model == "T,S placebo*(climzone+age+edu)"
+label define modelaltname 1 "T,S cubic" 2 "T,S cubic*climzone" 3 "T,S cubic*(age+edu)" 4 "T linear, S cubic*(age+edu)" 5 "T,S cubic*(climzone+age+edu)" 6 "T,S cubic placebo*(climzone+age+edu)", modify
 label values modelaltnb modelaltname
 
 * Plot whisker plot over time		
@@ -126,8 +128,7 @@ graph export "$res_dir/2_Crossvalidation_crossmig/FigS8a_cvalt_cross.png", ///
 **# Plot whisker plot of cross-validation results using the CRPS ***
 ****************************************************************
 * Plot whisker plot of the CRPS, over random folds	
-replace modelnb = 10 if model == "T,S*climzone*age"
-label define modelname 1 "T" 2 "S" 3 "T,S" 4 "T,S * climate zone" 5 "T,S * age" 6 "T,S * edu" 7 "T,S * sex" 8 "T,S * (age+edu)" 9 "T,S * (climzone+age+edu)" 10 "T,S * climzone * age" 11 "T,S * (climzone+age+edu+sex)" 12 "T,S placebo * (climzone+age+edu)", modify
+label define modelname 1 "T" 2 "S" 3 "T,S" 4 "T,S * climate zone" 5 "T,S * age" 6 "T,S * edu" 7 "T,S * sex" 8 "T,S * (age+edu)" 9 "T,S * (climzone+age+edu)" 10 "T,S * climzone * (age+edu)" 11 "T,S * (climzone+age+edu+sex)" 12 "T,S placebo * (climzone+age+edu)", modify
 label values modelnb modelname
 
 graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(small))) nooutsides ///

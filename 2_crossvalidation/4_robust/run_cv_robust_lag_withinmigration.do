@@ -36,7 +36,7 @@ global depvar ln_outmigshare
 
 * Model performing best out-of-sample: T,S contemporaneous and lagged by 1 year, cubic, per climate zone and age and education
 * We impose linear temperature and soil moisture effects to cap the number of estimated parameters 
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 
 #delimit ;
 global indepvar "tmax_dp_uc_clim1_age1 tmax_dp_uc_clim1_age2 tmax_dp_uc_clim1_age3 tmax_dp_uc_clim1_age4 sm_dp_uc_clim1_age1 sm_dp_uc_clim1_age2 sm_dp_uc_clim1_age3 sm_dp_uc_clim1_age4 
@@ -64,9 +64,8 @@ global indepvar "tmax_dp_uc_clim1_age1 tmax_dp_uc_clim1_age2 tmax_dp_uc_clim1_ag
 				sm_dp_uc_l1_clim3_edu1 sm_dp_uc_l1_clim3_edu2 sm_dp_uc_l1_clim3_edu3 sm_dp_uc_l1_clim3_edu4 sm_dp_uc_l1_clim4_edu1 sm_dp_uc_l1_clim4_edu2 sm_dp_uc_l1_clim4_edu3 sm_dp_uc_l1_clim4_edu4 
 				sm_dp_uc_l1_clim5_edu1 sm_dp_uc_l1_clim5_edu2 sm_dp_uc_l1_clim5_edu3 sm_dp_uc_l1_clim5_edu4 sm_dp_uc_l1_clim6_edu1 sm_dp_uc_l1_clim6_edu2 sm_dp_uc_l1_clim6_edu3 sm_dp_uc_l1_clim6_edu4";
 #delimit cr
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 
-use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "(T1,S1+l1)*climzone*(age+edu)"
 	if "$metric" == "rsquare" {
@@ -81,13 +80,12 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
 
 * Same model but without demographic heterogeneity for comparison
-use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_within.dta"
 #delimit ;
 global indepvar "tmax_dp_uc_clim1 tmax_dp_uc_clim2 tmax_dp_uc_clim3 tmax_dp_uc_clim4 tmax_dp_uc_clim5 tmax_dp_uc_clim6 sm_dp_uc_clim1 sm_dp_uc_clim2 sm_dp_uc_clim3 sm_dp_uc_clim4 sm_dp_uc_clim5 sm_dp_uc_clim6 
 				tmax_dp_uc_l1_clim1 tmax_dp_uc_l1_clim2 tmax_dp_uc_l1_clim3 tmax_dp_uc_l1_clim4 tmax_dp_uc_l1_clim5 tmax_dp_uc_l1_clim6 sm_dp_uc_l1_clim1 sm_dp_uc_l1_clim2 sm_dp_uc_l1_clim3 sm_dp_uc_l1_clim4 sm_dp_uc_l1_clim5 sm_dp_uc_l1_clim6";
 #delimit cr
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {
 	gen model = "(T1,S1+l1)*climzone"
 	if "$metric" == "rsquare" {

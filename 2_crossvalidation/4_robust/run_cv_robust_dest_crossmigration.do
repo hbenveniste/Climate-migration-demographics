@@ -35,7 +35,7 @@ global depvar ln_outmigshare
 
 
 * Model performing best out-of-sample: T,S origin and destination, cubic, per climate zone, age and education
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 #delimit ;
 global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp_clim5 tmax_dp_clim6 
 				tmax2_dp_clim1 tmax2_dp_clim2 tmax2_dp_clim3 tmax2_dp_clim4 tmax2_dp_clim5 tmax2_dp_clim6
@@ -58,9 +58,8 @@ global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp
 				tmax_dp_des_edu1 tmax_dp_des_edu2 tmax_dp_des_edu3 tmax_dp_des_edu4 tmax2_dp_des_edu1 tmax2_dp_des_edu2 tmax2_dp_des_edu3 tmax2_dp_des_edu4 tmax3_dp_des_edu1 tmax3_dp_des_edu2 tmax3_dp_des_edu3 tmax3_dp_des_edu4 
 				sm_dp_des_edu1 sm_dp_des_edu2 sm_dp_des_edu3 sm_dp_des_edu4 sm2_dp_des_edu1 sm2_dp_des_edu2 sm2_dp_des_edu3 sm2_dp_des_edu4 sm3_dp_des_edu1 sm3_dp_des_edu2 sm3_dp_des_edu3 sm3_dp_des_edu4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "(T3,S3+dest)*(climzone+age+edu)"
 	if "$metric" == "rsquare" {
@@ -78,10 +77,9 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 
 * Same model but without heterogeneity for comparison
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 global indepvar "tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp tmax_dp_des tmax2_dp_des tmax3_dp_des sm_dp_des sm2_dp_des sm3_dp_des"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T3,S3+dest"
 	if "$metric" == "rsquare" {

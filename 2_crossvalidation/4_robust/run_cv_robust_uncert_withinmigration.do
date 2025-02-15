@@ -93,6 +93,63 @@ save "$input_dir/3_consolidate/withinmigweather_clean_e.dta", replace
 ****************************************************************
 **# Run cross-validation ***
 ****************************************************************
+* Residualize data to perform cross-validation
+local allvar ln_outmigshare ///
+				tmax_dp_e tmax2_dp_e tmax3_dp_e sm_dp_e sm2_dp_e sm3_dp_e ///
+				tmax_dp_e_clim1_age1 tmax_dp_e_clim1_age2 tmax_dp_e_clim1_age3 tmax_dp_e_clim1_age4 sm_dp_e_clim1_age1 sm_dp_e_clim1_age2 sm_dp_e_clim1_age3 sm_dp_e_clim1_age4 ///
+				tmax2_dp_e_clim1_age1 tmax2_dp_e_clim1_age2 tmax2_dp_e_clim1_age3 tmax2_dp_e_clim1_age4 sm2_dp_e_clim1_age1 sm2_dp_e_clim1_age2 sm2_dp_e_clim1_age3 sm2_dp_e_clim1_age4 ///
+				tmax3_dp_e_clim1_age1 tmax3_dp_e_clim1_age2 tmax3_dp_e_clim1_age3 tmax3_dp_e_clim1_age4 sm3_dp_e_clim1_age1 sm3_dp_e_clim1_age2 sm3_dp_e_clim1_age3 sm3_dp_e_clim1_age4 ///
+				tmax_dp_e_clim2_age1 tmax_dp_e_clim2_age2 tmax_dp_e_clim2_age3 tmax_dp_e_clim2_age4 sm_dp_e_clim2_age1 sm_dp_e_clim2_age2 sm_dp_e_clim2_age3 sm_dp_e_clim2_age4 ///
+				tmax2_dp_e_clim2_age1 tmax2_dp_e_clim2_age2 tmax2_dp_e_clim2_age3 tmax2_dp_e_clim2_age4 sm2_dp_e_clim2_age1 sm2_dp_e_clim2_age2 sm2_dp_e_clim2_age3 sm2_dp_e_clim2_age4 ///
+				tmax3_dp_e_clim2_age1 tmax3_dp_e_clim2_age2 tmax3_dp_e_clim2_age3 tmax3_dp_e_clim2_age4 sm3_dp_e_clim2_age1 sm3_dp_e_clim2_age2 sm3_dp_e_clim2_age3 sm3_dp_e_clim2_age4 ///
+				tmax_dp_e_clim3_age1 tmax_dp_e_clim3_age2 tmax_dp_e_clim3_age3 tmax_dp_e_clim3_age4 sm_dp_e_clim3_age1 sm_dp_e_clim3_age2 sm_dp_e_clim3_age3 sm_dp_e_clim3_age4 ///
+				tmax2_dp_e_clim3_age1 tmax2_dp_e_clim3_age2 tmax2_dp_e_clim3_age3 tmax2_dp_e_clim3_age4 sm2_dp_e_clim3_age1 sm2_dp_e_clim3_age2 sm2_dp_e_clim3_age3 sm2_dp_e_clim3_age4 ///
+				tmax3_dp_e_clim3_age1 tmax3_dp_e_clim3_age2 tmax3_dp_e_clim3_age3 tmax3_dp_e_clim3_age4 sm3_dp_e_clim3_age1 sm3_dp_e_clim3_age2 sm3_dp_e_clim3_age3 sm3_dp_e_clim3_age4 ///
+				tmax_dp_e_clim4_age1 tmax_dp_e_clim4_age2 tmax_dp_e_clim4_age3 tmax_dp_e_clim4_age4 sm_dp_e_clim4_age1 sm_dp_e_clim4_age2 sm_dp_e_clim4_age3 sm_dp_e_clim4_age4 ///
+				tmax2_dp_e_clim4_age1 tmax2_dp_e_clim4_age2 tmax2_dp_e_clim4_age3 tmax2_dp_e_clim4_age4 sm2_dp_e_clim4_age1 sm2_dp_e_clim4_age2 sm2_dp_e_clim4_age3 sm2_dp_e_clim4_age4 ///
+				tmax3_dp_e_clim4_age1 tmax3_dp_e_clim4_age2 tmax3_dp_e_clim4_age3 tmax3_dp_e_clim4_age4 sm3_dp_e_clim4_age1 sm3_dp_e_clim4_age2 sm3_dp_e_clim4_age3 sm3_dp_e_clim4_age4 ///
+				tmax_dp_e_clim5_age1 tmax_dp_e_clim5_age2 tmax_dp_e_clim5_age3 tmax_dp_e_clim5_age4 sm_dp_e_clim5_age1 sm_dp_e_clim5_age2 sm_dp_e_clim5_age3 sm_dp_e_clim5_age4 ///
+				tmax2_dp_e_clim5_age1 tmax2_dp_e_clim5_age2 tmax2_dp_e_clim5_age3 tmax2_dp_e_clim5_age4 sm2_dp_e_clim5_age1 sm2_dp_e_clim5_age2 sm2_dp_e_clim5_age3 sm2_dp_e_clim5_age4 ///
+				tmax3_dp_e_clim5_age1 tmax3_dp_e_clim5_age2 tmax3_dp_e_clim5_age3 tmax3_dp_e_clim5_age4 sm3_dp_e_clim5_age1 sm3_dp_e_clim5_age2 sm3_dp_e_clim5_age3 sm3_dp_e_clim5_age4 ///
+				tmax_dp_e_clim6_age1 tmax_dp_e_clim6_age2 tmax_dp_e_clim6_age3 tmax_dp_e_clim6_age4 sm_dp_e_clim6_age1 sm_dp_e_clim6_age2 sm_dp_e_clim6_age3 sm_dp_e_clim6_age4 ///
+				tmax2_dp_e_clim6_age1 tmax2_dp_e_clim6_age2 tmax2_dp_e_clim6_age3 tmax2_dp_e_clim6_age4 sm2_dp_e_clim6_age1 sm2_dp_e_clim6_age2 sm2_dp_e_clim6_age3 sm2_dp_e_clim6_age4 ///
+				tmax3_dp_e_clim6_age1 tmax3_dp_e_clim6_age2 tmax3_dp_e_clim6_age3 tmax3_dp_e_clim6_age4 sm3_dp_e_clim6_age1 sm3_dp_e_clim6_age2 sm3_dp_e_clim6_age3 sm3_dp_e_clim6_age4 ///
+				tmax_dp_e_clim1_edu1 tmax_dp_e_clim1_edu2 tmax_dp_e_clim1_edu3 tmax_dp_e_clim1_edu4 sm_dp_e_clim1_edu1 sm_dp_e_clim1_edu2 sm_dp_e_clim1_edu3 sm_dp_e_clim1_edu4 ///
+				tmax2_dp_e_clim1_edu1 tmax2_dp_e_clim1_edu2 tmax2_dp_e_clim1_edu3 tmax2_dp_e_clim1_edu4 sm2_dp_e_clim1_edu1 sm2_dp_e_clim1_edu2 sm2_dp_e_clim1_edu3 sm2_dp_e_clim1_edu4 ///
+				tmax3_dp_e_clim1_edu1 tmax3_dp_e_clim1_edu2 tmax3_dp_e_clim1_edu3 tmax3_dp_e_clim1_edu4 sm3_dp_e_clim1_edu1 sm3_dp_e_clim1_edu2 sm3_dp_e_clim1_edu3 sm3_dp_e_clim1_edu4 ///
+				tmax_dp_e_clim2_edu1 tmax_dp_e_clim2_edu2 tmax_dp_e_clim2_edu3 tmax_dp_e_clim2_edu4 sm_dp_e_clim2_edu1 sm_dp_e_clim2_edu2 sm_dp_e_clim2_edu3 sm_dp_e_clim2_edu4 ///
+				tmax2_dp_e_clim2_edu1 tmax2_dp_e_clim2_edu2 tmax2_dp_e_clim2_edu3 tmax2_dp_e_clim2_edu4 sm2_dp_e_clim2_edu1 sm2_dp_e_clim2_edu2 sm2_dp_e_clim2_edu3 sm2_dp_e_clim2_edu4 ///
+				tmax3_dp_e_clim2_edu1 tmax3_dp_e_clim2_edu2 tmax3_dp_e_clim2_edu3 tmax3_dp_e_clim2_edu4 sm3_dp_e_clim2_edu1 sm3_dp_e_clim2_edu2 sm3_dp_e_clim2_edu3 sm3_dp_e_clim2_edu4 ///
+				tmax_dp_e_clim3_edu1 tmax_dp_e_clim3_edu2 tmax_dp_e_clim3_edu3 tmax_dp_e_clim3_edu4 sm_dp_e_clim3_edu1 sm_dp_e_clim3_edu2 sm_dp_e_clim3_edu3 sm_dp_e_clim3_edu4 ///
+				tmax2_dp_e_clim3_edu1 tmax2_dp_e_clim3_edu2 tmax2_dp_e_clim3_edu3 tmax2_dp_e_clim3_edu4 sm2_dp_e_clim3_edu1 sm2_dp_e_clim3_edu2 sm2_dp_e_clim3_edu3 sm2_dp_e_clim3_edu4 ///
+				tmax3_dp_e_clim3_edu1 tmax3_dp_e_clim3_edu2 tmax3_dp_e_clim3_edu3 tmax3_dp_e_clim3_edu4 sm3_dp_e_clim3_edu1 sm3_dp_e_clim3_edu2 sm3_dp_e_clim3_edu3 sm3_dp_e_clim3_edu4 ///
+				tmax_dp_e_clim4_edu1 tmax_dp_e_clim4_edu2 tmax_dp_e_clim4_edu3 tmax_dp_e_clim4_edu4 sm_dp_e_clim4_edu1 sm_dp_e_clim4_edu2 sm_dp_e_clim4_edu3 sm_dp_e_clim4_edu4 ///
+				tmax2_dp_e_clim4_edu1 tmax2_dp_e_clim4_edu2 tmax2_dp_e_clim4_edu3 tmax2_dp_e_clim4_edu4 sm2_dp_e_clim4_edu1 sm2_dp_e_clim4_edu2 sm2_dp_e_clim4_edu3 sm2_dp_e_clim4_edu4 ///
+				tmax3_dp_e_clim4_edu1 tmax3_dp_e_clim4_edu2 tmax3_dp_e_clim4_edu3 tmax3_dp_e_clim4_edu4 sm3_dp_e_clim4_edu1 sm3_dp_e_clim4_edu2 sm3_dp_e_clim4_edu3 sm3_dp_e_clim4_edu4 ///
+				tmax_dp_e_clim5_edu1 tmax_dp_e_clim5_edu2 tmax_dp_e_clim5_edu3 tmax_dp_e_clim5_edu4 sm_dp_e_clim5_edu1 sm_dp_e_clim5_edu2 sm_dp_e_clim5_edu3 sm_dp_e_clim5_edu4 ///
+				tmax2_dp_e_clim5_edu1 tmax2_dp_e_clim5_edu2 tmax2_dp_e_clim5_edu3 tmax2_dp_e_clim5_edu4 sm2_dp_e_clim5_edu1 sm2_dp_e_clim5_edu2 sm2_dp_e_clim5_edu3 sm2_dp_e_clim5_edu4 ///
+				tmax3_dp_e_clim5_edu1 tmax3_dp_e_clim5_edu2 tmax3_dp_e_clim5_edu3 tmax3_dp_e_clim5_edu4 sm3_dp_e_clim5_edu1 sm3_dp_e_clim5_edu2 sm3_dp_e_clim5_edu3 sm3_dp_e_clim5_edu4 ///
+				tmax_dp_e_clim6_edu1 tmax_dp_e_clim6_edu2 tmax_dp_e_clim6_edu3 tmax_dp_e_clim6_edu4 sm_dp_e_clim6_edu1 sm_dp_e_clim6_edu2 sm_dp_e_clim6_edu3 sm_dp_e_clim6_edu4 ///
+				tmax2_dp_e_clim6_edu1 tmax2_dp_e_clim6_edu2 tmax2_dp_e_clim6_edu3 tmax2_dp_e_clim6_edu4 sm2_dp_e_clim6_edu1 sm2_dp_e_clim6_edu2 sm2_dp_e_clim6_edu3 sm2_dp_e_clim6_edu4 ///
+				tmax3_dp_e_clim6_edu1 tmax3_dp_e_clim6_edu2 tmax3_dp_e_clim6_edu3 tmax3_dp_e_clim6_edu4 sm3_dp_e_clim6_edu1 sm3_dp_e_clim6_edu2 sm3_dp_e_clim6_edu3 sm3_dp_e_clim6_edu4 ///
+
+use "$input_dir/3_consolidate/withinmigweather_clean_e.dta"
+
+preserve
+
+keep `allvar' ctrycode yrmig geomig1 geolev1 demo agemigcat edattain sex climgroup
+
+foreach var in `allvar' {
+	quietly reghdfe `allvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1) residuals(res_`var')
+}
+
+rename res_* *
+
+save "$input_dir/2_intermediate/_residualized_within_e.dta", replace
+
+restore
+
+
 * Select method for folds creation: random
 global folds "random"
 
@@ -107,13 +164,12 @@ global depvar ln_outmigshare
 
 
 * Model with T, S cubic 
-use "$input_dir/3_consolidate/withinmigweather_clean_e.dta"
+use "$input_dir/2_intermediate/_residualized_within_e.dta"
 
 global indepvar "tmax_dp_e tmax2_dp_e tmax3_dp_e sm_dp_e sm2_dp_e sm3_dp_e"
 
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_crossmigration.do"
 
-use "$input_dir/2_intermediate/_residualized_within.dta" 
 quietly {
 	gen model = "T,S"
 	if "$metric" == "rsquare" {
@@ -128,7 +184,7 @@ save "$input_dir/4_crossvalidation/rsqwithin_e.dta", replace
 
 
 * Model performing best out-of-sample: T,S cubic, per climate zone and age and education
-use "$input_dir/3_consolidate/withinmigweather_clean_e.dta"
+use "$input_dir/2_intermediate/_residualized_within_e.dta"
 #delimit ;
 global indepvar "tmax_dp_e_clim1_age1 tmax_dp_e_clim1_age2 tmax_dp_e_clim1_age3 tmax_dp_e_clim1_age4 sm_dp_e_clim1_age1 sm_dp_e_clim1_age2 sm_dp_e_clim1_age3 sm_dp_e_clim1_age4 
 				tmax2_dp_e_clim1_age1 tmax2_dp_e_clim1_age2 tmax2_dp_e_clim1_age3 tmax2_dp_e_clim1_age4 sm2_dp_e_clim1_age1 sm2_dp_e_clim1_age2 sm2_dp_e_clim1_age3 sm2_dp_e_clim1_age4 
@@ -167,8 +223,7 @@ global indepvar "tmax_dp_e_clim1_age1 tmax_dp_e_clim1_age2 tmax_dp_e_clim1_age3 
 				tmax2_dp_e_clim6_edu1 tmax2_dp_e_clim6_edu2 tmax2_dp_e_clim6_edu3 tmax2_dp_e_clim6_edu4 sm2_dp_e_clim6_edu1 sm2_dp_e_clim6_edu2 sm2_dp_e_clim6_edu3 sm2_dp_e_clim6_edu4 
 				tmax3_dp_e_clim6_edu1 tmax3_dp_e_clim6_edu2 tmax3_dp_e_clim6_edu3 tmax3_dp_e_clim6_edu4 sm3_dp_e_clim6_edu1 sm3_dp_e_clim6_edu2 sm3_dp_e_clim6_edu3 sm3_dp_e_clim6_edu4";
 #delimit cr
-do "$code_dir/2_crossvalidation/2_withincountry/calc_crossval_withinmigration.do"
-use "$input_dir/2_intermediate/_residualized_within.dta" 
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S*climzone*(age+edu)"
 	if "$metric" == "rsquare" {

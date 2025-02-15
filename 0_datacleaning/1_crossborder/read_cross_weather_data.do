@@ -89,6 +89,8 @@ merge m:1 bpl yrimm using `wt', nogenerate
 
 gen pop_share = pop / pop_sum
 
+drop if geolevel1 !=. & pop ==.
+
 foreach var of varlist tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp prcp_dp prcp2_dp prcp3_dp tmax_dp_rcs_k4_1 tmax_dp_rcs_k4_2 sm_dp_rcs_k4_1 sm_dp_rcs_k4_2 {
 	gen `var'_popwt = `var' * pop_share
 	replace `var'_popwt = `var' if pop_share == . & pop_sum == 0

@@ -35,7 +35,7 @@ global depvar ln_outmigshare
 
 
 * Model performing best out-of-sample: T,S averaged over prior 10 years, cubic, per climate zone, age and education
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 #delimit ;
 global indepvar "tmax_dp_a10_clim1 tmax_dp_a10_clim2 tmax_dp_a10_clim3 tmax_dp_a10_clim4 tmax_dp_a10_clim5 tmax_dp_a10_clim6 
 				tmax2_dp_a10_clim1 tmax2_dp_a10_clim2 tmax2_dp_a10_clim3 tmax2_dp_a10_clim4 tmax2_dp_a10_clim5 tmax2_dp_a10_clim6
@@ -50,9 +50,8 @@ global indepvar "tmax_dp_a10_clim1 tmax_dp_a10_clim2 tmax_dp_a10_clim3 tmax_dp_a
 				tmax2_dp_a10_edu1 tmax2_dp_a10_edu2 tmax2_dp_a10_edu3 tmax2_dp_a10_edu4 sm2_dp_a10_edu1 sm2_dp_a10_edu2 sm2_dp_a10_edu3 sm2_dp_a10_edu4 
 				tmax3_dp_a10_edu1 tmax3_dp_a10_edu2 tmax3_dp_a10_edu3 tmax3_dp_a10_edu4 sm3_dp_a10_edu1 sm3_dp_a10_edu2 sm3_dp_a10_edu3 sm3_dp_a10_edu4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
 quietly {
 	gen model = "T,S av10*(climzone+age+edu)"
 	if "$metric" == "rsquare" {
@@ -67,10 +66,9 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 
 * Same model but without heterogeneity for comparison
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 global indepvar "tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10"
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S av10"
 if "$metric" == "rsquare" {
@@ -85,7 +83,7 @@ save "$input_dir/4_crossvalidation/rsqimm.dta", replace
 
 
 * Using placebo version of best performing model: T,S cubic per climate zone, age and education
-use "$input_dir/3_consolidate/crossmigweather_clean.dta"
+use "$input_dir/2_intermediate/_residualized_cross.dta"
 #delimit ;
 global indepvar "tmax_dp_a10_rand_clim1 tmax_dp_a10_rand_clim2 tmax_dp_a10_rand_clim3 tmax_dp_a10_rand_clim4 tmax_dp_a10_rand_clim5 tmax_dp_a10_rand_clim6 
 				tmax2_dp_a10_rand_clim1 tmax2_dp_a10_rand_clim2 tmax2_dp_a10_rand_clim3 tmax2_dp_a10_rand_clim4 tmax2_dp_a10_rand_clim5 tmax2_dp_a10_rand_clim6 
@@ -102,8 +100,7 @@ global indepvar "tmax_dp_a10_rand_clim1 tmax_dp_a10_rand_clim2 tmax_dp_a10_rand_
 				sm_dp_a10_rand_edu1 sm_dp_a10_rand_edu2 sm_dp_a10_rand_edu3 sm_dp_a10_rand_edu4 sm2_dp_a10_rand_edu1 sm2_dp_a10_rand_edu2 sm2_dp_a10_rand_edu3 sm2_dp_a10_rand_edu4 sm3_dp_a10_rand_edu1 
 				sm3_dp_a10_rand_edu2 sm3_dp_a10_rand_edu3 sm3_dp_a10_rand_edu4";
 #delimit cr				
-do "$code_dir/2_crossvalidation/1_crossborder/calc_crossval_crossmigration.do"
-use "$input_dir/2_intermediate/_residualized_cross.dta" 
+do "$code_dir/2_crossvalidation/1_crossborder/crossval_function_crossmigration.do"
 quietly {
 	gen model = "T,S av10 placebo*(climzone+age+edu)"
 if "$metric" == "rsquare" {
