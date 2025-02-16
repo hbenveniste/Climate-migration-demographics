@@ -143,9 +143,10 @@ preserve
 keep `allvar' bpl bplcode country countrycode yrimm demo agemigcat edattain sex mainclimgroup
 
 foreach var in `allvar' {
-	quietly reghdfe `allvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl) residuals(res_`var')
+	quietly reghdfe `var', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl) residuals(res_`var')
 }
 
+keep res_* bpl bplcode country countrycode yrimm demo agemigcat edattain sex mainclimgroup
 rename res_* *
 
 save "$input_dir/2_intermediate/_residualized_cross.dta", replace

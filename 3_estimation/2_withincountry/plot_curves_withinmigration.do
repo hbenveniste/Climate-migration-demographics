@@ -140,10 +140,11 @@ forvalues c=1/5 {
 		gen day`var' = `var' / 365 * 100
 	}
 
+	keep id t day* 
+	
 	* Merge with daily temperature values to plot histograms
 	if $histo {
 		merge m:1 id using "$input_dir/3_consolidate/withinweatherdaily_`c'.dta", keepusing(id tmax_pop_uc_w agemigcat edattain) nogenerate
-		keep tmax_pop_uc_w id t day* agemigcat edattain
 
 		save "$input_dir/2_intermediate/respcurvedata_withinmig_`c'_t.dta", replace
 	}
@@ -248,10 +249,11 @@ forvalues c=1/5 {
 		gen day`var' = `var' / 365 * 100
 	}
 
+	keep id sm day* 
+
 	* Merge with daily soil moisture values to plot histograms
 	if $histo {
 		merge m:1 id using "$input_dir/3_consolidate/withinweatherdaily_`c'.dta", keepusing(id sm_pop_uc_w agemigcat edattain) nogenerate
-		keep sm_pop_uc_w id sm day* agemigcat edattain
 
 		save "$input_dir/2_intermediate/respcurvedata_withinmig_`c'_sm.dta", replace
 	}

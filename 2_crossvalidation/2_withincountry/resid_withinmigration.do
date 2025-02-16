@@ -115,9 +115,10 @@ preserve
 keep `allvar' ctrycode yrmig geomig1 geolev1 demo agemigcat edattain sex climgroup
 
 foreach var in `allvar' {
-	quietly reghdfe `allvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1) residuals(res_`var')
+	quietly reghdfe `var', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1) residuals(res_`var')
 }
 
+keep res_* ctrycode yrmig geomig1 geolev1 demo agemigcat edattain sex climgroup
 rename res_* *
 
 save "$input_dir/2_intermediate/_residualized_within.dta", replace
