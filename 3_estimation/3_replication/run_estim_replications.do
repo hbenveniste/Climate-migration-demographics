@@ -24,7 +24,7 @@ if "$CODE" == "" {
 **# Replicate Cai et al. ***
 ****************************************************************
 * Load data 
-use "$input_dir/3_consolidate/caietal.dta"
+use "$input_dir/1_raw/Replications/caietal.dta"
 
 * Use their code to clean the data
 drop if tmp_4agn==.|pcp_4agn==.|lnGDPpcPPP_A1Bj1==.|lnGDPpcPPP_A1Bi1==.

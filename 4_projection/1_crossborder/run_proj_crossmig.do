@@ -72,14 +72,14 @@ estimates use "$input_dir/5_estimation/mcross_tspd13_eduage.ster"
 foreach var of varlist tmax_dp sm_dp sm2_dp sm3_dp {
 	gen coefh_`var' = _b[`var']
 	forvalues i=2/4 {
-		replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] if edattain == 1 & agemigcat == `i' & mainclimgroup == 1
+		replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] if edattain == 1 & agemigcat == `i'
 	}
 	forvalues j=2/4 {
-		replace coefh_`var' = _b[`var'] + _b[`j'.edattain#c.`var'] if edattain == `j' & agemigcat == 1 & mainclimgroup == 1
+		replace coefh_`var' = _b[`var'] + _b[`j'.edattain#c.`var'] if edattain == `j' & agemigcat == 1
 	}
 	forvalues i=2/4 {
 		forvalues j=2/4 {
-			replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] + _b[`j'.edattain#c.`var'] if edattain == `j' & agemigcat == `i' & mainclimgroup == 1
+			replace coefh_`var' = _b[`var'] + _b[`i'.agemigcat#c.`var'] + _b[`j'.edattain#c.`var'] if edattain == `j' & agemigcat == `i'
 		}
 	}
 }

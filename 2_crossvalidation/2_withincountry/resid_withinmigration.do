@@ -20,7 +20,14 @@ local allvar ln_outmigshare ///
 				tmax2_dp_uc_clim1 tmax2_dp_uc_clim2 tmax2_dp_uc_clim3 tmax2_dp_uc_clim4 tmax2_dp_uc_clim5 tmax2_dp_uc_clim6 ///
 				sm2_dp_uc_clim1 sm2_dp_uc_clim2 sm2_dp_uc_clim3 sm2_dp_uc_clim4 sm2_dp_uc_clim5 sm2_dp_uc_clim6 ///
 				tmax3_dp_uc_clim1 tmax3_dp_uc_clim2 tmax3_dp_uc_clim3 tmax3_dp_uc_clim4 tmax3_dp_uc_clim5 tmax3_dp_uc_clim6 ///
-				sm3_dp_uc_clim1 sm3_dp_uc_clim2 sm3_dp_uc_clim3 sm3_dp_uc_clim4 sm3_dp_uc_clim5 sm3_dp_uc_clim6 //////
+				sm3_dp_uc_clim1 sm3_dp_uc_clim2 sm3_dp_uc_clim3 sm3_dp_uc_clim4 sm3_dp_uc_clim5 sm3_dp_uc_clim6 ///
+				tmax_dp_uc_age1 tmax_dp_uc_age2 tmax_dp_uc_age3 tmax_dp_uc_age4 sm_dp_uc_age1 sm_dp_uc_age2 sm_dp_uc_age3 sm_dp_uc_age4  ///
+				tmax2_dp_uc_age1 tmax2_dp_uc_age2 tmax2_dp_uc_age3 tmax2_dp_uc_age4 sm2_dp_uc_age1 sm2_dp_uc_age2 sm2_dp_uc_age3 sm2_dp_uc_age4  ///
+				tmax3_dp_uc_age1 tmax3_dp_uc_age2 tmax3_dp_uc_age3 tmax3_dp_uc_age4 sm3_dp_uc_age1 sm3_dp_uc_age2 sm3_dp_uc_age3 sm3_dp_uc_age4 ///
+				tmax_dp_uc_edu1 tmax_dp_uc_edu2 tmax_dp_uc_edu3 tmax_dp_uc_edu4 sm_dp_uc_edu1 sm_dp_uc_edu2 sm_dp_uc_edu3 sm_dp_uc_edu4  ///
+				tmax2_dp_uc_edu1 tmax2_dp_uc_edu2 tmax2_dp_uc_edu3 tmax2_dp_uc_edu4 sm2_dp_uc_edu1 sm2_dp_uc_edu2 sm2_dp_uc_edu3 sm2_dp_uc_edu4  ///
+				tmax3_dp_uc_edu1 tmax3_dp_uc_edu2 tmax3_dp_uc_edu3 tmax3_dp_uc_edu4 sm3_dp_uc_edu1 sm3_dp_uc_edu2 sm3_dp_uc_edu3 sm3_dp_uc_edu4 ///
+				tmax_dp_uc_sex1 tmax_dp_uc_sex2 sm_dp_uc_sex1 sm_dp_uc_sex2 tmax2_dp_uc_sex1 tmax2_dp_uc_sex2 sm2_dp_uc_sex1 sm2_dp_uc_sex2 tmax3_dp_uc_sex1 tmax3_dp_uc_sex2 sm3_dp_uc_sex1 sm3_dp_uc_sex2 ///
                 tmax_dp_uc_clim1_age1 tmax_dp_uc_clim1_age2 tmax_dp_uc_clim1_age3 tmax_dp_uc_clim1_age4 sm_dp_uc_clim1_age1 sm_dp_uc_clim1_age2 sm_dp_uc_clim1_age3 sm_dp_uc_clim1_age4 ///
 				tmax2_dp_uc_clim1_age1 tmax2_dp_uc_clim1_age2 tmax2_dp_uc_clim1_age3 tmax2_dp_uc_clim1_age4 sm2_dp_uc_clim1_age1 sm2_dp_uc_clim1_age2 sm2_dp_uc_clim1_age3 sm2_dp_uc_clim1_age4 ///
 				tmax3_dp_uc_clim1_age1 tmax3_dp_uc_clim1_age2 tmax3_dp_uc_clim1_age3 tmax3_dp_uc_clim1_age4 sm3_dp_uc_clim1_age1 sm3_dp_uc_clim1_age2 sm3_dp_uc_clim1_age3 sm3_dp_uc_clim1_age4 ///

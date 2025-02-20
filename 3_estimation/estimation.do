@@ -51,9 +51,10 @@ if `run_estim_crossmig' {
 	do "$code_dir/3_estimation/1_crossborder/run_estim_crossmigration.do"
 }
 
-* Plot Fig.2b-c
+* Plot Fig.2b-e, supplementary Fig.SXX
 if `plot_curves_crossmig' {
 	do "$code_dir/3_estimation/1_crossborder/plot_curves_crossmigration.do"
+	do "$code_dir/3_estimation/1_crossborder/plot_curves_crossmigration_proj.do"
 }
 
 
@@ -66,7 +67,7 @@ if `run_estim_crossmig' {
 	do "$code_dir/3_estimation/2_withincountry/run_estim_withinmigration.do"
 }
 
-* Plot Fig.3b-c
+* Plot Fig.3b-c, supplementary Figs.S5-6
 if `plot_curves_crossmig' {
 	do "$code_dir/3_estimation/2_withincountry/plot_curves_withinmigration.do"
 }

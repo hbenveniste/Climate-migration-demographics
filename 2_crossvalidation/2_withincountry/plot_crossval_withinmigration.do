@@ -34,11 +34,12 @@ replace modelnb = 4 if model == "T,S*climzone"
 replace modelnb = 5 if model == "T,S*climzone*age"
 replace modelnb = 6 if model == "T,S*climzone*edu"
 replace modelnb = 7 if model == "T,S*climzone*sex"
-replace modelnb = 8 if model == "T,S*climzone*(age+edu)"
-replace modelnb = 9 if model == "T,S*climzone*(age+edu+sex)"
-replace modelnb = 10 if model == "T,S placebo*climzone*(age+edu)"
+replace modelnb = 8 if model == "T,S*(climzone+age+edu)"
+replace modelnb = 9 if model == "T,S*climzone*(age+edu)"
+replace modelnb = 10 if model == "T,S*climzone*(age+edu+sex)"
+replace modelnb = 11 if model == "T,S placebo*climzone*(age+edu)"
 
-label define modelname 1 "T" 2 "S" 3 "T,S" 4 "T,S*climzone" 5 "T,S*climzone*age" 6 "T,S*climzone*edu" 7 "T,S*climzone*sex" 8 "T,S*climzone*(age+edu)" 9 "T,S*climzone*(age+edu+sex)" 10 "T,S placebo*climzone*(age+edu)", modify
+label define modelname 1 "T" 2 "S" 3 "T,S" 4 "T,S*climzone" 5 "T,S*climzone*age" 6 "T,S*climzone*edu" 7 "T,S*climzone*sex" 8 "T,S*(climzone+age+edu)" 9 "T,S*climzone*(age+edu)" 10 "T,S*climzone*(age+edu+sex)" 11 "T,S placebo*climzone*(age+edu)", modify
 label values modelnb modelname
 
 
@@ -86,16 +87,16 @@ graph export "$res_dir/3_Crossvalidation_withinmig/FigS8b_cvalt_within.png", ///
 **# Plot whisker plot of cross-validation results using the CRPS ***
 ****************************************************************
 * Plot whisker plot of the CRPS, over random folds	
-graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsides ///
+graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(small))) nooutsides ///
 		yline(0, lpattern(shortdash) lcolor(red)) ///
 		box(1, color(black)) marker(1, mcolor(black) msize(vsmall)) ///
 		ytitle("Out-of-sample performance (CRPS)", size(medium)) subtitle(, fcolor(none) lstyle(none)) ///
 		ylabel(,labsize(small)) leg(off) ///
 		graphregion(fcolor(white)) note("") ///
-		title("CRPS as performance metric") xsize(7) ///
+		title("CRPS as performance metric") xsize(5) ///
 		name(rsqwithinmswdailycrpsdemo, replace)
 
-graph export "$res_dir/3_Crossvalidation_withinmig/FigSX_cvcrps_within.png", ///
+graph export "$res_dir/3_Crossvalidation_withinmig/FigS16b_cvcrps_within.png", ///
 			width(4000) as(png) name("rsqwithinmswdailycrpsdemo") replace
 
 

@@ -88,7 +88,7 @@ twoway rbar rsqplot_lqt rsqplot_lqtx modelnb, barw(.5) fcolor(gs5) lcolor(black)
 	|| rcap rsqplot_lsx rsqplot_lsx modelnb, msize(*2) lcolor(gs7) ///
 	|| rcap rsqplot_usx rsqplot_usx modelnb, msize(*2) lcolor(gs7) /// 
 	yline(0, lpattern(shortdash) lcolor(red)) legend(off) ///
-	xlabel(1 "T" 2 "S" 3 "T,S" 4 "T,S * climate zone" 5 "T,S * age" 6 "T,S * edu" 7 "T,S * sex" 8 "T,S * (age+edu)" 9 "T,S * (climzone+age+edu)" 10 "T,S * climzone * (age+edu)" 11 "T,S * (climzone+age+edu+sex)" 12 "T,S placebo * (climzone+age+edu)", angle(50) labsize(small)) ///
+	xlabel(1 "T" 2 "S" 3 "T,S" 4 "T,S * climate zone" 5 "T,S * age" 6 "T,S * edu" 7 "T,S * sex" 8 "T,S * (age+edu)" 9 "T,S * (climzone+age+edu)" 10 "T,S * climzone * (age+edu)" 11 "T,S * (climzone+age+edu+sex)" 12 "T,S placebo * (climzone+age+edu)", angle(50) labsize(small) nogrid) ///
 	xtitle("") ytitle("Out-of-sample performance (R2)") ylabel(-0.001(0.001)0.004,labsize(small)) ///
 	graphregion(fcolor(white)) subtitle(, fcolor(none) lstyle(none)) xsize(7) ///
 	name(rsqimmmswdailyranddemo, replace)
@@ -106,8 +106,9 @@ replace modelaltnb = 2 if model == "T,S*climzone"
 replace modelaltnb = 3 if model == "T,S*(age+edu)"
 replace modelaltnb = 4 if model == "T1,S3*(age+edu)"
 replace modelaltnb = 5 if model == "T,S*(climzone+age+edu)"
-replace modelaltnb = 6 if model == "T,S placebo*(climzone+age+edu)"
-label define modelaltname 1 "T,S cubic" 2 "T,S cubic*climzone" 3 "T,S cubic*(age+edu)" 4 "T linear, S cubic*(age+edu)" 5 "T,S cubic*(climzone+age+edu)" 6 "T,S cubic placebo*(climzone+age+edu)", modify
+replace modelaltnb = 6 if model == "T1,S3*(climzone+age+edu)"
+replace modelaltnb = 7 if model == "T,S placebo*(climzone+age+edu)"
+label define modelaltname 1 "T,S cubic" 2 "T,S cubic*climzone" 3 "T,S cubic*(age+edu)" 4 "T linear, S cubic*(age+edu)" 5 "T,S cubic*(climzone+age+edu)" 6 "T linear, S cubic*(clim+age+edu)" 7 "T,S cubic placebo*(clim+age+edu)", modify
 label values modelaltnb modelaltname
 
 * Plot whisker plot over time		
@@ -132,15 +133,14 @@ label define modelname 1 "T" 2 "S" 3 "T,S" 4 "T,S * climate zone" 5 "T,S * age" 
 label values modelnb modelname
 
 graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(small))) nooutsides ///
-		yline(0, lpattern(shortdash) lcolor(red)) ///
 		box(1, color(black)) marker(1, mcolor(black) msize(vsmall)) ///
-		ytitle("Out-of-sample performance (CRPS)", size(small)) subtitle(, fcolor(none) lstyle(none)) ///
+		ytitle("Out-of-sample performance (CRPS)", size(medium)) subtitle(, fcolor(none) lstyle(none)) ///
 		ylabel(,labsize(small)) leg(off) ///
 		graphregion(fcolor(white)) note("") ///
-		title("CRPS as performance metric") xsize(7) ///
+		title("CRPS as performance metric") xsize(5) ///
 		name(rsqimmmswdailycrpsdemo, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigSX_cvcrps_cross.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS16a_cvcrps_cross.png", ///
 			width(4000) as(png) name("rsqimmmswdailycrpsdemo") replace
 
 

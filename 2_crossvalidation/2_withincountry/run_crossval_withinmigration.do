@@ -144,6 +144,133 @@ quietly {
 }
 save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 
+* Using T,S cubic per age
+use "$input_dir/2_intermediate/_residualized_within.dta"
+#delimit ;
+global indepvar "tmax_dp_uc_age1 tmax_dp_uc_age2 tmax_dp_uc_age3 tmax_dp_uc_age4 sm_dp_uc_age1 sm_dp_uc_age2 sm_dp_uc_age3 sm_dp_uc_age4 
+				tmax2_dp_uc_age1 tmax2_dp_uc_age2 tmax2_dp_uc_age3 tmax2_dp_uc_age4 sm2_dp_uc_age1 sm2_dp_uc_age2 sm2_dp_uc_age3 sm2_dp_uc_age4 
+				tmax3_dp_uc_age1 tmax3_dp_uc_age2 tmax3_dp_uc_age3 tmax3_dp_uc_age4 sm3_dp_uc_age1 sm3_dp_uc_age2 sm3_dp_uc_age3 sm3_dp_uc_age4";
+#delimit cr
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
+quietly {
+	gen model = "T,S*age"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+}
+save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
+
+* Using T,S cubic per education
+use "$input_dir/2_intermediate/_residualized_within.dta"
+#delimit ;
+global indepvar "tmax_dp_uc_edu1 tmax_dp_uc_edu2 tmax_dp_uc_edu3 tmax_dp_uc_edu4 sm_dp_uc_edu1 sm_dp_uc_edu2 sm_dp_uc_edu3 sm_dp_uc_edu4 
+				tmax2_dp_uc_edu1 tmax2_dp_uc_edu2 tmax2_dp_uc_edu3 tmax2_dp_uc_edu4 sm2_dp_uc_edu1 sm2_dp_uc_edu2 sm2_dp_uc_edu3 sm2_dp_uc_edu4 
+				tmax3_dp_uc_edu1 tmax3_dp_uc_edu2 tmax3_dp_uc_edu3 tmax3_dp_uc_edu4 sm3_dp_uc_edu1 sm3_dp_uc_edu2 sm3_dp_uc_edu3 sm3_dp_uc_edu4";
+#delimit cr
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
+quietly {
+	gen model = "T,S*edu"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+}
+save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
+
+* Using T,S cubic per sex
+use "$input_dir/2_intermediate/_residualized_within.dta"
+#delimit ;
+global indepvar "tmax_dp_uc_sex1 tmax_dp_uc_sex2 sm_dp_uc_sex1 sm_dp_uc_sex2 
+				tmax2_dp_uc_sex1 tmax2_dp_uc_sex2 sm2_dp_uc_sex1 sm2_dp_uc_sex2 
+				tmax3_dp_uc_sex1 tmax3_dp_uc_sex2 sm3_dp_uc_sex1 sm3_dp_uc_sex2";
+#delimit cr
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
+quietly {
+	gen model = "T,S*sex"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+}
+save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
+
+* Using T,S cubic per age and education
+use "$input_dir/2_intermediate/_residualized_within.dta"
+#delimit ;
+global indepvar "tmax_dp_uc_age1 tmax_dp_uc_age2 tmax_dp_uc_age3 tmax_dp_uc_age4 sm_dp_uc_age1 sm_dp_uc_age2 sm_dp_uc_age3 sm_dp_uc_age4 
+				tmax2_dp_uc_age1 tmax2_dp_uc_age2 tmax2_dp_uc_age3 tmax2_dp_uc_age4 sm2_dp_uc_age1 sm2_dp_uc_age2 sm2_dp_uc_age3 sm2_dp_uc_age4 
+				tmax3_dp_uc_age1 tmax3_dp_uc_age2 tmax3_dp_uc_age3 tmax3_dp_uc_age4 sm3_dp_uc_age1 sm3_dp_uc_age2 sm3_dp_uc_age3 sm3_dp_uc_age4
+				tmax_dp_uc_edu1 tmax_dp_uc_edu2 tmax_dp_uc_edu3 tmax_dp_uc_edu4 sm_dp_uc_edu1 sm_dp_uc_edu2 sm_dp_uc_edu3 sm_dp_uc_edu4 
+				tmax2_dp_uc_edu1 tmax2_dp_uc_edu2 tmax2_dp_uc_edu3 tmax2_dp_uc_edu4 sm2_dp_uc_edu1 sm2_dp_uc_edu2 sm2_dp_uc_edu3 sm2_dp_uc_edu4 
+				tmax3_dp_uc_edu1 tmax3_dp_uc_edu2 tmax3_dp_uc_edu3 tmax3_dp_uc_edu4 sm3_dp_uc_edu1 sm3_dp_uc_edu2 sm3_dp_uc_edu3 sm3_dp_uc_edu4";
+#delimit cr
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
+quietly {
+	gen model = "T,S*(age+edu)"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+}
+save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
+
+* Using T,S cubic per climate zone, age and education
+use "$input_dir/2_intermediate/_residualized_within.dta"
+#delimit ;
+global indepvar "tmax_dp_uc_clim1 tmax_dp_uc_clim2 tmax_dp_uc_clim3 tmax_dp_uc_clim4 tmax_dp_uc_clim5 tmax_dp_uc_clim6 
+				sm_dp_uc_clim1 sm_dp_uc_clim2 sm_dp_uc_clim3 sm_dp_uc_clim4 sm_dp_uc_clim5 sm_dp_uc_clim6
+				tmax2_dp_uc_clim1 tmax2_dp_uc_clim2 tmax2_dp_uc_clim3 tmax2_dp_uc_clim4 tmax2_dp_uc_clim5 tmax2_dp_uc_clim6 
+				sm2_dp_uc_clim1 sm2_dp_uc_clim2 sm2_dp_uc_clim3 sm2_dp_uc_clim4 sm2_dp_uc_clim5 sm2_dp_uc_clim6
+				tmax3_dp_uc_clim1 tmax3_dp_uc_clim2 tmax3_dp_uc_clim3 tmax3_dp_uc_clim4 tmax3_dp_uc_clim5 tmax3_dp_uc_clim6
+				sm3_dp_uc_clim1 sm3_dp_uc_clim2 sm3_dp_uc_clim3 sm3_dp_uc_clim4 sm3_dp_uc_clim5 sm3_dp_uc_clim6
+				tmax_dp_uc_age1 tmax_dp_uc_age2 tmax_dp_uc_age3 tmax_dp_uc_age4 sm_dp_uc_age1 sm_dp_uc_age2 sm_dp_uc_age3 sm_dp_uc_age4 
+				tmax2_dp_uc_age1 tmax2_dp_uc_age2 tmax2_dp_uc_age3 tmax2_dp_uc_age4 sm2_dp_uc_age1 sm2_dp_uc_age2 sm2_dp_uc_age3 sm2_dp_uc_age4 
+				tmax3_dp_uc_age1 tmax3_dp_uc_age2 tmax3_dp_uc_age3 tmax3_dp_uc_age4 sm3_dp_uc_age1 sm3_dp_uc_age2 sm3_dp_uc_age3 sm3_dp_uc_age4
+				tmax_dp_uc_edu1 tmax_dp_uc_edu2 tmax_dp_uc_edu3 tmax_dp_uc_edu4 sm_dp_uc_edu1 sm_dp_uc_edu2 sm_dp_uc_edu3 sm_dp_uc_edu4 
+				tmax2_dp_uc_edu1 tmax2_dp_uc_edu2 tmax2_dp_uc_edu3 tmax2_dp_uc_edu4 sm2_dp_uc_edu1 sm2_dp_uc_edu2 sm2_dp_uc_edu3 sm2_dp_uc_edu4 
+				tmax3_dp_uc_edu1 tmax3_dp_uc_edu2 tmax3_dp_uc_edu3 tmax3_dp_uc_edu4 sm3_dp_uc_edu1 sm3_dp_uc_edu2 sm3_dp_uc_edu3 sm3_dp_uc_edu4";
+#delimit cr
+do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
+quietly {
+	gen model = "T,S*(climzone+age+edu)"
+	if "$metric" == "rsquare" {
+		reshape long rsq, i(model) j(seeds)
+	}
+	if "$metric" == "crps" {
+		reshape long avcrps, i(model) j(seeds)
+	}
+	if "$folds" == "year" {
+		rename rsq rsqyear 
+	}
+	merge m:1 model seeds using "$input_dir/4_crossvalidation/rsqwithin.dta", nogenerate
+}
+save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
+
 * Using T,S cubic per climate zone and age
 use "$input_dir/2_intermediate/_residualized_within.dta"
 #delimit ;

@@ -202,6 +202,13 @@ foreach var of varlist `interac' {
 			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
 		}
 	}
+	forv j=1/4 {
+		gen `var'_age`j' = `var' * d_age`j'
+		gen `var'_edu`j' = `var' * d_edu`j'
+	}
+	forv j=1/2 {
+		gen `var'_sex`j' = `var' * d_sex`j'
+	}
 }
 
 drop d_clim* d_age* d_edu* d_sex*
