@@ -54,8 +54,8 @@ if $yclip == 1 {
 **# Plot graphs for each demographic ***
 ****************************************************************
 * Set axes outlook
-local ylab "ytitle(`ytit', size(vlarge)) ylabel(, labsize(large))"
-local xlab "xtitle(`xtit', size(vlarge)) xlabel(, labsize(large))"	
+local ylab "ytitle(`ytit', size(huge)) ylabel(, labsize(vlarge))"
+local xlab "xtitle(`xtit', size(huge)) xlabel(, labsize(vlarge))"	
 local y3lab "yscale(alt axis(2) range(0 $range_plot) lstyle(none)) yaxis(2) ytitle(`empty',axis(2)) ylabel(,nolabel notick axis(2))"
 
 forv c=1/5 {	
@@ -70,7 +70,7 @@ forv c=1/5 {
 				|| histo tmax_pop_w if mainclimgroup == `c', frequency color(red) width(0.1) `y3lab' ///
 				plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 				xlabel($tmin_plot(5)$tmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
-				title("$czname", size(vlarge)) legend(off) ///
+				title("$czname", size(huge)) legend(off) ///
 				name(Respcurve_clim`c', replace)
 	}
 	
@@ -82,7 +82,7 @@ forv c=1/5 {
 				`xlab' `ylab' ///
 				plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 				xlabel($tmin_plot(5)$tmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
-				title("$czname", size(vlarge)) legend(off) ///
+				title("$czname", size(huge)) legend(off) ///
 				name(Respcurve_clim`c', replace)
 	}
 
@@ -95,7 +95,7 @@ forv c=1/5 {
 				|| histo sm_pop_w if mainclimgroup == `c', frequency color(emerald) width(0.002) `y3lab' ///
 				plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 				xlabel($smmin_plot(0.05)$smmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
-				title("$czname", size(vlarge)) legend(off) ///
+				title("$czname", size(huge)) legend(off) ///
 				name(Respcurve_clim`c', replace)
 	}
 
@@ -107,7 +107,7 @@ forv c=1/5 {
 				`xlab' `ylab' ///
 				plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 				xlabel($smmin_plot(0.05)$smmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
-				title("$czname", size(vlarge)) legend(off) ///
+				title("$czname", size(huge)) legend(off) ///
 				name(Respcurve_clim`c', replace)
 	}
 	
@@ -117,4 +117,4 @@ forv c=1/5 {
 
 graph combine `graphcurve', ///
 			graphregion(color(white)) plotregion(color(white)) col(5) ysize(3) xsize(12) ///
-			title("$robname", size(medlarge)) name(graphcurveall, replace)	
+			title("$robname", size(large)) name(graphcurveall, replace)	

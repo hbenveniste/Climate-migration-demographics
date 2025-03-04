@@ -17,7 +17,7 @@ Names and design set to match cross-border migration analysis
 macro drop _graph*
 
 * Prepare labels and axes for plotting
-local ytit "Mig. change (%)"
+local ytit "Migration change (%)"
 if "$weathervar" == "temperature" {
 	local xtit "Max temperature ({char 176}C)"
 }
@@ -54,8 +54,8 @@ if $yclip == 1 {
 **# Plot graphs for each demographic ***
 ****************************************************************
 * Set axes outlook
-local ylab "ytitle(`ytit', size(vlarge)) ylabel(, labsize(large))"
-local xlab "xtitle(`xtit', size(vlarge)) xlabel(, labsize(large))"	
+local ylab "ytitle(`ytit', size(huge)) ylabel(, labsize(vlarge))"
+local xlab "xtitle(`xtit', size(huge)) xlabel(, labsize(vlarge))"	
 local y3lab "yscale(alt axis(2) range(0 $range_plot) lstyle(none)) yaxis(2) ytitle(`empty',axis(2)) ylabel(,nolabel notick axis(2))"
 
 forv k=0/1 {	
@@ -69,7 +69,7 @@ forv k=0/1 {
 				`xlab' `ylab' ///
 				plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 				xlabel($tmin_plot(5)$tmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
-				title("`cmigname'", size(vlarge)) legend(off) ///
+				title("`cmigname'", size(huge)) legend(off) ///
 				name(Respcurve_cmig`k', replace)
 	}
 					
@@ -81,7 +81,7 @@ forv k=0/1 {
 				`xlab' `ylab' ///
 				plotregion(icolor(white) lcolor(gray)) graphregion(color(white)) ///
 				xlabel($smmin_plot(0.05)$smmax_plot) ylabel(`ymin'(`ystep')`ymax') ///
-				title("`cmigname'", size(vlarge)) legend(off) ///
+				title("`cmigname'", size(huge)) legend(off) ///
 				name(Respcurve_cmig`k', replace)
 	}
 	

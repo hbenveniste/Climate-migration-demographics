@@ -27,6 +27,10 @@ local allvar ln_outmigshare ///
 				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4 ///
 				tmax_dp_sex1 tmax_dp_sex2 tmax2_dp_sex1 tmax2_dp_sex2 tmax3_dp_sex1 tmax3_dp_sex2 ///
 				sm_dp_sex1 sm_dp_sex2 sm2_dp_sex1 sm2_dp_sex2 sm3_dp_sex1 sm3_dp_sex2 ///
+				tmax_dp_area1 tmax_dp_area2 tmax2_dp_area1 tmax2_dp_area2 tmax3_dp_area1 tmax3_dp_area2 ///
+				sm_dp_area1 sm_dp_area2 sm2_dp_area1 sm2_dp_area2 sm3_dp_area1 sm3_dp_area2 ///
+				tmax_dp_pop1 tmax_dp_pop2 tmax2_dp_pop1 tmax2_dp_pop2 tmax3_dp_pop1 tmax3_dp_pop2 ///
+				sm_dp_pop1 sm_dp_pop2 sm2_dp_pop1 sm2_dp_pop2 sm3_dp_pop1 sm3_dp_pop2 ///
 				tmax_dp_clim1_age1 tmax_dp_clim1_age2 tmax_dp_clim1_age3 tmax_dp_clim1_age4 tmax_dp_clim2_age1 tmax_dp_clim2_age2 tmax_dp_clim2_age3 tmax_dp_clim2_age4  ///
 				tmax_dp_clim3_age1 tmax_dp_clim3_age2 tmax_dp_clim3_age3 tmax_dp_clim3_age4 tmax_dp_clim4_age1 tmax_dp_clim4_age2 tmax_dp_clim4_age3 tmax_dp_clim4_age4  ///
 				tmax_dp_clim5_age1 tmax_dp_clim5_age2 tmax_dp_clim5_age3 tmax_dp_clim5_age4 tmax_dp_clim6_age1 tmax_dp_clim6_age2 tmax_dp_clim6_age3 tmax_dp_clim6_age4			 ///

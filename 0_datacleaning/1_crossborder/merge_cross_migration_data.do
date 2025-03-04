@@ -64,6 +64,16 @@ drop if time > 2020
 keep locid time poptotal
 rename (locid time poptotal) (bpl yrimm bplpop)
 
+* Create an indicator for country population size greater than median size for year 2010
+preserve
+keep if yrimm == 2010
+egen bplpopcat = xtile(bplpop), nquantiles(2)
+tempfile pop2010
+save `pop2010'
+restore
+
+merge m:1 bpl using `pop2010', keepusing(bpl bplpopcat) nogenerate
+
 tempfile pop
 save `pop'
 
@@ -94,6 +104,31 @@ save `pop', replace
 use `crossmigweather'
 merge m:1 country yrimm using `pop'
 drop if _merge != 3
+drop _merge
+
+save `crossmigweather', replace
+
+
+****************************************************************
+**# Import and merge land area data ***
+****************************************************************
+* We use surface area in km2
+import delimited "$input_dir/1_raw/Coordinates/ipums_bplcode_area.csv", clear
+drop if bpl_code == 99999
+rename bpl_code bplcountry
+
+* Create an indicator for subnational area greater than median size
+egen areacat = xtile(area_km2), nquantiles(2)
+
+tempfile areakm
+save `areakm', replace
+
+
+* Merge with migration data
+use `crossmigweather'
+
+merge m:1 bplcountry using `areakm', keepusing(bplcountry areacat)
+drop if _merge == 2
 drop _merge
 
 save `crossmigweather', replace
@@ -230,10 +265,14 @@ local interacall tmax_dp tmax2_dp tmax3_dp sm_dp sm2_dp sm3_dp prcp_dp prcp2_dp 
 				tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10 ///
 				tmax_dp_des tmax2_dp_des tmax3_dp_des sm_dp_des sm2_dp_des sm3_dp_des ///
 				tmax_dp_a10_rand sm_dp_a10_rand tmax2_dp_a10_rand sm2_dp_a10_rand tmax3_dp_a10_rand sm3_dp_a10_rand
+				
 tab agemigcat, gen(d_age)
 tab edattain, gen(d_edu)
 tab sex, gen(d_sex)
 tab mainclimgroup , gen(d_clim)  
+tab areacat, gen(d_area)
+tab bplpopcat, gen(d_pop)
+
 foreach var of varlist `interacclimdemo' {
 	forv i=1/6 {
 		forv j=1/4 {
@@ -243,6 +282,10 @@ foreach var of varlist `interacclimdemo' {
 		forv j=1/2 {
 			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
 		}
+	}
+	forv i=1/2 {
+		gen `var'_area`i' = `var' * d_area`i'
+		gen `var'_pop`i' = `var' * d_pop`i'
 	}
 }
 foreach var of varlist `interacall' {
@@ -258,7 +301,7 @@ foreach var of varlist `interacall' {
 	}
 }
 
-drop d_clim* d_age* d_edu* d_sex*
+drop d_clim* d_age* d_edu* d_sex* d_area* d_pop*
 
 
 save "$input_dir/3_consolidate/crossmigweather_clean.dta", replace

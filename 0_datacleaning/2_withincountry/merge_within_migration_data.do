@@ -51,6 +51,32 @@ save `withinmigweather', replace
 
 
 ****************************************************************
+**# Import and merge land area data ***
+****************************************************************
+* We use surface area in km2
+import delimited "$input_dir/1_raw/Coordinates/ipums_geolevel1_area.csv", clear
+keep if geolevel1 != .
+drop if geolevel1 == 888888
+rename geolevel1 geomig1
+
+* Create an indicator for subnational area greater than median size
+egen areacat = xtile(area_km2), nquantiles(2)
+
+tempfile areakm
+save `areakm', replace
+
+
+* Merge with migration data
+use `withinmigweather'
+
+merge m:1 geomig1 using `areakm', keepusing(geomig1 areacat)
+drop if _merge == 2
+drop _merge
+
+save `withinmigweather', replace
+
+
+****************************************************************
 **# Import and merge climate zones data ***
 ****************************************************************
 * We use Koppen-Geiger climate zone from Beck et al. 2018
@@ -187,10 +213,13 @@ local interac tmax_dp_uc sm_dp_uc tmax2_dp_uc sm2_dp_uc tmax3_dp_uc sm3_dp_uc pr
 				tmax_dp_uc_rand sm_dp_uc_rand tmax2_dp_uc_rand sm2_dp_uc_rand tmax3_dp_uc_rand sm3_dp_uc_rand ///
 				tmax_dp_a10_rand sm_dp_a10_rand tmax2_dp_a10_rand sm2_dp_a10_rand tmax3_dp_a10_rand ///
 				tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10 sm3_dp_a10_rand
+
 tab climgroup , gen(d_clim)  
 tab agemigcat, gen(d_age)
 tab edattain, gen(d_edu)
 tab sex, gen(d_sex)
+tab areacat, gen(d_area)
+
 foreach var of varlist `interac' {
 	forv i=1/6 {
 		gen `var'_clim`i' = `var' * d_clim`i'
@@ -200,6 +229,7 @@ foreach var of varlist `interac' {
 		}
 		forv j=1/2 {
 			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
+			gen `var'_clim`i'_area`j' = `var' * d_clim`i' * d_area`j'
 		}
 	}
 	forv j=1/4 {
@@ -208,10 +238,11 @@ foreach var of varlist `interac' {
 	}
 	forv j=1/2 {
 		gen `var'_sex`j' = `var' * d_sex`j'
+		gen `var'_area`j' = `var' * d_area`j'
 	}
 }
 
-drop d_clim* d_age* d_edu* d_sex*
+drop d_clim* d_age* d_edu* d_sex* d_area*
 
 
 save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
