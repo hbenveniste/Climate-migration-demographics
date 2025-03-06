@@ -1,6 +1,6 @@
 /*
 
-Function that plots migration response curves overall
+Function that plots migration response curves per climate zone
 
 We plot the relative migration rate change (%) as DV
 We transform log(migration rate), then center at mean values

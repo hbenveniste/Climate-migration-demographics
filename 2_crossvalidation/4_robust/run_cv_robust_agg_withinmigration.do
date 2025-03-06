@@ -120,3 +120,227 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 
 graph export "$res_dir/3_Crossvalidation_withinmig/FigSX_cv_withindagg.png", ///
 			width(4000) as(png) name("rsqwithinmswdailyagg") replace
+
+			
+****************************************************************
+**# Estimate models ***
+****************************************************************
+use "$input_dir/3_consolidate/withinmigweather_clean.dta", clear
+
+local depvar ln_outmigshare
+
+* Model of interest: T,S linear per climate zone, age, education, and surface area
+* Select corresponding independent variables
+local indepvar c.tmax_dp_uc##i.climgroup##i.agemigcat c.sm_dp_uc##i.climgroup##i.agemigcat ///
+				c.tmax_dp_uc##i.climgroup##i.edattain c.sm_dp_uc##i.climgroup##i.edattain ///
+				c.tmax_dp_uc##i.climgroup##i.areacat c.sm_dp_uc##i.climgroup##i.areacat
+
+reghdfe `depvar' `indepvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1)
+estimates save "$input_dir/5_estimation/mwithin_tspd3_cz_eduagearea.ster", replace
+
+* T,S cubic with climate zone and surface area heterogeneity
+local indepvar c.tmax_dp_uc##i.climgroup##i.areacat c.tmax2_dp_uc##i.climgroup##i.areacat c.tmax3_dp_uc##i.climgroup##i.areacat ///
+				c.sm_dp_uc##i.climgroup##i.areacat c.sm2_dp_uc##i.climgroup##i.areacat c.sm3_dp_uc##i.climgroup##i.areacat
+reghdfe `depvar' `indepvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1)
+estimates save "$input_dir/5_estimation/mwithin_tspd3_cz_area.ster", replace
+
+* T,S cubic with only surface area heterogeneity
+local indepvar c.tmax_dp_uc##i.areacat c.tmax2_dp_uc##i.areacat c.tmax3_dp_uc##i.areacat ///
+				c.sm_dp_uc##i.areacat c.sm2_dp_uc##i.areacat c.sm3_dp_uc##i.areacat
+reghdfe `depvar' `indepvar', absorb(i.geomig1#i.geolev1#i.demo yrmig i.geomig1##c.yrmig) vce(cluster geomig1)
+estimates save "$input_dir/5_estimation/mwithin_tspd3_area.ster", replace
+
+
+****************************************************************
+**# Plot response curves ***
+****************************************************************
+global histo 0
+global robname ""
+
+forvalues c=1/5 {
+	use "$input_dir/3_consolidate/withinweatherdaily_`c'.dta"
+	
+	sum tmax_pop_uc_w 
+	local tmin_`c' = floor(r(min))
+	local tmax_`c' = ceil(r(max))
+	local tmean_`c' = min(0,`tmin_`c'') + (`tmax_`c'' + abs(`tmin_`c'')) / 2
+	
+	sum sm_pop_uc_w
+	local smmin_`c' = floor(r(min) * 100) / 100
+	local smmax_`c' = ceil(r(max) * 100) / 100
+	local smmean_`c' = (`smmax_`c'' + `smmin_`c'') / 2
+}
+global yclip = 1
+
+use "$input_dir/3_consolidate/withinmigweather_clean.dta"
+
+label define areaname 1 "origin country < median size" 2 "origin country > median size", replace
+label values areacat areaname
+
+*** Generate response curves for temperature
+global weathervar temperature
+
+
+*** Plot response curves per climate zone and surface area: origin country greater vs smaller than median area
+* Plot separately for each considered climate zone
+forvalues c=1/5 {
+		
+	global czname: label (climgroup) `c'
+
+	* Create weather intervals for which we calculate migration responses
+	preserve
+
+	gen t = .
+	keep if climgroup == `c'
+	local tobs = `tmax_`c'' - `tmin_`c'' + 1
+	drop if _n > 0
+	set obs `tobs'
+	replace t = _n + `tmin_`c'' - 1
+
+	* Calculate migration responses per surface area based on estimates
+	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz_eduagearea.ster"
+
+	local line_base = "_b[tmax_dp_uc]* (t - `tmean_`c'')"
+	local line_age1 = "0"
+	local line_edu1 = "0"
+	forv i = 2/4 {
+		local line_age`i' = "_b[`i'.agemigcat#c.tmax_dp_uc]* (t - `tmean_`c'')"
+		local line_edu`i' = "_b[`i'.edattain#c.tmax_dp_uc]* (t - `tmean_`c'')"
+	}
+	local line_area1 = "0"
+	local line_area2 = "_b[2.areacat#c.tmax_dp_uc]* (t - `tmean_`c'')"
+
+	if `c' == 1 {
+		local line_clim = "0"
+		forv i = 1/4 {
+			local line_climage`i' = "0"
+			local line_climedu`i' = "0"
+		}
+		forv k=1/2 {
+			local line_climarea`k' = "0"
+		}
+	}
+	else {
+		local line_clim = "(_b[tmax_dp_uc] + _b[`c'.climgroup#c.tmax_dp_uc]) * (t - `tmean_`c'')"
+		local line_climage1 = "0"
+		local line_climedu1 = "0"
+		forv i = 2/4 {
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.tmax_dp_uc]* (t - `tmean_`c'')"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.tmax_dp_uc]* (t - `tmean_`c'')"
+		}
+		local line_climarea1 = "0"
+		local line_area2 = "_b[`c'.climgroup#2.areacat#c.tmax_dp_uc]* (t - `tmean_`c'')"
+	}
+
+	forv i=1/4 {
+		forv j=1/4 {
+			forv k=1/2 {
+				predictnl yhat`i'`j'`k' = `line_base' + `line_age`i'' + `line_edu`j'' + `line_area`k'' + `line_clim' + `line_climage`i'' + `line_climedu`j'' + `line_climarea`k'', ci(lowerci`i'`j'`k' upperci`i'`j'`k') level(90)
+				foreach var of varlist yhat`i'`j'`k' lowerci`i'`j'`k' upperci`i'`j'`k' {
+					gen day`var' = `var' / 365 * 100
+				}
+			}
+		}
+	}
+
+	keep id t day* 
+	
+	* Plot response curves
+	global tmax_plot `tmax_`c''
+	global tmin_plot `tmin_`c''
+	global range_plot `range_`c''
+	
+	do "$code_dir/3_estimation/2_withincountry/curvesclimarea_plot_function_withinmigration.do"
+	graph export "$res_dir/5_Estimation_withinmig/FigSX_withintemp_area_`c'.png", width(4000) as(png) name("graphcurveall") replace
+
+	
+	restore
+
+}
+
+
+*** Generate response curves for soil moisture 
+global weathervar soilmoisture
+
+
+*** Plot response curves per climate zone and surface area: origin country greater vs smaller than median area
+* Plot separately for each considered climate zone
+forvalues c=1/5 {
+		
+	global czname: label (climgroup) `c'
+
+	* Create weather intervals for which we calculate migration responses
+	preserve
+
+	gen sm = .
+	keep if climgroup == `c'
+	local smobs = round((`smmax_`c'' - `smmin_`c'') / 0.01 + 1)
+	drop if _n > 0
+	set obs `smobs'
+	replace sm = (_n + `smmin_`c'' / 0.01 - 1)*0.01
+
+
+	* Calculate migration responses per climate zone, age and education based on estimates
+	estimates use "$input_dir/5_estimation/mwithin_tspd3_cz_eduagearea.ster"
+
+	local line_base = "_b[sm_dp_uc]* (sm - `smmean_`c'')"
+	local line_age1 = "0"
+	local line_edu1 = "0"
+	forv i = 2/4 {
+		local line_age`i' = "_b[`i'.agemigcat#c.sm_dp_uc]* (sm - `smmean_`c'')"
+		local line_edu`i' = "_b[`i'.edattain#c.sm_dp_uc]* (sm - `smmean_`c'')"
+	}
+	local line_area1 = "0"
+	local line_area2 = "_b[2.areacat#c.sm_dp_uc]* (sm - `smmean_`c'')"
+
+	if `c' == 1 {
+		local line_clim = "0"
+		forv i = 1/4 {
+			local line_climage`i' = "0"
+			local line_climedu`i' = "0"
+		}
+		forv k=1/2 {
+			local line_climarea`k' = "0"
+		}
+	}
+	else {
+		local line_clim = "(_b[sm_dp_uc] + _b[`c'.climgroup#c.sm_dp_uc]) * (sm - `smmean_`c'')"
+		local line_climage1 = "0"
+		local line_climedu1 = "0"
+		forv i = 2/4 {
+			local line_climage`i' = "_b[`c'.climgroup#`i'.agemigcat#c.sm_dp_uc]* (sm - `smmean_`c'')"
+			local line_climedu`i' = "_b[`c'.climgroup#`i'.edattain#c.sm_dp_uc]* (sm - `smmean_`c'')"
+		}
+		local line_climarea1 = "0"
+		local line_area2 = "_b[`c'.climgroup#2.areacat#c.sm_dp_uc]* (sm - `smmean_`c'')"
+	}
+
+	forv i=1/4 {
+		forv j=1/4 {
+			forv k=1/2 {
+				predictnl yhat`i'`j'`k' = `line_base' + `line_age`i'' + `line_edu`j'' + `line_area`k'' + `line_clim' + `line_climage`i'' + `line_climedu`j'' + `line_climarea`k'', ci(lowerci`i'`j'`k' upperci`i'`j'`k') level(90)
+				foreach var of varlist yhat`i'`j'`k' lowerci`i'`j'`k' upperci`i'`j'`k' {
+					gen day`var' = `var' / 365 * 100
+				}
+			}
+		}
+	}
+
+	keep id sm day* 
+
+	* Plot response curves
+	global smmax_plot `smmax_`c''
+	global smmin_plot `smmin_`c''
+	global range_plot `range_`c''
+		
+	
+	do "$code_dir/3_estimation/2_withincountry/curvesclimarea_plot_function_withinmigration.do"
+	graph export "$res_dir/5_Estimation_withinmig/FigSX_withinsoilm_area_`c'.png", width(4000) as(png) name("graphcurveall") replace
+
+	
+	restore
+
+}
+
+
+

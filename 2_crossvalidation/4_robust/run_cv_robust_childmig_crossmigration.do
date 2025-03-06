@@ -600,22 +600,6 @@ local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agem
 reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
 estimates save "$input_dir/5_estimation/mcross_tspd3_eduageczcm_childmig.ster", replace
 
-* Same model but without climate zone 
-local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat ///
-				c.tmax_dp##i.edattain c.tmax2_dp##i.edattain c.tmax3_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain ///
-				c.tmax_dp##i.childmig c.tmax2_dp##i.childmig c.tmax3_dp##i.childmig c.sm_dp##i.childmig c.sm2_dp##i.childmig c.sm3_dp##i.childmig
-
-reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
-estimates save "$input_dir/5_estimation/mcross_tspd3_eduagecm_childmig.ster", replace
-
-* Same model but without having a child at time of migration heterogeneity
-local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat ///
-				c.tmax_dp##i.edattain c.tmax2_dp##i.edattain c.tmax3_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain ///
-				c.tmax_dp##i.mainclimgroup c.tmax2_dp##i.mainclimgroup c.tmax3_dp##i.mainclimgroup c.sm_dp##i.mainclimgroup c.sm2_dp##i.mainclimgroup c.sm3_dp##i.mainclimgroup 
-
-reghdfe `depvar' `indepvar', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl)
-estimates save "$input_dir/5_estimation/mcross_tspd3_eduagecz_childmig.ster", replace
-
 * Same model but without climate zone or having a child at time of migration heterogeneity
 local indepvar c.tmax_dp##i.agemigcat c.tmax2_dp##i.agemigcat c.tmax3_dp##i.agemigcat c.sm_dp##i.agemigcat c.sm2_dp##i.agemigcat c.sm3_dp##i.agemigcat ///
 				c.tmax_dp##i.edattain c.tmax2_dp##i.edattain c.tmax3_dp##i.edattain c.sm_dp##i.edattain c.sm2_dp##i.edattain c.sm3_dp##i.edattain
@@ -827,7 +811,7 @@ set obs `smobs'
 replace sm = (_n + `smmin' / 0.01 - 1)*0.01
 
 * Calculate migration responses per age and education based on estimates
-estimates use "$input_dir/5_estimation/mcross_tspd3_eduagecm_childmig.ster"
+estimates use "$input_dir/5_estimation/mcross_tspd3_eduage_childmig.ster"
 
 local line_base = "_b[sm_dp]* (sm - `smmean') + _b[sm2_dp] * (sm^2 - `smmean'^2) + _b[sm3_dp] * (sm^3 - `smmean'^3)"
 local line_age1 = "0"

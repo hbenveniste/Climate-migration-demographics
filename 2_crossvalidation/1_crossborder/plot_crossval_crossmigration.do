@@ -144,5 +144,38 @@ graph export "$res_dir/2_Crossvalidation_crossmig/FigS16a_cvcrps_cross.png", ///
 			width(4000) as(png) name("rsqimmmswdailycrpsdemo") replace
 
 
+* Plot scatter plot of mean values of R2 vs CRPS and calculate Spearman's (rank) and Pearson's (linear) correlations
+preserve
+
+collapse (mean) rsq avcrps, by(modelnb)
+
+drop if modelnb == .
+
+* plot without the model 10, T,S*climzone*(age+edu), which induces a lot of uncertainty on the R2
+drop if modelnb == 10
+
+spearman avcrps rsq
+local corr_spearman: display %4.2f r(rho)
+pwcorr avcrps rsq
+local corr_pearson = round(r(rho), 0.01)
+
+scatter avcrps rsq || lfit avcrps rsq, ///
+    mcolor(ebblue) lcolor(gray) lpattern(dash) ///
+    subtitle("Spearman's ρ = `corr_spearman'. Pearson's ρ = `corr_pearson'", size(medium)) ///
+	ytitle("Out-of-sample performance (CRPS)", size(medium)) subtitle(, fcolor(none) lstyle(none)) ///
+	xtitle("Out-of-sample performance (R2)", size(medium)) subtitle(, fcolor(none) lstyle(none))  ///
+    graphregion(color(white)) legend(off) ///
+	name(rsqavcrpscorr, replace)
+
+graph export "$res_dir/2_Crossvalidation_crossmig/FigSX_r2crps_cross.png", ///
+			width(4000) as(png) name("rsqavcrpscorr") replace
+
+	
+restore
+
+
+
+
+
 
 
