@@ -23,9 +23,6 @@ global histo 1
 * Determine whether to plot results with demographic heterogeneity
 local demoplot 1
 
-* Determine whether to plot results per climate zones
-local climplot 1
-
 * Determine which, if any, robustness check to conduct
 global robname ""
 
@@ -162,11 +159,6 @@ forvalues c=1/5 {
 		graph export "$res_dir/5_Estimation_withinmig/Fig3b_withintemp_`c'.pdf", width(7) as(pdf) name("graphcurveall") replace
 	}
 	
-	if `climplot' {
-		do "$code_dir/3_estimation/2_withincountry/curvesclim_plot_function_withinmigration.do"
-		graph rename Respcurve_t_clim Respcurve_t_clim`c'
-	}
-	
 	restore
 
 }
@@ -270,34 +262,9 @@ forvalues c=1/5 {
 		* Export plot 
 		graph export "$res_dir/5_Estimation_withinmig/Fig3c_withinsoilm_`c'.pdf", width(7) as(pdf) name("graphcurveall") replace
 	}
-		
-	if `climplot' {
-		do "$code_dir/3_estimation/2_withincountry/curvesclim_plot_function_withinmigration.do"
-		graph rename Respcurve_sm_clim Respcurve_sm_clim`c'
-	}
 	
 	restore
 
-}
-
-
-****************************************************************
-**# Generate response curves for only climate zone heterogeneity ***
-****************************************************************
-* Plot separately for each considered climate zone
-if `climplot' {
-	
-	forvalues c=1/5 {
-		
-		local graphclimT "`graphclimT' Respcurve_t_clim`c'"
-		local graphclimSM "`graphclimSM' Respcurve_sm_clim`c'"
-
-	}
-	
-	graph combine `graphclimT' `graphclimSM', ///
-				graphregion(color(white)) col(5) ysize(6) xsize(12) ///
-				name(graphcurveclim, replace)
-	graph export "$res_dir/5_Estimation_withinmig/FigS6_withinclim.png", width(4000) as(png) name("graphcurveclim") replace
 }
 
 

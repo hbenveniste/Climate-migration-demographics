@@ -96,7 +96,7 @@ graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(small))) noouts
 		title("CRPS as performance metric") xsize(5) ///
 		name(rsqwithinmswdailycrpsdemo, replace)
 
-graph export "$res_dir/3_Crossvalidation_withinmig/FigS16b_cvcrps_within.png", ///
+graph export "$res_dir/3_Crossvalidation_withinmig/FigS18b_cvcrps_within.png", ///
 			width(4000) as(png) name("rsqwithinmswdailycrpsdemo") replace
 
 
@@ -120,7 +120,7 @@ scatter avcrps rsq || lfit avcrps rsq, ///
     graphregion(color(white)) legend(off) ///
 	name(rsqavcrpscorr, replace)
 
-graph export "$res_dir/3_Crossvalidation_withinmig/FigSX_r2crps_within.png", ///
+graph export "$res_dir/3_Crossvalidation_withinmig/FigS18d_r2crps_within.png", ///
 			width(4000) as(png) name("rsqavcrpscorr") replace
 
 	

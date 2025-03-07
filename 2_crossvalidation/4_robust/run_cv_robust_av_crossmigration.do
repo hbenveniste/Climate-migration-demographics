@@ -139,5 +139,5 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 		ysize(6) xsize(5) ///
 		name(rsqimmmswdailyav10, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigS10a_cv_crossav10.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS11a_cv_crossav10.png", ///
 			width(4000) as(png) name("rsqimmmswdailyav10") replace

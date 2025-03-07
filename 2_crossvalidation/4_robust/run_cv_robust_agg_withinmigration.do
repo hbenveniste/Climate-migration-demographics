@@ -118,7 +118,7 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 		ysize(6) xsize(5) ///
 		name(rsqwithinmswdailyagg, replace)
 
-graph export "$res_dir/3_Crossvalidation_withinmig/FigSX_cv_withindagg.png", ///
+graph export "$res_dir/3_Crossvalidation_withinmig/FigS15b_cv_withindagg.png", ///
 			width(4000) as(png) name("rsqwithinmswdailyagg") replace
 
 			
@@ -251,7 +251,7 @@ forvalues c=1/5 {
 	global range_plot `range_`c''
 	
 	do "$code_dir/3_estimation/2_withincountry/curvesclimarea_plot_function_withinmigration.do"
-	graph export "$res_dir/5_Estimation_withinmig/FigSX_withintemp_area_`c'.png", width(4000) as(png) name("graphcurveall") replace
+	graph export "$res_dir/5_Estimation_withinmig/FigS15e_withintemp_area_`c'.png", width(4000) as(png) name("graphcurveall") replace
 
 	
 	restore
@@ -335,7 +335,7 @@ forvalues c=1/5 {
 		
 	
 	do "$code_dir/3_estimation/2_withincountry/curvesclimarea_plot_function_withinmigration.do"
-	graph export "$res_dir/5_Estimation_withinmig/FigSX_withinsoilm_area_`c'.png", width(4000) as(png) name("graphcurveall") replace
+	graph export "$res_dir/5_Estimation_withinmig/FigS15f_withinsoilm_area_`c'.png", width(4000) as(png) name("graphcurveall") replace
 
 	
 	restore

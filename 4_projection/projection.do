@@ -25,6 +25,7 @@ if "$CODE" == "" {
 
 * Determine which parts of the projection analysis to run
 local prepare_proj_weather 1
+local plot_estim_proj 1
 local run_proj_crossmig 1
 local plot_proj_crossmig 1
 local plot_proj_mapweather 1
@@ -38,18 +39,23 @@ if `prepare_proj_weather' {
 	do "$code_dir/4_projection/1_crossborder/prepare_proj_weatherdata.do"
 }
 
+* Plot estimated migration responses used for projections
+if  `plot_estim_proj' {
+	do "$code_dir/3_estimation/1_crossborder/plot_curves_crossmigration_proj.do"
+}
+
 * Calculate projected migration responses using empirical estimations
-if `rescale_proj_scen' {
+if `run_proj_crossmig' {
 	do "$code_dir/4_projection/1_crossborder/run_proj_crossmig.do"
 }
 
 * Plot histograms of projected migration results
-if `rescale_proj_scen' {
+if `plot_proj_crossmig' {
 	do "$code_dir/4_projection/1_crossborder/plot_proj_crossmig.do"
 }
 
 * Plot maps of projected weather values under climate change scenarios
-if `rescale_proj_scen' {
+if `plot_proj_mapweather' {
 	do "$code_dir/4_projection/1_crossborder/plot_proj_mapweather.do"
 }
 

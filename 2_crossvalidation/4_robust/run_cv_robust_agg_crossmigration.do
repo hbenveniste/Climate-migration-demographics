@@ -170,7 +170,7 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 		ysize(6) xsize(5) ///
 		name(rsqimmmswdailyagg, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigSX_cv_crossagg.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS15a_cv_crossagg.png", ///
 			width(4000) as(png) name("rsqimmmswdailyagg") replace
 
 			
@@ -269,7 +269,7 @@ foreach var of varlist yhat00 lowerci00 upperci00 {
 global tmax_plot `tmax'
 global tmin_plot `tmin'
 do "$code_dir/3_estimation/1_crossborder/curvesarea_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigSX_crosstemp_area.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS15c_crosstemp_area.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -311,7 +311,7 @@ foreach var of varlist yhat00 lowerci00 upperci00 {
 global smmax_plot = `smmax'
 global smmin_plot = `smmin'
 do "$code_dir/3_estimation/1_crossborder/curvesarea_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigSX_crosssoilm_area.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS15d_crosssoilm_area.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 

@@ -188,5 +188,5 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(medium))) nooutsid
 		ysize(6) xsize(7) ///
 		name(rsqimmmswdailyform, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigS14a_cv_crossform.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS17a_cv_crossform.png", ///
 			width(4000) as(png) name("rsqimmmswdailyform") replace

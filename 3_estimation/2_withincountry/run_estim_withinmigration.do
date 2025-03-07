@@ -2,7 +2,7 @@
 
 Conduct estimations for within-country migration analysis.
 
-Output: Supplementary Table A2
+Output: Supplementary Table S2
 
 */
 
@@ -63,7 +63,7 @@ estimates save "$input_dir/5_estimation/mwithin_tspd3.ster", replace
 ****************************************************************
 **# Generate regression table ***
 ****************************************************************
-* Supplementary table A.2
+* Supplementary table S2
 
 * Label variables
 label variable tmax_dp_uc "T"
@@ -87,7 +87,7 @@ estadd local fixedoltt "Yes", replace: *
 
 * Export table in .csv
 #delimit ;
-esttab mwithin_tspd3 mwithin_tspd3_cz mwithin_tspd3_cz_eduage using "$res_dir/5_Estimation_withinmig/tableA2_withindemo.csv", 
+esttab mwithin_tspd3 mwithin_tspd3_cz mwithin_tspd3_cz_eduage using "$res_dir/5_Estimation_withinmig/tableS2_withindemo.csv", 
 		label se star wide noconstant nobaselevels varwidth(25) 
 		stats(fixedodd fixedy fixedoltt N r2 r2_within, 
 			labels("Or/Dest/Demo FE" "Year FE" "Origin LTT" "N" "R2" "Within-R2")) 

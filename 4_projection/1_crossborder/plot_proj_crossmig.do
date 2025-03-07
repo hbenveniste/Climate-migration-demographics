@@ -1,6 +1,6 @@
 /*
 
-Plot histograms of projected migration results: Figs.4 and E8
+Plot histograms of projected migration results: Figs.4 and S10
 
 Plot relative contribution of temperature vs soil moisture to the climate change effect
 
@@ -122,4 +122,4 @@ graph combine `graphhisto370', title("", size(medsmall)) l2title(`edus', size(sm
 			
 * Export 
 graph export "$res_dir/6_Projection_crossmig/Fig4_crossproj_245.pdf", width(7) as(pdf) name("graphhisto245all") replace
-graph export "$res_dir/6_Projection_crossmig/FigS9_crossproj_370.png", width(4000) as(png) name("graphhisto370all") replace
+graph export "$res_dir/6_Projection_crossmig/FigS10_crossproj_370.png", width(4000) as(png) name("graphhisto370all") replace

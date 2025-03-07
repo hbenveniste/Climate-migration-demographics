@@ -36,6 +36,8 @@ local run_cv_repli 0
 local run_cv_robust_lags 0
 local run_cv_robust_dest 0
 local run_cv_robust_av 0
+local run_cv_robust_child 0
+local run_cv_robust_area 0
 
 local run_cv_robust_form 0
 
@@ -85,31 +87,44 @@ if `run_cv_repli' {
 **# Robustness checks  ***
 ****************************************************************
 * Effects of longer term changes in weather variables
-* Generate supplementary Fig.S10a-b
+* Generate supplementary Fig.S11a-b
 if `run_cv_robust_av' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_av_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_av_withinmigration.do"
 }
 
 * Effects of 1-year lagged weather variables
-* Generate supplementary Fig.S11a-b
+* Generate supplementary Fig.S12a-b
 if `run_cv_robust_lags' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_lag_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_lag_withinmigration.do"
 }
 
 * Effects of destination weather variables
-* Generate supplementary Fig.S12ca-b
+* Generate supplementary Fig.S13a-b
 if `run_cv_robust_dest' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_dest_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_dest_withinmigration.do"
+}
+
+* Effects of whether migrants had children at time of migration
+* Generate supplementary Fig.S14
+if `run_cv_robust_child' {
+	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_childmig_crossmigration.do"
+}
+
+* Effects of surface area variables
+* Generate supplementary Fig.S15
+if `run_cv_robust_area' {
+	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_agg_crossmigration.do"
+	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_agg_withinmigration.do"
 }
 
 
 ****************************************************************
 **# Determine models functional form and weather variables  ***
 ****************************************************************
-* Generate supplementary Fig.S13a-b
+* Generate supplementary Fig.S17
 if `run_cv_robust_form' {
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_form_crossmigration.do"
 	do "$code_dir/2_crossvalidation/4_robust/run_cv_robust_form_withinmigration.do"

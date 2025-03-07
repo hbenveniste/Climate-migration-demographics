@@ -108,7 +108,7 @@ global tmin_plot `tmin'
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigSXX_crosstemp_proj.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS9_crosstemp_proj.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -173,7 +173,7 @@ global smmin_plot `smmin'
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigSXX_crosssoilm_proj.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS9_crosssoilm_proj.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 

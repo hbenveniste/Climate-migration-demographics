@@ -140,7 +140,7 @@ graph box avcrps, over(modelnb, gap(120) label(angle(50) labsize(small))) noouts
 		title("CRPS as performance metric") xsize(5) ///
 		name(rsqimmmswdailycrpsdemo, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigS16a_cvcrps_cross.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS18a_cvcrps_cross.png", ///
 			width(4000) as(png) name("rsqimmmswdailycrpsdemo") replace
 
 
@@ -152,7 +152,7 @@ collapse (mean) rsq avcrps, by(modelnb)
 drop if modelnb == .
 
 * plot without the model 10, T,S*climzone*(age+edu), which induces a lot of uncertainty on the R2
-drop if modelnb == 10
+*drop if modelnb == 10
 
 spearman avcrps rsq
 local corr_spearman: display %4.2f r(rho)
@@ -167,7 +167,7 @@ scatter avcrps rsq || lfit avcrps rsq, ///
     graphregion(color(white)) legend(off) ///
 	name(rsqavcrpscorr, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigSX_r2crps_cross.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS18c_r2crps_cross.png", ///
 			width(4000) as(png) name("rsqavcrpscorr") replace
 
 	

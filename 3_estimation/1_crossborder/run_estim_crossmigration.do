@@ -2,7 +2,7 @@
 
 Conduct estimations for cross-border migration analysis.
 
-Output: Supplementary Table A1
+Output: Supplementary Table S1
 
 */
 
@@ -77,7 +77,7 @@ estimates save "$input_dir/5_estimation/mcross_tspd13.ster", replace
 ****************************************************************
 **# Generate regression table ***
 ****************************************************************
-* Supplementary table A.1 
+* Supplementary table S1 
 
 * Label variables
 label variable tmax_dp "T"
@@ -101,7 +101,7 @@ estadd local fixedoltt "Yes", replace: *
 
 * Export table in .csv
 #delimit ;
-esttab mcross_tspd3 mcross_tspd13_eduage mcross_tspd3_eduagecz using "$res_dir/4_Estimation_crossmig/tableA1_crossdemo.csv", 
+esttab mcross_tspd3 mcross_tspd13_eduage mcross_tspd3_eduagecz using "$res_dir/4_Estimation_crossmig/tableS1_crossdemo.csv", 
 		label se star wide noconstant nobaselevels varwidth(25) 
 		stats(fixedodd fixedy fixedoltt N r2 r2_within, 
 			labels("Or/Dest/Demo FE" "Year FE" "Origin LTT" "N" "R2" "Within-R2")) 

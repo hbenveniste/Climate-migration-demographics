@@ -579,7 +579,7 @@ graph box rsq, over(modelnb, gap(120) label(angle(50) labsize(small))) nooutside
 		graphregion(fcolor(white)) note("") ///
 		name(rsqimmmswdailyranddemo_childmig, replace)
 
-graph export "$res_dir/2_Crossvalidation_crossmig/FigS13a_cv_childmig.png", ///
+graph export "$res_dir/2_Crossvalidation_crossmig/FigS14a_cv_childmig.png", ///
 			width(4000) as(png) name("rsqimmmswdailyranddemo_childmig") replace
 
 			
@@ -712,7 +712,7 @@ global tmin_plot `tmin'
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigS13b_crosstemp_childmig.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS14b_crosstemp_childmig.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -752,7 +752,7 @@ foreach var of varlist yhat0 lowerci0 upperci0 {
 global tmax_plot `tmax'
 global tmin_plot `tmin'
 do "$code_dir/3_estimation/1_crossborder/curvesclim_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigS13b_crosstemp_childmig_cz.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS14b_crosstemp_childmig_cz.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -789,7 +789,7 @@ foreach var of varlist yhat00 lowerci00 upperci00 {
 global tmax_plot `tmax'
 global tmin_plot `tmin'
 do "$code_dir/3_estimation/1_crossborder/curveschildmig_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigS13b_crosstemp_childmig_cm.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS14b_crosstemp_childmig_cm.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -850,7 +850,7 @@ global smmin_plot `smmin'
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigS13c_crosssoilm_childmig.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS14c_crosssoilm_childmig.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -890,7 +890,7 @@ foreach var of varlist yhat0 lowerci0 upperci0 {
 global smmax_plot = `smmax'
 global smmin_plot = `smmin'
 do "$code_dir/3_estimation/1_crossborder/curvesclim_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigS13c_crosssoilm_childmig_cz.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS14c_crosssoilm_childmig_cz.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -927,7 +927,7 @@ foreach var of varlist yhat00 lowerci00 upperci00 {
 global smmax_plot = `smmax'
 global smmin_plot = `smmin'
 do "$code_dir/3_estimation/1_crossborder/curveschildmig_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigS13c_crosssoilm_childmig_cm.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS14c_crosssoilm_childmig_cm.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 

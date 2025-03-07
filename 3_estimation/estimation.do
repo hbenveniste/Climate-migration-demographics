@@ -51,10 +51,9 @@ if `run_estim_crossmig' {
 	do "$code_dir/3_estimation/1_crossborder/run_estim_crossmigration.do"
 }
 
-* Plot Fig.2b-e, supplementary Fig.SXX
+* Plot Fig.2b-e, supplementary Fig.S5
 if `plot_curves_crossmig' {
 	do "$code_dir/3_estimation/1_crossborder/plot_curves_crossmigration.do"
-	do "$code_dir/3_estimation/1_crossborder/plot_curves_crossmigration_proj.do"
 }
 
 
@@ -67,7 +66,7 @@ if `run_estim_crossmig' {
 	do "$code_dir/3_estimation/2_withincountry/run_estim_withinmigration.do"
 }
 
-* Plot Fig.3b-c, supplementary Figs.S5-6
+* Plot Fig.3b-c, supplementary Fig.S6
 if `plot_curves_crossmig' {
 	do "$code_dir/3_estimation/2_withincountry/plot_curves_withinmigration.do"
 }
@@ -87,21 +86,21 @@ if `run_estim_repli' {
 **# Robustness checks  ***
 ****************************************************************
 * Effects of longer term changes in weather variables
-* Generate supplementary Fig.S10c-f
+* Generate supplementary Fig.S11c-f
 if `run_robust_av' {
 	do "$code_dir/3_estimation/4_robust/run_robust_av_crossmigration.do"
 	do "$code_dir/3_estimation/4_robust/run_robust_av_withinmigration.do"
 }
 
 * Effects of 1-year lagged weather variables
-* Generate supplementary Fig.S11c-f
+* Generate supplementary Fig.S12c-f
 if `run_robust_lags' {
 	do "$code_dir/3_estimation/4_robust/run_robust_lag_crossmigration.do"
 	do "$code_dir/3_estimation/4_robust/run_robust_lag_withinmigration.do"
 }
 
 * Effects of destination weather variables
-* Generate supplementary Fig.S12c-f
+* Generate supplementary Fig.S13c-f
 if `run_robust_dest' {
 	do "$code_dir/3_estimation/4_robust/run_robust_dest_crossmigration.do"
 	do "$code_dir/3_estimation/4_robust/run_robust_dest_withinmigration.do"

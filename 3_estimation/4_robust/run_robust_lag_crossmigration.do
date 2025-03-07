@@ -169,7 +169,7 @@ global tmin_plot `tmin'
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigS11c_crosstemplag.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS12c_crosstemplag.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -210,7 +210,7 @@ global tmax_plot `tmax'
 global tmin_plot `tmin'
 global range_plot `range_cz'
 do "$code_dir/3_estimation/1_crossborder/curvesclim_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigS11c_crosstemplag_cz.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS12c_crosstemplag_cz.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -277,7 +277,7 @@ global smmin_plot `smmin'
 do "$code_dir/3_estimation/1_crossborder/curvesdemo_plot_function_crossmigration.do"
 
 * Export plot 
-graph export "$res_dir/4_Estimation_crossmig/FigS11e_crosssoilmlag.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS12e_crosssoilmlag.png", width(4000) as(png) name("graphcurveall") replace
 
 restore
 
@@ -318,6 +318,6 @@ global smmax_plot = `smmax'
 global smmin_plot = `smmin'
 global range_plot `range_cz'
 do "$code_dir/3_estimation/1_crossborder/curvesclim_plot_function_crossmigration.do"
-graph export "$res_dir/4_Estimation_crossmig/FigS11e_crosssoilmlag_cz.png", width(4000) as(png) name("graphcurveall") replace
+graph export "$res_dir/4_Estimation_crossmig/FigS12e_crosssoilmlag_cz.png", width(4000) as(png) name("graphcurveall") replace
 
 restore

@@ -41,7 +41,7 @@ local indepvar tmp_i tmp_4agn pcp_i pcp_4agn lnGDPpcPPP_A1Bj1 lnGDPpcPPP_A1Bi1
 eststo mcross_cai: reghdfe `depvar' `indepvar', absorb(i.to#i.from i.to##c.year i.from##c.year) vce(cluster from) keepsingletons
 
 
-* Generate regression table (section of Supplementary table A.3)
+* Generate regression table (section of Supplementary table S3)
 
 * Label variables
 label variable tmp_i "T"
@@ -59,7 +59,7 @@ estadd local fixeddltt "Yes", replace: mcross_cai
 
 * Export table in .csv
 #delimit ;
-esttab mcross_cai using "$res_dir/4_Estimation_crossmig/tableA3_replic.csv", 
+esttab mcross_cai using "$res_dir/4_Estimation_crossmig/tableS3_replic.csv", 
 		label se star wide noconstant nobaselevels varwidth(25) 
 		stats(fixedod fixedoltt fixeddltt N r2 r2_within, 
 			labels("Or/Dest FE" "Origin LTT" "Destination LTT" "N" "R2" "Within-R2")) 
@@ -88,7 +88,7 @@ local indepvar lnwtem lnwtem_initxtilegdp1 lnwpre lnwpre_initxtilegdp1 lnwtem_in
 * Esimate their specification
 eststo mcross_catt: reghdfe `depvar' `indepvar', absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num)
 
-* Generate regression table (section of Supplementary table A.3)
+* Generate regression table (section of Supplementary table S3)
 
 * Label variables
 label variable lnwtem "ln(T)"
@@ -106,7 +106,7 @@ estadd local fixedpd "Yes", replace: mcross_catt
 
 * Export table in .csv
 #delimit ;
-esttab mcross_catt using "$res_dir/4_Estimation_crossmig/tableA3_replic.csv", 
+esttab mcross_catt using "$res_dir/4_Estimation_crossmig/tableS3_replic.csv", 
 		label se star wide noconstant nobaselevels varwidth(25) 
 		stats(fixedod fixedoltt fixeddltt N r2 r2_within, 
 			labels("Origin FE" "Region/Decade FE" "Poor/Decade FE" "N" "R2" "Within-R2")) 
@@ -132,7 +132,7 @@ local indepvar lnwtem lnwtem_initxtilegdp1 lnwpre lnwpre_initxtilegdp1 lnwtem_in
 * Esimate their specification
 eststo mcross_catturb: reghdfe `depvar' `indepvar', absorb(cc_num RYXAREA* RYPX*) vce(cluster cc_num)
 
-* Generate regression table (section of Supplementary table A.3)
+* Generate regression table (section of Supplementary table S3)
 
 * Label variables
 label variable lnwtem "ln(T)"
@@ -150,7 +150,7 @@ estadd local fixedpd "Yes", replace: mcross_catturb
 
 * Export table in .csv
 #delimit ;
-esttab mcross_catturb using "$res_dir/4_Estimation_crossmig/tableA3_replic.csv", 
+esttab mcross_catturb using "$res_dir/4_Estimation_crossmig/tableS3_replic.csv", 
 		label se star wide noconstant nobaselevels varwidth(25) 
 		stats(fixedod fixedoltt fixeddltt N r2 r2_within, 
 			labels("Origin FE" "Region/Decade FE" "Poor/Decade FE" "N" "R2" "Within-R2")) 
