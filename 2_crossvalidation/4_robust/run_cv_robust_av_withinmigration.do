@@ -8,7 +8,7 @@ Conduct robustness checks on cross-validation using longer term changes in weath
 ****************************************************************
 **# Initialize ***
 ****************************************************************
-/*
+
 if "$CODE" == "" {
 	global CODE: env CODE
 	global INPUT: env INPUT
@@ -16,7 +16,7 @@ if "$CODE" == "" {
 
 	do "$code_dir/0_datacleaning/0_setup/setup.do"
 }
-*/
+
 
 ****************************************************************
 **# Run cross-validation ***

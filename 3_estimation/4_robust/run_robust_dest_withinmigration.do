@@ -50,20 +50,30 @@ estimates save "$input_dir/5_estimation/mwithin_tspd1_dd_cz.ster", replace
 ****************************************************************
 * We focus on responses to temperature in the tropical zone and to soil moisture in the dry hot zone
 * Determine empirical support for weather values to plot response curves accordingly
+* If daily empirical support (used to plot x-ranges) is too different from yearly empirical support (used to estimate),
+* limit x-range to +/-25% of yearly min-max range
+sum tmax_dp_uc_des
+local tmin_y = floor(r(min))
+local tmax_y = ceil(r(max))
+
+sum sm_dp_uc_des
+local smmin_y = floor(r(min) * 100) / 100
+local smmax_y = ceil(r(max) * 100) / 100
+
 forvalues c=1/1 {
-	use "$input_dir/3_consolidate/withinweatherdaily_`c'.dta"
+	use "$input_dir/3_consolidate/withinweatherdaily_dest_`c'.dta"
 
 	sum tmax_pop_uc_w 
-	local tmin_`c' = floor(r(min))
-	local tmax_`c' = ceil(r(max))
+	local tmin_`c' = floor(max(r(min), `tmin_y' - 0.25 * (`tmax_y' - `tmin_y')))
+	local tmax_`c' = ceil(min(r(max), `tmax_y' + 0.25 * (`tmax_y' - `tmin_y')))
 	local tmean_`c' = min(0,`tmin_`c'') + (`tmax_`c'' + abs(`tmin_`c'')) / 2
 }
 forvalues c=3/3 {
-	use "$input_dir/3_consolidate/withinweatherdaily_`c'.dta"
+	use "$input_dir/3_consolidate/withinweatherdaily_dest_`c'.dta"
 	
 	sum sm_pop_uc_w
-	local smmin_`c' = floor(r(min) * 100) / 100
-	local smmax_`c' = ceil(r(max) * 100) / 100
+	local smmin_`c' = floor(max(r(min), `smmin_y' - 0.25 * (`smmax_y' - `smmin_y')) * 100) / 100
+	local smmax_`c' = ceil(min(r(max),  `smmax_y' + 0.25 * (`smmax_y' - `smmin_y')) * 100) / 100
 	local smmean_`c' = (`smmax_`c'' + `smmin_`c'') / 2
 }
 

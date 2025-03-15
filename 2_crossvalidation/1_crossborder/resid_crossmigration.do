@@ -120,12 +120,8 @@ local allvar ln_outmigshare ///
 				tmax_dp_l1_edu1 tmax_dp_l1_edu2 tmax_dp_l1_edu3 tmax_dp_l1_edu4 tmax2_dp_l1_edu1 tmax2_dp_l1_edu2 tmax2_dp_l1_edu3 tmax2_dp_l1_edu4 tmax3_dp_l1_edu1 tmax3_dp_l1_edu2 tmax3_dp_l1_edu3 tmax3_dp_l1_edu4  ///
 				sm_dp_l1_edu1 sm_dp_l1_edu2 sm_dp_l1_edu3 sm_dp_l1_edu4 sm2_dp_l1_edu1 sm2_dp_l1_edu2 sm2_dp_l1_edu3 sm2_dp_l1_edu4 sm3_dp_l1_edu1 sm3_dp_l1_edu2 sm3_dp_l1_edu3 sm3_dp_l1_edu4 ///
 				tmax_dp_des tmax2_dp_des tmax3_dp_des sm_dp_des sm2_dp_des sm3_dp_des ///
-				tmax_dp_des_clim1 tmax_dp_des_clim2 tmax_dp_des_clim3 tmax_dp_des_clim4 tmax_dp_des_clim5 tmax_dp_des_clim6  ///
-				tmax2_dp_des_clim1 tmax2_dp_des_clim2 tmax2_dp_des_clim3 tmax2_dp_des_clim4 tmax2_dp_des_clim5 tmax2_dp_des_clim6 ///
-				tmax3_dp_des_clim1 tmax3_dp_des_clim2 tmax3_dp_des_clim3 tmax3_dp_des_clim4 tmax3_dp_des_clim5 tmax3_dp_des_clim6 ///
-				sm_dp_des_clim1 sm_dp_des_clim2 sm_dp_des_clim3 sm_dp_des_clim4 sm_dp_des_clim5 sm_dp_des_clim6 ///
-				sm2_dp_des_clim1 sm2_dp_des_clim2 sm2_dp_des_clim3 sm2_dp_des_clim4 sm2_dp_des_clim5 sm2_dp_des_clim6 ///
-				sm3_dp_des_clim1 sm3_dp_des_clim2 sm3_dp_des_clim3 sm3_dp_des_clim4 sm3_dp_des_clim5 sm3_dp_des_clim6 ///
+				tmax_dp_des_clim1 tmax_dp_des_clim4 tmax_dp_des_clim5 tmax2_dp_des_clim1 tmax2_dp_des_clim4 tmax2_dp_des_clim5 tmax3_dp_des_clim1 tmax3_dp_des_clim4 tmax3_dp_des_clim5 ///
+				sm_dp_des_clim1 sm_dp_des_clim4 sm_dp_des_clim5 sm2_dp_des_clim1 sm2_dp_des_clim4 sm2_dp_des_clim5 sm3_dp_des_clim1 sm3_dp_des_clim4 sm3_dp_des_clim5 ///
 				tmax_dp_des_age1 tmax_dp_des_age2 tmax_dp_des_age3 tmax_dp_des_age4 tmax2_dp_des_age1 tmax2_dp_des_age2 tmax2_dp_des_age3 tmax2_dp_des_age4 tmax3_dp_des_age1 tmax3_dp_des_age2 tmax3_dp_des_age3 tmax3_dp_des_age4  ///
 				sm_dp_des_age1 sm_dp_des_age2 sm_dp_des_age3 sm_dp_des_age4 sm2_dp_des_age1 sm2_dp_des_age2 sm2_dp_des_age3 sm2_dp_des_age4 sm3_dp_des_age1 sm3_dp_des_age2 sm3_dp_des_age3 sm3_dp_des_age4 ///
 				tmax_dp_des_edu1 tmax_dp_des_edu2 tmax_dp_des_edu3 tmax_dp_des_edu4 tmax2_dp_des_edu1 tmax2_dp_des_edu2 tmax2_dp_des_edu3 tmax2_dp_des_edu4 tmax3_dp_des_edu1 tmax3_dp_des_edu2 tmax3_dp_des_edu3 tmax3_dp_des_edu4  ///
@@ -144,13 +140,13 @@ use "$input_dir/3_consolidate/crossmigweather_clean.dta"
 
 preserve
 
-keep `allvar' bpl bplcode country countrycode yrimm demo agemigcat edattain sex mainclimgroup
+keep `allvar' bpl bplcode country countrycode yrimm demo agemigcat edattain sex mainclimgroup 
 
 foreach var in `allvar' {
 	quietly reghdfe `var', absorb(i.bpl#i.country#i.demo yrimm i.bpl##c.yrimm) vce(cluster bpl) residuals(res_`var')
 }
 
-keep res_* bpl bplcode country countrycode yrimm demo agemigcat edattain sex mainclimgroup
+keep res_* bpl bplcode country countrycode yrimm demo agemigcat edattain sex mainclimgroup 
 rename res_* *
 
 save "$input_dir/2_intermediate/_residualized_cross.dta", replace

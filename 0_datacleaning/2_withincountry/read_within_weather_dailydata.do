@@ -156,3 +156,50 @@ forvalues c=1/5 {
 
 	restore
 }
+
+
+****************************************************************
+**# Match with destination observations ***
+****************************************************************
+* Use daily observations of weather at destination
+use "$input_dir/2_intermediate/dailysubnat.dta"
+
+rename geomig1 geolev1 
+
+save "$input_dir/2_intermediate/dailysubnat.dta", replace
+
+
+use "$input_dir/3_consolidate/withinmigweather_clean.dta", clear
+
+keep ctrymig geomig1 geolev1 yrmig climgroup agemigcat edattain sex
+duplicates drop
+
+joinby ctrymig geolev1 yrmig using "$input_dir/2_intermediate/dailysubnat.dta"
+
+
+* Store files per climate zone
+drop if tmax_pop_uc == . | sm_pop_uc == .
+
+forvalues c=1/5 {
+	preserve 
+	keep if climgroup == `c'
+
+	* Winsorize daily weather observations
+	winsor2 tmax_pop_uc, cuts(1 99) 
+	winsor2 sm_pop_uc, cuts(1 99)  
+
+	* Create id variable to merge with response curves file 
+	gen double id = _n
+
+	save "$input_dir/3_consolidate/withinweatherdaily_dest_`c'.dta", replace
+
+	restore
+}
+
+
+use "$input_dir/2_intermediate/dailysubnat.dta", clear
+
+rename geolev1 geomig1
+
+save "$input_dir/2_intermediate/dailysubnat.dta", replace
+

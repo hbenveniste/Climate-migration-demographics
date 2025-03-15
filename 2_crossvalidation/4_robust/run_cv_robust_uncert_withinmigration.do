@@ -8,7 +8,7 @@ Conduct robustness checks using an alternative way of dealing with uncertainty o
 ****************************************************************
 **# Initialize ***
 ****************************************************************
-/*
+
 if "$CODE" == "" {
 	global CODE: env CODE
 	global INPUT: env INPUT
@@ -16,7 +16,7 @@ if "$CODE" == "" {
 
 	do "$code_dir/0_datacleaning/0_setup/setup.do"
 }
-*/
+
 
 ****************************************************************
 **# Use weather of the earliest possible year of migration ***

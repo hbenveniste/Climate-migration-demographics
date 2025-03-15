@@ -110,7 +110,7 @@ drop if modelnb == .
 spearman avcrps rsq
 local corr_spearman: display %4.2f r(rho)
 pwcorr avcrps rsq
-local corr_pearson = round(r(rho), 0.01)
+local corr_pearson: display %4.2f r(rho)
 
 scatter avcrps rsq || lfit avcrps rsq, ///
     mcolor(ebblue) lcolor(gray) lpattern(dash) ///

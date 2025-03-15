@@ -47,12 +47,12 @@ global indepvar "tmax_dp_clim1 tmax_dp_clim2 tmax_dp_clim3 tmax_dp_clim4 tmax_dp
 				sm_dp_age1 sm_dp_age2 sm_dp_age3 sm_dp_age4 sm2_dp_age1 sm2_dp_age2 sm2_dp_age3 sm2_dp_age4 sm3_dp_age1 sm3_dp_age2 sm3_dp_age3 sm3_dp_age4
 				tmax_dp_edu1 tmax_dp_edu2 tmax_dp_edu3 tmax_dp_edu4 tmax2_dp_edu1 tmax2_dp_edu2 tmax2_dp_edu3 tmax2_dp_edu4 tmax3_dp_edu1 tmax3_dp_edu2 tmax3_dp_edu3 tmax3_dp_edu4 
 				sm_dp_edu1 sm_dp_edu2 sm_dp_edu3 sm_dp_edu4 sm2_dp_edu1 sm2_dp_edu2 sm2_dp_edu3 sm2_dp_edu4 sm3_dp_edu1 sm3_dp_edu2 sm3_dp_edu3 sm3_dp_edu4
-				tmax_dp_des_clim1 tmax_dp_des_clim2 tmax_dp_des_clim3 tmax_dp_des_clim4 tmax_dp_des_clim5 tmax_dp_des_clim6 
-				tmax2_dp_des_clim1 tmax2_dp_des_clim2 tmax2_dp_des_clim3 tmax2_dp_des_clim4 tmax2_dp_des_clim5 tmax2_dp_des_clim6
-				tmax3_dp_des_clim1 tmax3_dp_des_clim2 tmax3_dp_des_clim3 tmax3_dp_des_clim4 tmax3_dp_des_clim5 tmax3_dp_des_clim6
-				sm_dp_des_clim1 sm_dp_des_clim2 sm_dp_des_clim3 sm_dp_des_clim4 sm_dp_des_clim5 sm_dp_des_clim6
-				sm2_dp_des_clim1 sm2_dp_des_clim2 sm2_dp_des_clim3 sm2_dp_des_clim4 sm2_dp_des_clim5 sm2_dp_des_clim6
-				sm3_dp_des_clim1 sm3_dp_des_clim2 sm3_dp_des_clim3 sm3_dp_des_clim4 sm3_dp_des_clim5 sm3_dp_des_clim6
+				tmax_dp_des_clim1 tmax_dp_des_clim4 tmax_dp_des_clim5 
+				tmax2_dp_des_clim1 tmax2_dp_des_clim4 tmax2_dp_des_clim5 
+				tmax3_dp_des_clim1 tmax3_dp_des_clim4 tmax3_dp_des_clim5 
+				sm_dp_des_clim1 sm_dp_des_clim4 sm_dp_des_clim5 
+				sm2_dp_des_clim1 sm2_dp_des_clim4 sm2_dp_des_clim5 
+				sm3_dp_des_clim1 sm3_dp_des_clim4 sm3_dp_des_clim5
 				tmax_dp_des_age1 tmax_dp_des_age2 tmax_dp_des_age3 tmax_dp_des_age4 tmax2_dp_des_age1 tmax2_dp_des_age2 tmax2_dp_des_age3 tmax2_dp_des_age4 tmax3_dp_des_age1 tmax3_dp_des_age2 tmax3_dp_des_age3 tmax3_dp_des_age4 
 				sm_dp_des_age1 sm_dp_des_age2 sm_dp_des_age3 sm_dp_des_age4 sm2_dp_des_age1 sm2_dp_des_age2 sm2_dp_des_age3 sm2_dp_des_age4 sm3_dp_des_age1 sm3_dp_des_age2 sm3_dp_des_age3 sm3_dp_des_age4
 				tmax_dp_des_edu1 tmax_dp_des_edu2 tmax_dp_des_edu3 tmax_dp_des_edu4 tmax2_dp_des_edu1 tmax2_dp_des_edu2 tmax2_dp_des_edu3 tmax2_dp_des_edu4 tmax3_dp_des_edu1 tmax3_dp_des_edu2 tmax3_dp_des_edu3 tmax3_dp_des_edu4 

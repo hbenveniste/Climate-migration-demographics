@@ -8,7 +8,7 @@ Conduct robustness checks on cross-validation using destination weather for with
 ****************************************************************
 **# Initialize ***
 ****************************************************************
-/*
+
 if "$CODE" == "" {
 	global CODE: env CODE
 	global INPUT: env INPUT
@@ -16,7 +16,7 @@ if "$CODE" == "" {
 
 	do "$code_dir/0_datacleaning/0_setup/setup.do"
 }
-*/
+
 
 ****************************************************************
 **# Run cross-validation ***
@@ -82,8 +82,10 @@ save "$input_dir/4_crossvalidation/rsqwithin.dta", replace
 * Same model but without demographic heterogeneity for comparison
 use "$input_dir/2_intermediate/_residualized_within.dta"
 #delimit ;
-global indepvar "tmax_dp_uc_clim1 tmax_dp_uc_clim2 tmax_dp_uc_clim3 tmax_dp_uc_clim4 tmax_dp_uc_clim5 tmax_dp_uc_clim6 sm_dp_uc_clim1 sm_dp_uc_clim2 sm_dp_uc_clim3 sm_dp_uc_clim4 sm_dp_uc_clim5 sm_dp_uc_clim6 
-				tmax_dp_uc_des_clim1 tmax_dp_uc_des_clim2 tmax_dp_uc_des_clim3 tmax_dp_uc_des_clim4 tmax_dp_uc_des_clim5 tmax_dp_uc_des_clim6 sm_dp_uc_des_clim1 sm_dp_uc_des_clim2 sm_dp_uc_des_clim3 sm_dp_uc_des_clim4 sm_dp_uc_des_clim5 sm_dp_uc_des_clim6";
+global indepvar "tmax_dp_uc_clim1 tmax_dp_uc_clim2 tmax_dp_uc_clim3 tmax_dp_uc_clim4 tmax_dp_uc_clim5 tmax_dp_uc_clim6 
+				sm_dp_uc_clim1 sm_dp_uc_clim2 sm_dp_uc_clim3 sm_dp_uc_clim4 sm_dp_uc_clim5 sm_dp_uc_clim6 
+				tmax_dp_uc_des_clim1 tmax_dp_uc_des_clim2 tmax_dp_uc_des_clim3 tmax_dp_uc_des_clim4 tmax_dp_uc_des_clim5 tmax_dp_uc_des_clim6 
+				sm_dp_uc_des_clim1 sm_dp_uc_des_clim2 sm_dp_uc_des_clim3 sm_dp_uc_des_clim4 sm_dp_uc_des_clim5 sm_dp_uc_des_clim6";
 #delimit cr
 do "$code_dir/2_crossvalidation/2_withincountry/crossval_function_withinmigration.do"
 quietly {

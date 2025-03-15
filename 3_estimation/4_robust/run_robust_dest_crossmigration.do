@@ -66,31 +66,41 @@ estimates save "$input_dir/5_estimation/mcross_tspd3_dd.ster", replace
 **# Prepare for plotting response curves ***
 ****************************************************************
 * Determine empirical support for weather values to plot response curves accordingly
+* If daily empirical support (used to plot x-ranges) is too different from yearly empirical support (used to estimate),
+* limit x-range to +/-25% of yearly min-max range
+sum tmax_dp_des
+local tmin_y = floor(r(min))
+local tmax_y = ceil(r(max))
+
+sum sm_dp_des
+local smmin_y = floor(r(min) * 100) / 100
+local smmax_y = ceil(r(max) * 100) / 100
+
 * Results for all climate zones together
-use "$input_dir/3_consolidate/crossweatherdaily.dta"
+use "$input_dir/3_consolidate/crossweatherdaily_dest.dta"
 
 sum tmax_pop_w
-local tmin = floor(r(min))
-local tmax = ceil(r(max))
+local tmin = floor(max(r(min), `tmin_y' - 0.25 * (`tmax_y' - `tmin_y')))
+local tmax = ceil(min(r(max), `tmax_y' + 0.25 * (`tmax_y' - `tmin_y')))
 local tmean = min(0,`tmin') + (`tmax' + abs(`tmin')) / 2
 
 sum sm_pop_w
-local smmin = floor(r(min) * 100) / 100
-local smmax = ceil(r(max) * 100) / 100
+local smmin = floor(max(r(min), `smmin_y' - 0.25 * (`smmax_y' - `smmin_y')) * 100) / 100
+local smmax = ceil(min(r(max),  `smmax_y' + 0.25 * (`smmax_y' - `smmin_y')) * 100) / 100
 local smmean = (`smmax' + `smmin') / 2
 
 * Results for each of the 5 considered climate zones
 forvalues c=1/5 {
-	use "$input_dir/3_consolidate/crossweatherdaily_`c'.dta"
+	use "$input_dir/3_consolidate/crossweatherdaily_dest_`c'.dta"
 
 	sum tmax_pop_w
-	local tmin_`c' = floor(r(min))
-	local tmax_`c' = ceil(r(max))
+	local tmin_`c' = floor(max(r(min), `tmin_y' - 0.25 * (`tmax_y' - `tmin_y')))
+	local tmax_`c' = ceil(min(r(max), `tmax_y' + 0.25 * (`tmax_y' - `tmin_y')))
 	local tmean_`c' = min(0,`tmin_`c'') + (`tmax_`c'' + abs(`tmin_`c'')) / 2
 
 	sum sm_pop_w
-	local smmin_`c' = floor(r(min) * 100) / 100
-	local smmax_`c' = ceil(r(max) * 100) / 100
+	local smmin_`c' = floor(max(r(min), `smmin_y' - 0.25 * (`smmax_y' - `smmin_y')) * 100) / 100
+	local smmax_`c' = ceil(min(r(max),  `smmax_y' + 0.25 * (`smmax_y' - `smmin_y')) * 100) / 100
 	local smmean_`c' = (`smmax_`c'' + `smmin_`c'') / 2
 }
 

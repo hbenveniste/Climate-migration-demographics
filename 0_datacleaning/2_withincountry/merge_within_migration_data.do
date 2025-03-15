@@ -207,12 +207,13 @@ save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
 **# Create interaction variables ***
 ****************************************************************
 * Weather variables, climate zones, and demographics
-local interac tmax_dp_uc sm_dp_uc tmax2_dp_uc sm2_dp_uc tmax3_dp_uc sm3_dp_uc prcp_dp_uc prcp2_dp_uc prcp3_dp_uc ///
+local interacclimdemo tmax_dp_uc sm_dp_uc tmax2_dp_uc sm2_dp_uc tmax3_dp_uc sm3_dp_uc 
+local interacall tmax_dp_uc sm_dp_uc tmax2_dp_uc sm2_dp_uc tmax3_dp_uc sm3_dp_uc prcp_dp_uc prcp2_dp_uc prcp3_dp_uc ///
 				tmax_dp_uc_l1 sm_dp_uc_l1 tmax2_dp_uc_l1 sm2_dp_uc_l1 tmax3_dp_uc_l1 sm3_dp_uc_l1 ///
 				tmax_dp_uc_des sm_dp_uc_des tmax2_dp_uc_des sm2_dp_uc_des tmax3_dp_uc_des sm3_dp_uc_des ///
+				tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10 ///
 				tmax_dp_uc_rand sm_dp_uc_rand tmax2_dp_uc_rand sm2_dp_uc_rand tmax3_dp_uc_rand sm3_dp_uc_rand ///
-				tmax_dp_a10_rand sm_dp_a10_rand tmax2_dp_a10_rand sm2_dp_a10_rand tmax3_dp_a10_rand ///
-				tmax_dp_a10 sm_dp_a10 tmax2_dp_a10 sm2_dp_a10 tmax3_dp_a10 sm3_dp_a10 sm3_dp_a10_rand
+				tmax_dp_a10_rand sm_dp_a10_rand tmax2_dp_a10_rand sm2_dp_a10_rand tmax3_dp_a10_rand sm3_dp_a10_rand
 
 tab climgroup , gen(d_clim)  
 tab agemigcat, gen(d_age)
@@ -220,15 +221,9 @@ tab edattain, gen(d_edu)
 tab sex, gen(d_sex)
 tab areacat, gen(d_area)
 
-foreach var of varlist `interac' {
+foreach var of varlist `interacclimdemo' {
 	forv i=1/6 {
-		gen `var'_clim`i' = `var' * d_clim`i'
-		forv j=1/4 {
-			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'
-			gen `var'_clim`i'_edu`j' = `var' * d_clim`i' * d_edu`j'
-		}
 		forv j=1/2 {
-			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
 			gen `var'_clim`i'_area`j' = `var' * d_clim`i' * d_area`j'
 		}
 	}
@@ -241,28 +236,22 @@ foreach var of varlist `interac' {
 		gen `var'_area`j' = `var' * d_area`j'
 	}
 }
+foreach var of varlist `interacall' {
+	forv i=1/6 {
+		gen `var'_clim`i' = `var' * d_clim`i'
+		forv j=1/4 {
+			gen `var'_clim`i'_age`j' = `var' * d_clim`i' * d_age`j'
+			gen `var'_clim`i'_edu`j' = `var' * d_clim`i' * d_edu`j'
+		}
+		forv j=1/2 {
+			gen `var'_clim`i'_sex`j' = `var' * d_clim`i' * d_sex`j'
+		}
+	}
+}
 
 drop d_clim* d_age* d_edu* d_sex* d_area*
 
 
 save "$input_dir/3_consolidate/withinmigweather_clean.dta", replace
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

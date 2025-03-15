@@ -170,3 +170,59 @@ forvalues c=1/5 {
 }
 
 
+****************************************************************
+**# Match with destination observations ***
+****************************************************************
+* Use daily observations of weather at destination
+use "$input_dir/2_intermediate/dailynat.dta"
+
+rename bpl country 
+
+save "$input_dir/2_intermediate/dailynat.dta", replace
+
+
+use "$input_dir/3_consolidate/crossmigweather_clean.dta", clear
+
+keep bpl country countrycode yrimm mainclimgroup agemigcat edattain sex
+duplicates drop
+
+joinby country yrimm using "$input_dir/2_intermediate/dailynat.dta"
+
+
+* Store files for all observations
+drop if tmax_pop == . | sm_pop == .
+
+winsor2 tmax_pop, cuts(1 99) 
+winsor2 sm_pop, cuts(1 99)
+
+gen double id = _n
+
+
+save "$input_dir/3_consolidate/crossweatherdaily_dest.dta", replace
+
+
+* Store files per climate zone
+drop id tmax_pop_w sm_pop_w 
+
+forvalues c=1/5 {
+	preserve 
+	keep if mainclimgroup == `c'
+
+	* Winsorize daily weather observations
+	winsor2 tmax_pop, cuts(1 99) 
+	winsor2 sm_pop, cuts(1 99)  
+
+	* Create id variable to merge with response curves file 
+	gen double id = _n
+
+	save "$input_dir/3_consolidate/crossweatherdaily_dest_`c'.dta", replace
+
+	restore
+}
+
+
+use "$input_dir/2_intermediate/dailynat.dta", clear
+
+rename country bpl
+
+save "$input_dir/2_intermediate/dailynat.dta", replace

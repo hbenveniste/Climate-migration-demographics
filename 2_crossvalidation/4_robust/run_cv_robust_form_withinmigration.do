@@ -8,7 +8,7 @@ Conduct cross-validation to determine functional form and weather variables, for
 ****************************************************************
 **# Initialize ***
 ****************************************************************
-/*
+
 if "$CODE" == "" {
 	global CODE: env CODE
 	global INPUT: env INPUT
@@ -16,7 +16,7 @@ if "$CODE" == "" {
 
 	do "$code_dir/0_datacleaning/0_setup/setup.do"
 }
-*/
+
 
 * Select method for folds creation: random
 global folds "random"
