@@ -1,5 +1,5 @@
 # Global climate migration is a story of who, not just how many
-Supporting code for Benveniste, Helene and Huybers, Peter and Proctor, Jonathan, Global Climate Migration is a Story of Who, Not Just How Many (August 14, 2024). Preprint available at SSRN: https://ssrn.com/abstract=4925994 or http://dx.doi.org/10.2139/ssrn.4925994.
+Supporting code for Benveniste, Helene and Huybers, Peter and Proctor, Jonathan, Global Climate Migration is a Story of Who, Not Just How Many (2025). Preprint available at SSRN: https://ssrn.com/abstract=4925994 or http://dx.doi.org/10.2139/ssrn.4925994.
 
 # System requirements:
 This code must be run in `Stata`. We used version StataMP 18.
@@ -31,6 +31,30 @@ Input data will be available on Harvard Dataverse upon publication. Once it is, 
 `3_estimation/` - Code for estimating the weather-migration relationships and plotting resulting response curves (Figs.2bc,3bc, Supplementary Figs.5,6,11c-f,12c-f,13c-f,14b-c,15c-d, Supplementary Tables 1,2,3).
 
 `4_projection/` - Code for running future projections of cross-border migration and plotting results (Fig.4, Supplementary Figs.9,10,16).
+
+# Input repository structure
+`1_raw` - Subfolder including the raw data files. Before running the code, this is the only subfolder in the Input repository.
+
+`2_intermediate` - Subfolder including the intermediate files constructed while putting together the main two files used in the analysis.
+
+`3_consolidate` - Subfolder including the main two files used in the analysis, one for within-country and one for cross-border migration.
+
+`4_crossvalidation` - Subfolder including the cross-validation results used for the box plots.
+
+`5_estimation` - Subfolder including the estimation results used for the response curves.
+
+# Results repository structure
+`1_Description` - Subfolder including data description files and figures.
+
+`2_Crossvalidation_crossmig` - Subfolder including the cross-validation figures for the cross-border migration analysis.
+
+`3_Crossvalidation_withinmig` - Subfolder including the cross-validation figures for the within-country migration analysis.
+
+`4_Estimation_crossmig` - Subfolder including the estimation figures for the cross-border migration analysis.
+
+`5_Estimation_withinmig` - Subfolder including the estimation figures for the within-country migration analysis.
+
+`6_Projection_crossmig` - Subfolder including the projection figures for the cross-border migration analysis.
 
 # Running the code
 Start by running the `set.do` file in the `0_datacleaning/0_setup` subfolder.
